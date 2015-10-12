@@ -1,0 +1,178 @@
+@font-face {
+  font-family: 'smd';
+  src: url(data:image/woff;base64,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) format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'smd';
+	content: attr(data-icon);
+	speak: none;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+/* Use the following CSS code if you want to have a class per icon */
+/*
+Instead of a list of all class selectors,
+you can use the generic selector below, but it's slower:
+[class*="icon-"] {
+*/
+.icon-block {
+	font-family: 'smd';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+.icon-bold:before {
+	content: "\e000";
+}
+.icon-italic:before {
+	content: "\e001";
+}
+.icon-quote:before {
+	content: "\e003";
+}
+.icon-unordered-list:before {
+	content: "\e004";
+}
+.icon-ordered-list:before {
+	content: "\e005";
+}
+.icon-link:before {
+	content: "\e006";
+}
+.icon-image:before {
+	content: "\e007";
+}
+.icon-play:before {
+	content: "\e008";
+}
+.icon-music:before {
+	content: "\e009";
+}
+.icon-contract:before {
+	content: "\e00a";
+}
+.icon-fullscreen:before {
+	content: "\e00b";
+}
+.icon-question:before {
+	content: "\e00c";
+}
+.icon-info:before {
+	content: "\e00d";
+}
+.icon-undo:before {
+	content: "\e00e";
+}
+.icon-redo:before {
+	content: "\e00f";
+}
+.icon-code:before {
+	content: "\e011";
+}
+.icon-preview:before {
+	content: "\e002";
+}
+
+.smd-preview p{
+   white-space:pre-wrap;
+}
+
+:fullscreen {
+  /* not currently needed, but just in case */
+  width: 100% !important;
+  height: 100% !important;
+/*  position: fixed;
+  top: 0;
+*/
+  /* keeps correct aspect ratio and full image visible */
+  -o-object-fit: contain; /* Opera 12.1 */
+  object-fit: contain;
+}
+
+:-webkit-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+/*  position: fixed;
+  top: 0;
+*/
+  /* webkit keeps the original background color, so reset */
+  background: none;
+}
+
+:-ms-fullscreen {
+  width: 100% !important;
+  height: 100% !important;
+  margin: auto;
+}
+
+.smd-toolbar {
+  width: auto;
+  display: block;
+  height:40px;
+  line-height:30px;
+  padding:5px;
+  border: solid 1px;
+  border-color: #cccccc;
+  background: #f5f5f5;
+}
+
+.smd-toolbar > a.icon-block:hover, .smd-toolbar > a.icon-block:active {
+  background: #fcfcfc;
+  border-color: #95a5a6;
+  text-decoration:none;
+}
+.smd-toolbar > a.icon-block {
+	padding:8px 10px;
+	cursor: pointer;color:#000;
+}
+
+.smd-toolbar span.separator {
+  display: inline-block;
+  width: 0;
+  border-left: 1px solid #d9d9d9;
+  border-right: 1px solid white;
+  color: transparent;
+  text-indent: -10px;
+  margin: 0 6px;
+}
+
+textarea.smd-input  {
+  width: 100%;
+  height: 100%;
+  min-height:100px;
+  background: #f5f5f5;
+  tab-size: 4;
+  overflow: auto;
+  border: solid 1px #cccccc;
+  padding: 10px;
+  resize: none;
+}
+
+.smd-preview {
+  width: 100%;
+  height: 100%;
+  min-height:100px;
+  overflow: auto;
+  padding:10px;
+  display: block;
+  background-color:#fff;
+  border: 1px solid #CCC;
+}
+
+.smd-toolbar {display:none;}
+@media (min-width: 768px) {
+	.smd-toolbar {display: block;}
+	.smd-preview, textarea.smd-input { min-height:300px; border-top: none;}
+	#reply .smd-preview, #reply textarea.smd-input { min-height:200px; border-top: none;}
+}
