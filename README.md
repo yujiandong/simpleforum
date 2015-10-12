@@ -11,6 +11,7 @@
 前端采用bootstrap，适配电脑，平板，手机
 
 **空间及环境要求：**
+
 1. PHP 5.4.0及以上
 2. 必须安装open_ssl扩展
 3. config/db.php和params.php文件要求写权限
@@ -18,11 +19,12 @@
 5. web/assets目录和web/avatar目录要求写权限
 
 **安装步骤：**
+
 1. 下载simpleforum安装文件，解压
 2. 修改config/web.php第27行，随便改几位就行了，这是检证cookie用的
  ```
-'cookieValidationKey' => 'hwdn8-iyIh5LylPLpD1PoplqjUka98Ba',
-```
+ 'cookieValidationKey' => 'hwdn8-iyIh5LylPLpD1PoplqjUka98Ba',
+ ```
 3. 将整个安装包上传到网站空间
 4. 在浏览器中输入网址： http://你的网址/install  进入安装界面
 5. 安装第一步：会显示你的网站空间环境是否符合安装条件，如果符合请点击进入下一步
@@ -31,6 +33,7 @@
 8. 管理员帐号创建后，安装操作就完成了。
 
 **帮助文档：**
+
 1. SMTP服务器设置 http://simpleforum.org/t/39
 2. 开启验证码 http://simpleforum.org/t/43
 3. 编辑器选择 http://simpleforum.org/t/41
