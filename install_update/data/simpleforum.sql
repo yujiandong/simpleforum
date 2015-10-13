@@ -14,7 +14,7 @@ CREATE TABLE simple_user (
   UNIQUE KEY username(`username`),
   UNIQUE KEY email(`email`),
   KEY status_id(`status`, `id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_user_info;
 CREATE TABLE simple_user_info (
@@ -31,7 +31,7 @@ CREATE TABLE simple_user_info (
   `website` varchar(100) NOT NULL default '',
   `about` varchar(255) NOT NULL default '',
   PRIMARY KEY user_id(`user_id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_token;
 CREATE TABLE simple_token (
@@ -45,7 +45,7 @@ CREATE TABLE simple_token (
   PRIMARY KEY id(`id`),
   UNIQUE KEY token(`token`),
   KEY user_type_expires(`user_id`, `type`, `expires`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_siteinfo;
 CREATE TABLE simple_siteinfo (
@@ -55,7 +55,7 @@ CREATE TABLE simple_siteinfo (
   `topics` mediumint(8) unsigned NOT NULL default 0,
   `comments` int(10) unsigned NOT NULL default 0,
   PRIMARY KEY id(`id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO simple_siteinfo VALUES(1, 1, 0, 0, 0);
 
@@ -73,7 +73,7 @@ CREATE TABLE simple_node (
   UNIQUE KEY name(`name`),
   UNIQUE KEY ename(`ename`),
   KEY topic_id(`topic_count`, `id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO simple_node VALUES(1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 0, 0, '默认分类', 'default', '');
 
@@ -100,14 +100,14 @@ CREATE TABLE simple_topic (
   KEY updated(`updated_at`),
   KEY node_updated(`node_id`,`updated_at`),
   KEY user_id(`user_id`,`id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_topic_content;
 CREATE TABLE simple_topic_content (
   `topic_id` mediumint(8) unsigned NOT NULL auto_increment,
   `content` text NOT NULL default '',
   PRIMARY KEY topic_id(`topic_id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_comment;
 CREATE TABLE simple_comment (
@@ -123,13 +123,13 @@ CREATE TABLE simple_comment (
   UNIQUE KEY id(`id`),
   KEY user_id(`user_id`,`id`),
   KEY topic_updated(`topic_id`, `updated_at`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_commentid;
 CREATE TABLE simple_commentid (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `simple_notice`;
 CREATE TABLE `simple_notice` (
@@ -145,7 +145,7 @@ CREATE TABLE `simple_notice` (
   `notice_count` smallint(6) unsigned NOT NULL default 0,
   PRIMARY KEY  (`id`),
   KEY target_status_id(`target_id`,`status`, `id`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS simple_link;
@@ -156,7 +156,7 @@ CREATE TABLE simple_link (
   `url` varchar(100) NOT NULL,
   PRIMARY KEY id(`id`),
   KEY sort_id(`sortid`,`id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO simple_link VALUES(1, 0, '极简论坛', 'http://simpleforum.org/');
 
@@ -176,7 +176,7 @@ CREATE TABLE simple_setting (
   PRIMARY KEY id(`id`),
   UNIQUE KEY `key`(`key`),
   KEY block_sort_id(`block`,`sortid`,`id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_type`, `value`, `description`, `option`) VALUES
 (1,'info', '网站名称','text', 'site_name','text', '极简论坛', '考虑到手机浏览，网站名称不要设置过长。', ''),
@@ -228,7 +228,7 @@ CREATE TABLE `simple_favorite` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY source_type_target(`source_id`, `type`, `target_id`),
   KEY type_target(`type`, `target_id`)
-) ENGINE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_auth;
 CREATE TABLE simple_auth (
@@ -239,7 +239,7 @@ CREATE TABLE simple_auth (
   PRIMARY KEY id(id),
   UNIQUE KEY user_source(`user_id`, `source`),
   UNIQUE KEY source_source_id(`source`, `source_id`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `simple_history`;
 CREATE TABLE `simple_history` (
@@ -251,9 +251,4 @@ CREATE TABLE `simple_history` (
   `ext` text NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY user_id(`user_id`, `id`)
-) ENGINE=MyISAM;
-
-/* action:
-	1:reg, 2:login, 3:edit profile, 4:change email, 5.avatar
-	11:add topic 12:edit topic 13:add comment, 14:edit comment
-*/
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
