@@ -33,9 +33,9 @@ $this->title = Html::encode($node['name']);
 
 <div class="box">
 	<div class="inner">
-		<span class="fr gray small">主题总数 <?=$node['topic_count'] ?><?= $follow ?></span>
+		<span class="fr gray small">主题总数 <?= $node['topic_count'] ?><?= $follow ?></span>
 		<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title ?>
-		<p class="gray"><?= (new \parsedown\Parsedown())->text(Html::encode($node['about'])) ?></p>
+		<p class="gray"><?= Html::encode($node['about']) ?></p>
 		<?php
 			if (!Yii::$app->getUser()->getIsGuest() && Yii::$app->getUser()->getIdentity()->status >= User::STATUS_ACTIVE ) {
 				echo Html::a('创建主题', ['topic/add', 'node'=>$node['ename']], ['class'=>'btn btn-primary']);

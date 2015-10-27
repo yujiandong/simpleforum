@@ -38,11 +38,10 @@ class UserController extends AppController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
                     'avatar' => ['post'],
                     'edit-profile' => ['post'],
                     'change-email' => ['post'],
-                    'change-email' => ['post'],
+                    'change-password' => ['post'],
                 ],
             ],
             'access' => [
