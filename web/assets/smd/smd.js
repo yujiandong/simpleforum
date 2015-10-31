@@ -1,7 +1,8 @@
 /**
  * simple markdown - a html markdown editor
  * Copyright (c) 2015-2015, Jiandong Yu. (MIT Licensed)
- * https://github.com/chjj/marked
+ * https://github.com/yujiandong/simplemarkdown
+ * http://simpleforum.org/n/smd
  */
 ;(function() {
 
@@ -74,24 +75,30 @@ var orderedList = function(e, self) {
 
 var drawLink = function(e, self) {
 	var result = $(self).selection('get');
+	var postion = $(self).selection('getPos');
 	e.preventDefault();
 	if (result === '') {
 		result = '[link description here](http://)';
+		len = 31;
 	} else {
 		result = '[' + result + '](http://)';
+		len = 10;
 	}
-	$(self).selection('replace',{text: result, mode:'after', caret:'end'});
+	$(self).selection('replace',{text: result, mode:'after'}).selection('setPos', {start: postion.end+len, end: postion.end+len});
 };
 
 var drawImage = function(e, self) {
 	var result = $(self).selection('get');
+	var postion = $(self).selection('getPos');
 	e.preventDefault();
 	if (result === '') {
 		result = '![image description here](http://)';
+		len = 33;
 	} else {
 		result = '![' + result + '](http://)';
+		len = 11;
 	}
-	$(self).selection('replace',{text: result, mode:'after', caret:'end'});
+	$(self).selection('replace',{text: result, mode:'after'}).selection('setPos', {start: postion.end+len, end: postion.end+len});
 };
 
 var togglePreview = function(e, self) {
@@ -297,6 +304,10 @@ SimpleMarkdown.prototype = {
 		this.createPriewArea();
 		this.bindHotKeys();
 		//setHeight();
+	},
+	insertAtCursor: function(text) {
+		var postion = this.target.selection('getPos');
+		this.target.selection('insert',{text: text, mode: 'after'}).selection('setPos', {start: postion.end+text.length, end: postion.end+text.length});
 	},
 	version : function() {
 		alert('1.0');

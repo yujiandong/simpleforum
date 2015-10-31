@@ -5,6 +5,7 @@ background-color: #f6f6f6;
 
 #uploadform-file {padding-top:7px;}
 label.avatar-label {padding-top:30px !important;}
+img { max-width: 100%;}
 
 h1 {font-size:1.6em; line-height:1.3;}
 h2 {font-size:1.5em;}
