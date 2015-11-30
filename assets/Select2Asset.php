@@ -11,8 +11,8 @@ use yii\web\AssetBundle;
 
 class Select2Asset extends AssetBundle
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
+//    public $basePath = '@webroot';
+    public $baseUrl = '@web/static';
     public $css = [
         'css/select2.min.css',
     ];

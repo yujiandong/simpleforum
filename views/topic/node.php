@@ -33,9 +33,9 @@ $this->title = Html::encode($node['name']);
 
 <div class="box">
 	<div class="inner">
-		<span class="fr gray small">主题总数 <?= $node['topic_count'] ?><?= $follow ?></span>
-		<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title ?>
-		<p class="gray"><?= Html::encode($node['about']) ?></p>
+		<span class="fr gray small">主题总数 <?php echo $node['topic_count'], $follow; ?></span>
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+		<p class="gray"><?php echo Html::encode($node['about']); ?></p>
 		<?php
 			if (!Yii::$app->getUser()->getIsGuest() && Yii::$app->getUser()->getIdentity()->status >= User::STATUS_ACTIVE ) {
 				echo Html::a('创建主题', ['topic/add', 'node'=>$node['ename']], ['class'=>'btn btn-primary']);
@@ -66,7 +66,7 @@ $this->title = Html::encode($node['name']);
 			echo '<div class="item-commentcount">', Html::a($topic['comment_count'], $url, ['class'=>'count_livid']),'</div>';
 		}
 					echo '<strong>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), '</strong>',
-					' •  ', Yii::$app->formatter->asRelativeTime($topic['replied_at']);
+					' •  ', $topic['top']==1?'置顶':Yii::$app->formatter->asRelativeTime($topic['replied_at']);
 		if ($topic['comment_count']>0) {
 					echo '<span class="item-lastreply"> •  最后回复来自 ', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
 		}
@@ -91,7 +91,7 @@ $this->title = Html::encode($node['name']);
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->
 

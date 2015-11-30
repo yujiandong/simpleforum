@@ -22,12 +22,12 @@ $this->title = '修改回复';
 
 <div class="box">
 	<div class="cell topic-header">
-		<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
-			Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]) ?>
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
+			Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
 		<h3><?php echo Html::encode($topic['title']); ?></h3>
 		<small class="gray">
-		<?= 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', $topic['user_id']]), 
-			'  •  ', Yii::$app->getFormatter()->asRelativeTime($topic['created_at']) ?>
+		<?php echo 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', $topic['user_id']]), 
+			'  •  ', Yii::$app->getFormatter()->asRelativeTime($topic['created_at']); ?>
 		</small>
 	</div>
 </div>
@@ -39,14 +39,18 @@ $this->title = '修改回复';
 	<div class="cell">
 <?php $form = ActiveForm::begin(); ?>
 
-    <?php
-		if(Yii::$app->getUser()->getIdentity()->isAdmin()) {
-		 	echo $form->field($comment, 'invisible')->dropDownList(['公开回复', '屏蔽回复'])->label(false);
-		}
-	?>
-	<?= $form->field($comment, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false) ?>
+<?php
+	if(Yii::$app->getUser()->getIdentity()->isAdmin()) {
+	 	echo $form->field($comment, 'invisible')->dropDownList(['公开回复', '屏蔽回复'])->label(false);
+	}
+	echo $form->field($comment, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false);
+	if($me->canUpload($settings)) {
+		$editor->registerUploadAsset($this);
+		echo '<div class="form-group"><div id="fileuploader">图片上传</div></div>';
+	}
+?>
     <div class="form-group">
-        <?= Html::submitButton('修改', ['class' => 'btn btn-primary']) ?>
+        <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
     </div>
 
 <?php ActiveForm::end(); ?>	</div>
@@ -55,7 +59,7 @@ $this->title = '修改回复';
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

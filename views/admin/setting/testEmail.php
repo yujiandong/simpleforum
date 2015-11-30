@@ -18,7 +18,7 @@ $this->title = '邮件发送测试';
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title ?>
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title; ?>
 	</div>
 	<div class="cell cell-form">
 <?php
@@ -38,11 +38,11 @@ if ( $rtnCd === 9 ) {
 		'action' => ['admin/setting/test-email'],
 		'layout' => 'horizontal',
 		]); ?>
-		<?= $form->field($model, 'email')->textInput(['maxlength'=>50]) ?>
-		<?= $form->field($model, 'content')->textArea(['maxlength'=>255]) ?>
+		<?php echo $form->field($model, 'email')->textInput(['maxlength'=>50]); ?>
+		<?php echo $form->field($model, 'content')->textArea(['maxlength'=>255]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-            <?= Html::submitButton('测试', ['class' => 'btn btn-primary']) ?>
+            <?php echo Html::submitButton('测试', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -52,7 +52,7 @@ if ( $rtnCd === 9 ) {
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

@@ -57,23 +57,26 @@ $config = [
 		],
         'assetManager' => [
 			'basePath' => WEBROOT_PATH . '/assets',
-            'bundles' => [
+        'bundles' => [
                 'yii\web\JqueryAsset' => [
                     'sourcePath' => null,
+		    'baseUrl' => '@web/static',
                     'js' => [
-                        $assetBaseUrl.'/js/jquery-1.11.3.min.js',
+                    'js/jquery-1.11.3.min.js',
                     ]
                 ],
                 'yii\bootstrap\BootstrapAsset' => [
                     'sourcePath' => null,
+					'baseUrl' => '@web/static',
                     'css' => [
-                        $assetBaseUrl.'/assets/bootstrap/bootstrap.min.css',
+                        'assets/bootstrap/bootstrap.min.css',
                     ]
                 ],
                 'yii\bootstrap\BootstrapPluginAsset' => [
                     'sourcePath' => null,
+					'baseUrl' => '@web/static',
                     'js' => [
-                        $assetBaseUrl.'/assets/bootstrap/bootstrap.min.js',
+                        'assets/bootstrap/bootstrap.min.js',
                     ]
                 ],
             ],
@@ -110,7 +113,7 @@ if ( intval($setting['auth_enabled']) !== 0 ) {
 	// qq login
 	if( !empty($setting['qq_appid']) && !empty($setting['qq_appkey']) ) {
 		$config['components']['authClientCollection']['clients']['qq'] = [
-	        'class' => 'simpleforum\authclient\Qq',
+	        'class' => 'yujiandong\authclient\Qq',
 	        'clientId' => $setting['qq_appid'],
 	        'clientSecret' => $setting['qq_appkey'],
 	        'title' => 'QQ登录',
@@ -119,7 +122,7 @@ if ( intval($setting['auth_enabled']) !== 0 ) {
 	// weibo login
 	if( !empty($setting['wb_key']) && !empty($setting['wb_secret']) ) {
 		$config['components']['authClientCollection']['clients']['weibo'] = [
-	        'class' => 'simpleforum\authclient\Weibo',
+	        'class' => 'yujiandong\authclient\Weibo',
 	        'clientId' => $setting['wb_key'],
 	        'clientSecret' => $setting['wb_secret'],
 	        'title' => '微博登录',
@@ -129,6 +132,22 @@ if ( intval($setting['auth_enabled']) !== 0 ) {
 //timezone
 if( !empty($setting['timezone']) ) {
 	$config['timeZone'] = $setting['timezone'];
+}
+
+//alias
+if( !empty($setting['alias_static']) ) {
+	$config['aliases']['@web/static'] = $setting['alias_static'];
+}
+if( !empty($setting['alias_avatar']) ) {
+	$config['aliases']['@web/avatar'] = $setting['alias_avatar'];
+} else if( $setting['upload_avatar'] === 'remote' && !empty($setting['upload_remote_url']) )  {
+	$config['aliases']['@web/avatar'] = $setting['upload_remote_url'].'/avatar';
+}
+if( !empty($setting['alias_upload']) ) {
+	$config['aliases']['@web/upload'] = $setting['alias_upload'];
+}
+if( !empty($setting['alias_runtime']) ) {
+	$config['aliases']['@runtime'] = $setting['alias_runtime'];
 }
 
 if (file_exists(dirname(__DIR__). '/install_update')) {

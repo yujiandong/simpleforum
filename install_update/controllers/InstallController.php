@@ -11,7 +11,6 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\ServerErrorHttpException;
 use yii\web\ForbiddenHttpException;
-use app\lib\Util;
 use app\install_update\lib\RequirementChecker;
 use app\install_update\models\DatabaseForm;
 use app\install_update\models\AdminSignupForm;
@@ -27,7 +26,7 @@ class InstallController extends \yii\web\Controller
                     [
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-							return !file_exists(Yii::getAlias('@app/runtime/install.lock'));
+							return !file_exists(Yii::getAlias('@runtime/install.lock'));
                         },
                     ],
                 ],
@@ -143,6 +142,15 @@ class InstallController extends \yii\web\Controller
 		        'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
 		        'memo' => '用于用户密码加密',
 		    ),
+/*		    // File Upload :
+		    array(
+		        'name' => 'FileInfo扩展',
+		        'mandatory' => true,
+		        'condition' => extension_loaded('fileinfo'),
+		        'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
+		        'memo' => '用于文件上传',
+		    ),
+*/
 		    // Cache :
 		    array(
 		        'name' => 'Memcache(d)扩展',
@@ -274,21 +282,9 @@ class InstallController extends \yii\web\Controller
         ]);
 	}
 
-	private function createConfigFile($settings)
-	{
-		$config = '<?php'."\n";
-		$config = $config. 'return ';
-		$config = $config. \app\lib\Util::convertArrayToString($settings, '');
-		$config = $config. ';'."\n";
-
-		$fp = fopen(Yii::getAlias('@app/config/db.php'), "w");
-		fwrite($fp, $config);
-		fclose($fp);
-	}
-
 	private function createInstallLockFile()
 	{
-		return touch(Yii::getAlias('@app/runtime/install.lock'));
+		return file_put_contents(Yii::getAlias('@runtime/install.lock'), '');
 	}
 
 }

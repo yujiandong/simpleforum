@@ -1,0 +1,22 @@
+{
+    "name": "yujiandong/yii2-authclient",
+    "description": "Yii Authclient for Weibo, QQ, Wechat and etc",
+    "keywords": ["yii authclient","Weibo Auth","QQ Auth","Wechat Auth"],
+    "type": "yii2-extension",
+    "homepage": "https://github.com/yujiandong/yii2-authclient",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yu Jiandong",
+            "email": "flyyjd@gmail.com",
+            "homepage": "http://simpleforum.org/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {"yujiandong\\authclient\\": ""}
+    }
+}

@@ -11,8 +11,8 @@ use yii\web\AssetBundle;
 
 class WysibbAsset extends AssetBundle
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
+//    public $basePath = '@webroot';
+    public $baseUrl = '@web/static';
     public $css = [
         'assets/wysibb/theme/default/wbbtheme.css',
     ];

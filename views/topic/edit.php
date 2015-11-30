@@ -27,21 +27,21 @@ if ($request->get('np', 1) > 1) {
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title ?>
+		<?php echo Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 	<div class="cell">
-    <?= $this->render('_form', [
+    <?php echo $this->render('_form', [
         'model' => $model,
         'content' => $content,
 		'action' => 'edit',
-    ]) ?>
+    ]); ?>
 	</div>
 </div>
 
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

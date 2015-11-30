@@ -123,8 +123,7 @@ class TopicController extends AppController
         if ( $topic->load($request->post()) && $topic->validate() && 
 			$content->load($request->post()) && $content->validate() && 
 			$topic->save(false) ) {
-			$content->topic_id = $topic->id;
-			$content->save(false);
+			$content->link('topic', $topic);
             return $this->redirect(['view', 'id' => $topic->id]);
         } else {
             return $this->render('add', [
@@ -145,8 +144,7 @@ class TopicController extends AppController
         if ( $topic->load($request->post()) && $topic->validate() && 
 			$content->load($request->post()) && $content->validate() && 
 			$topic->save(false) ) {
-			$content->topic_id = $topic->id;
-			$content->save(false);
+			$content->link('topic', $topic);
             return $this->redirect(['view', 'id' => $topic->id]);
         }
         return $this->render('new', [
@@ -217,10 +215,4 @@ class TopicController extends AppController
             throw new NotFoundHttpException('未找到['.$name.']的节点');
         }
     }
-
-    protected function newPagination($totalCount)
-    {
-		return new Pagination(['totalCount' => $totalCount, 'pageSize' => intval($this->settings['comment_pagesize']), 'pageParam'=>'p']);
-    }
-
 }

@@ -21,7 +21,7 @@ if ( intval($settings['cache_enabled']) ===0 || $this->beginCache('f-all-nodes',
 ?>
 <div class="box">
 	<div class="inner">
-	<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title ?>
+	<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 	<div class="inner hot-nodes sf-btn">
 <?php
@@ -44,7 +44,7 @@ endif;
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->
 

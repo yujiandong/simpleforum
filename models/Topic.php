@@ -32,7 +32,7 @@ class Topic extends ActiveRecord
         $scenarios[self::SCENARIO_ADD] = ['title'];
         $scenarios[self::SCENARIO_NEW] = ['title', 'node_id'];
         $scenarios[self::SCENARIO_AUTHOR_EDIT] = ['title'];
-        $scenarios[self::SCENARIO_ADMIN_EDIT] = ['invisible', 'comment_closed', 'title'];
+        $scenarios[self::SCENARIO_ADMIN_EDIT] = ['invisible', 'comment_closed', 'alltop', 'top', 'title'];
         $scenarios[self::SCENARIO_ADMIN_CHGNODE] = ['node_id'];
         return $scenarios;
     }
@@ -57,12 +57,11 @@ class Topic extends ActiveRecord
     {
         return [
             [['title', 'node_id'], 'required'],
-            ['invisible', 'boolean'],
-            ['comment_closed', 'boolean'],
+            [['invisible', 'comment_closed', 'alltop', 'top'], 'boolean'],
             ['node_id', 'integer'],
             ['node_id', 'exist', 'targetClass' => '\app\models\Node', 'targetAttribute' => 'id', 'message' => '节点不存在'],
-			[['title'], 'trim'],
-            [['title'], 'string', 'length' => [4, 120]],
+			['title', 'trim'],
+            ['title', 'string', 'length' => [4, 120]],
 //            [['content'], 'string', 'max' => 20000],
 //            ['content', 'filter', 'filter' => 'nl2br'],
         ];
@@ -77,6 +76,8 @@ class Topic extends ActiveRecord
             'node_id' => '所属节点',
             'invisible' => '隐藏主题',
             'comment_closed' => '关闭评论',
+            'alltop' => '全局置顶',
+            'top' => '节点置顶',
             'title' => '标题',
         ];
     }
@@ -90,7 +91,7 @@ class Topic extends ActiveRecord
 	public function getTopic()
     {
         return $this->hasOne(self::className(), ['id' => 'id'])
-			->select(['id', 'node_id', 'user_id', 'reply_id', 'replied_at', 'comment_count', 'title']);
+			->select(['id', 'node_id', 'user_id', 'reply_id', 'replied_at', 'comment_count', 'alltop', 'top', 'title']);
     }
 
 	public function getContent()
@@ -109,6 +110,12 @@ class Topic extends ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'reply_id'])
 			->select(['id', 'username']);
+    }
+
+	public function getTags()
+    {
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
+			->viaTable(TagTopic::tableName(), ['topic_id' => 'id']);
     }
 
 	public function getComments()
@@ -147,30 +154,8 @@ class Topic extends ActiveRecord
 		return $url;
     }
 
-	public function afterSave($insert, $changedAttributes)
-	{
-		if ($insert === true) {
-			(new History([
-				'user_id' => $this->user_id,
-				'action' => History::ACTION_ADD_TOPIC,
-				'action_time' => $this->created_at,
-				'target' => $this->id,
-			]))->save(false);
-			Siteinfo::updateCounterInfo('addTopic');
-			UserInfo::updateCounterInfo('addTopic', $this->user_id);
-			Node::updateCounterInfo('addTopic', $this->node_id);
-			Notice::afterTopicInsert($this);
-		}
-		return parent::afterSave($insert, $changedAttributes);
-	}
-
 	public function afterDelete()
 	{
-		(new History([
-			'user_id' => $this->user_id,
-			'action' => History::ACTION_DELETE_TOPIC,
-			'target' => $this->id,
-		]))->save(false);
 		TopicContent::deleteAll(['topic_id'=> $this->id]);
 		Node::updateCounterInfo('deleteTopic', $this->node_id);
 		UserInfo::updateCounterInfo('deleteTopic', $this->user_id);
@@ -178,6 +163,12 @@ class Topic extends ActiveRecord
 		Siteinfo::updateCountersInfo( ['topics'=>-1, 'comments'=>-$count] );
 		Favorite::afterTopicDelete($this->id);
 		Notice::afterTopicDelete($this->id);
+		TagTopic::afterTopicDelete($this->id);
+		(new History([
+			'user_id' => $this->user_id,
+			'action' => History::ACTION_DELETE_TOPIC,
+			'target' => $this->id,
+		]))->save(false);
 		return parent::afterDelete();
 	}
 
@@ -198,14 +189,6 @@ class Topic extends ActiveRecord
 			'comment_count'=> (new Expression('`comment_count` - 1')),
 		], ['id'=> $id]);
 	}
-
-
-/*
-	public static function afterView($id, $increase=1)
-	{
-		return static::findOne($id)->updateCounters(['views' => $increase]);
-	}
-*/
 
 	public static function updateCounterInfo($action, $id)
 	{
@@ -251,7 +234,7 @@ class Topic extends ActiveRecord
 		$settings = Yii::$app->params['settings'];
 
 		if ( intval($settings['cache_enabled']) === 0 || ($model = $cache->get($key)) === false) {
-			$model = static::find()->where(['id'=>$id])->with(['content', 'node', 'author'])->one();
+			$model = static::find()->where(['id'=>$id])->with(['content', 'node', 'author', 'tags'])->one();
 	        if ( !$model ) {
 	            throw new \yii\web\NotFoundHttpException('未找到id为['.$id.']的主题');
 	        }
@@ -274,7 +257,7 @@ class Topic extends ActiveRecord
 		if ( intval($settings['cache_enabled']) === 0 || ($models = $cache->get($key)) === false) {
 		    $models = static::find()->where(['node_id' => $node_id])
 				->select('id')
-				->orderBy(['replied_at'=>SORT_DESC])
+				->orderBy(['top'=>SORT_DESC, 'replied_at'=>SORT_DESC])
 				->offset($pages->offset)
 				->with(['topic.author', 'topic.lastReply'])
 		        ->limit($pages->limit)
@@ -299,7 +282,7 @@ class Topic extends ActiveRecord
 		$settings = Yii::$app->params['settings'];
 
 		if ( intval($settings['cache_enabled']) === 0 || ($models = $cache->get($key)) === false) {
-		    $models = static::find()->select('id')->orderBy(['replied_at'=>SORT_DESC])->offset($pages->offset)
+		    $models = static::find()->select('id')->orderBy(['alltop'=>SORT_DESC, 'replied_at'=>SORT_DESC])->offset($pages->offset)
 				->with(['topic.node', 'topic.author', 'topic.lastReply'])
 		        ->limit($pages->limit)
 				->asArray()

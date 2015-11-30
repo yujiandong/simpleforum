@@ -86,6 +86,8 @@ CREATE TABLE simple_topic (
   `node_id` smallint(6) unsigned NOT NULL,
   `user_id` mediumint(8) unsigned NOT NULL,
   `reply_id` mediumint(8) unsigned NOT NULL default 0,
+  `alltop` tinyint(1) unsigned NOT NULL default 0,
+  `top` tinyint(1) unsigned NOT NULL default 0,
   `invisible` tinyint(1) unsigned NOT NULL default 0,
   `closed` tinyint(1) unsigned NOT NULL default 0,
   `comment_closed` tinyint(1) unsigned NOT NULL default 0,
@@ -94,8 +96,8 @@ CREATE TABLE simple_topic (
   `views` mediumint(8) unsigned NOT NULL default 0,
   `title` char(120) NOT NULL,
   PRIMARY KEY id(`id`),
-  KEY replied_id(`replied_at`, `id`),
-  KEY node_replied_id(`node_id`,`replied_at`, `id`),
+  KEY alllist(`alltop`, `replied_at`, `id`),
+  KEY nodelist(`node_id`, `top`, `replied_at`, `id`),
   KEY hottopics(`created_at`, `comment_count`, `replied_at`),
   KEY updated(`updated_at`),
   KEY node_updated(`node_id`,`updated_at`),
@@ -147,6 +149,23 @@ CREATE TABLE `simple_notice` (
   KEY target_status_id(`target_id`,`status`, `id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS simple_tag;
+CREATE TABLE simple_tag (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(10) NOT NULL,
+  `topic_count` smallint(6) unsigned NOT NULL default 0,
+  PRIMARY KEY id(`id`),
+  UNIQUE KEY name(`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS simple_tag_topic;
+CREATE TABLE simple_tag_topic (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `tag_id` int(10) unsigned NOT NULL,
+  `topic_id` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY id(`id`),
+  UNIQUE KEY tag_topic(`tag_id`,`topic_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_link;
 CREATE TABLE simple_link (
@@ -187,7 +206,7 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (1,'manage', '网站暂时关闭', 'select','offline','integer', '0', '默认:0(开启)', '["0(开启)","1(关闭)"]'),
 (2,'manage', '网站暂时关闭提示', 'textarea','offline_msg','text', '网站维护中，请稍后访问', '简单写明关闭原因', ''),
 (3,'manage', '只允许登录访问', 'select','access_auth','integer', '0', '默认0（公开），若规定登录用户才能访问就设为1（适合内部交流）', '["0(公开)","1(登录访问)"]'),
-(4,'manage', '注册需邮箱验证', 'select','email_verify','integer', '1', '默认1（需验证），若不需要验证就设为0', '["0(关闭验证)","1(开启验证)"]'),
+(4,'manage', '注册需邮箱验证', 'select','email_verify','integer', '0', '建议设为1（需验证），若不需要验证就设为0', '["0(关闭验证)","1(开启验证)"]'),
 (5,'manage', '注册需管理员验证', 'select','admin_verify','integer', '0', '默认0（不用验证），若需要管理员验证就设为1（适合内部交流）', '["0(关闭验证)","1(开启验证)"]'),
 (6,'manage', '关闭用户注册', 'select','close_register', 'integer', '0','默认0，若停止新用户注册就设为1（仍旧可以通过第三方帐号登录方式注册）', '["0(开启注册)","1(关闭注册)"]'),
 (7,'manage', '过滤用户名', 'text','username_filter', 'text', '','指定用户名不能含有某些指定词汇，用半角逗号(,)分割，例：<br />admin,webmaster,admin*', ''),
@@ -213,11 +232,21 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (4,'other', '最热主题数', 'text','hot_topic_num', 'integer', '10','默认10', ''),
 (5,'other', '最热节点数', 'text','hot_node_num', 'integer', '20','默认20', ''),
 (6,'other', '可编辑时间(分)', 'text','edit_space', 'integer', '30','默认30，主题贴和回复发表后可修改时间。', ''),
+(7,'other', 'static目录自定义网址', 'text','alias_static','text', '', '自定义web/static目录的网址，可用于CDN。例：http://static.simpleforum.org', ''),
+(8,'other', '头像目录自定义网址', 'text','alias_avatar','text', '', '自定义web/avatar目录的网址，可用于CDN。例：http://avatar.simpleforum.org', ''),
+(9,'other', '附件目录自定义网址', 'text','alias_upload','text', '', '自定义web/upload目录的网址，可用于CDN。例：http://upload.simpleforum.org', ''),
 (1,'mailer', 'SMTP服务器', 'text','mailer_host', 'text', '','', ''),
 (2,'mailer', 'SMTP端口', 'text','mailer_port', 'integer', '','', ''),
 (3,'mailer', 'SMTP加密协议', 'text','mailer_encryption', 'text', '','如ssl,tls等，不加密留空', ''),
 (4,'mailer', 'SMTP验证邮箱', 'text','mailer_username', 'text', '','请输入完整邮箱地址', ''),
-(5,'mailer', 'SMTP验证密码', 'text','mailer_password', 'text', '','验证邮箱的密码', '');
+(5,'mailer', 'SMTP验证密码', 'text','mailer_password', 'text', '','验证邮箱的密码', ''),
+(1,'upload', '头像上传', 'select','upload_avatar','text', 'local', '默认:上传到网站所在空间', '{"local":"上传到网站所在空间","remote":"上传到第三方空间"}'),
+(2,'upload', '附件上传', 'select','upload_file','text', 'disable', '默认:网站空间', '{"disable":"关闭上传","local":"上传到网站所在空间","remote":"上传到第三方空间"}'),
+(3,'upload', '附件上传条件(注册时间)', 'text','upload_file_regday','integer', '30', '默认：30天', ''),
+(3,'upload', '附件上传条件(主题数)', 'text','upload_file_topicnum','integer', '20', '默认：20', ''),
+(4,'upload', '第三方空间', 'select','upload_remote', 'text','', '', '{"qiniu":"七牛云","upyun":"又拍云"}'),
+(5,'upload', '第三方空间信息', 'text','upload_remote_info', 'text','', '逗号分隔。又拍云：空间名,操作员,密码；<br />七牛：空间名,access key,secret key', ''),
+(6,'upload', '第三方空间URL', 'text','upload_remote_url', 'text','', '', '');
 
 DROP TABLE IF EXISTS `simple_favorite`;
 CREATE TABLE `simple_favorite` (

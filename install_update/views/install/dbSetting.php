@@ -17,7 +17,7 @@ $this->title = 'Mysql数据库设置';
 <div class="col-md-8 sf-left">
 	<div class="box">
 		<div class="inner">
-			<?= Html::a('极简论坛安装', ['install/install']), '&nbsp;/&nbsp;', $this->title ?>
+			<?php echo Html::a('极简论坛安装', ['index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
 		<div class="cell cell-form">
 <?php
@@ -33,14 +33,14 @@ if ( !empty($error) ) {
 			    'layout' => 'horizontal',
 				'id' => 'form-dbinfo'
 			]); ?>
-                <?= $form->field($model, 'host') ?>
-                <?= $form->field($model, 'dbname') ?>
-                <?= $form->field($model, 'username') ?>
-                <?= $form->field($model, 'password') ?>
-                <?= $form->field($model, 'tablePrefix') ?>
+                <?php echo $form->field($model, 'host'); ?>
+                <?php echo $form->field($model, 'dbname'); ?>
+                <?php echo $form->field($model, 'username'); ?>
+                <?php echo $form->field($model, 'password'); ?>
+                <?php echo $form->field($model, 'tablePrefix'); ?>
                 <div class="form-group">
 					<div class="col-sm-offset-3 col-sm-9">
-                    <?= Html::submitButton('确定', ['class' => 'btn btn-primary', 'name' => 'dbsetting-button']) ?>
+                    <?php echo Html::submitButton('确定', ['class' => 'btn btn-primary', 'name' => 'dbsetting-button']); ?>
 					</div>
                 </div>
             <?php ActiveForm::end(); ?>

@@ -35,8 +35,12 @@
 
 **帮助文档：**
 
-1. SMTP服务器设置 http://simpleforum.org/t/39
-2. 开启验证码 http://simpleforum.org/t/43
-3. 编辑器选择 http://simpleforum.org/t/41
-4. 开启缓存 http://simpleforum.org/t/3
-5. 开启第三方帐号登录 http://simpleforum.org/t/2
+1. Nginx配置 http://simpleforum.org/t/49
+2. SMTP服务器设置 http://simpleforum.org/t/39
+3. 开启验证码 http://simpleforum.org/t/43
+4. 编辑器选择 http://simpleforum.org/t/41
+5. 开启缓存 http://simpleforum.org/t/3
+6. 开启第三方帐号登录 http://simpleforum.org/t/2
+7. 用户名过滤 http://simpleforum.org/t/54
+8. 网站验证 http://simpleforum.org/t/55
+9. 上传设置 http://simpleforum.org/t/83

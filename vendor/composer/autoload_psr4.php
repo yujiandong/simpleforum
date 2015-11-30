@@ -12,7 +12,7 @@ return array(
     'yii\\bootstrap\\' => array($vendorDir . '/yiisoft/yii2-bootstrap'),
     'yii\\authclient\\' => array($vendorDir . '/yiisoft/yii2-authclient'),
     'yii\\' => array($vendorDir . '/yiisoft/yii2'),
-    'simpleforum\\authclient\\' => array($vendorDir . '/simpleforum/yii2-authclient'),
-    'parsedown\\' => array($vendorDir . '/parsedown'),
-    'Golonka\BBCode\\' => array($vendorDir . '/bbcodeparser/src'),
+    'Qiniu\\' => array($vendorDir . '/qiniu/php-sdk/src/Qiniu'),
+    'Golonka\\BBCode\\' => array($vendorDir . '/golonka/bbcodeparser/src'),
+    'yujiandong\\authclient\\' => array($vendorDir . '/yujiandong/yii2-authclient'),
 );

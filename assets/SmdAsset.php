@@ -11,8 +11,8 @@ use yii\web\AssetBundle;
 
 class SmdAsset extends AssetBundle
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
+//    public $basePath = '@webroot';
+    public $baseUrl = '@web/static';
     public $css = [
         'assets/smd/smd.css',
     ];

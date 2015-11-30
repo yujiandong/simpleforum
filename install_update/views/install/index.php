@@ -18,7 +18,7 @@ $this->title = '环境检测';
 <div class="col-md-8 sf-left">
 	<div class="box">
 		<div class="inner">
-			<?= Html::a('极简论坛安装', ['install/install']), '&nbsp;/&nbsp;', $this->title ?>
+			<?php echo Html::a('极简论坛安装', ['index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
 		<div class="cell bg-info" id="activate"><strong>服务器环境</strong></div>
 		<div class="cell">

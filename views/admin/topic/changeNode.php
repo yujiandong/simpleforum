@@ -31,16 +31,16 @@ if ($request->get('np', 1) > 1) {
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title ?>
+		<?php echo Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 	<div class="cell">
 <?php $form = ActiveForm::begin(); ?>
     <?php
 		 echo $form->field($model, 'node_id')->dropDownList(\app\models\Node::getNodeList(), ['class'=>'form-control select2']);
 	?>
-    <?= $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120, 'readonly'=>'readonly']) ?>
+    <?php echo $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120, 'readonly'=>'readonly']); ?>
 	<div class="form-group">
-		<?= Html::submitButton($model->isNewRecord ? '创建' : '修改', ['class' => 'btn btn-primary']) ?>
+		<?php echo Html::submitButton($model->isNewRecord ? '创建' : '修改', ['class' => 'btn btn-primary']); ?>
 	</div>
 <?php ActiveForm::end(); ?>
 	</div>
@@ -49,7 +49,7 @@ if ($request->get('np', 1) > 1) {
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

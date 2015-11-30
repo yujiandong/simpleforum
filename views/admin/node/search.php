@@ -44,7 +44,7 @@ $this->title = '节点管理';
 ?>
                 <div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
-                    <?= Html::submitButton('检索', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                    <?php echo Html::submitButton('检索', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
 					</div>
                 </div>
 	</div>
@@ -71,7 +71,7 @@ ActiveForm::end();
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_admin-right') ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->
 

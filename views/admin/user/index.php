@@ -18,12 +18,12 @@ $this->title = '用户管理';
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title ?>
+		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 	<div class="cell bg-info"><strong>
-		<?= Html::a('待激活用户', ['index', 'status'=>User::STATUS_INACTIVE]),
+		<?php echo Html::a('待激活用户', ['index', 'status'=>User::STATUS_INACTIVE]),
 				'&nbsp;|&nbsp;', Html::a('待验证用户', ['index', 'status'=>User::STATUS_ADMIN_VERIFY]),
-				'&nbsp;|&nbsp;', Html::a('屏蔽用户', ['index', 'status'=>User::STATUS_BANNED]) ?></strong>
+				'&nbsp;|&nbsp;', Html::a('屏蔽用户', ['index', 'status'=>User::STATUS_BANNED]); ?></strong>
 	</div>
 	<div class="cell">
 		<ul>
@@ -49,7 +49,7 @@ $this->title = '用户管理';
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_admin-right') ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->
 

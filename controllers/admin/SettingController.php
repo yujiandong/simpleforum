@@ -60,9 +60,7 @@ class SettingController extends CommonController
 		$config = $config. Util::convertArrayToString($settings, '  ')."\n";
 		$config = $config. '];'."\n";
 
-		$fp = fopen(Yii::getAlias('@app/config/params.php'), "w");
-		fwrite($fp, $config);
-		fclose($fp);
+		file_put_contents(Yii::getAlias('@app/config/params.php'), $config);
 	}
 
 	private function checkTimeZone($timeZone)

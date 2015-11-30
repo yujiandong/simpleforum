@@ -9,6 +9,7 @@ namespace app\install_update\models;
 
 use Yii;
 use yii\base\Model;
+use app\lib\Util;
 
 /**
  * Database form
@@ -79,12 +80,10 @@ class DatabaseForm extends Model
 	{
 		$config = '<?php'."\n";
 		$config = $config. 'return ';
-		$config = $config. \app\lib\Util::convertArrayToString($settings, '');
+		$config = $config. Util::convertArrayToString($settings, '');
 		$config = $config. ';'."\n";
 
-		$fp = fopen($file, "w");
-		fwrite($fp, $config);
-		fclose($fp);
+		file_put_contents($file, $config);
 	}
 
 }

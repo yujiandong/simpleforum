@@ -26,7 +26,7 @@ $ceModel = new ChangeEmailForm();
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', $this->title ?>
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', $this->title; ?>
 	</div>
 <?php if ($me->isWatingActivation()) : ?>
 	<div class="cell bg-info" id="activate"><strong>会员激活</strong></div>
@@ -44,8 +44,8 @@ if ( $session->hasFlash('activateMailNG') ) {
 		]);
 }
 ?>
-		您还有没有激活，请进您注册时填写的邮箱(<?= $me->email ?>)，点击激活链接。<br />
-		<?= Html::a('重发激活邮件', ['user/send-activate-mail']) ?> | <a href="#password">修改邮箱</a>
+		您还有没有激活，请进您注册时填写的邮箱(<?php echo $me->email; ?>)，点击激活链接。<br />
+		<?php echo Html::a('重发激活邮件', ['user/send-activate-mail']); ?> | <a href="#password">修改邮箱</a>
 	</div>
 <?php endif; ?>
 	<div class="cell bg-info" id="info"><strong>修改信息</strong></div>
@@ -70,20 +70,20 @@ if ( $session->hasFlash('EditProfileNG') ) {
 		<div class="form-group">
 			<label class="control-label col-sm-3 username-label">用户名</label>
 			<div class="col-sm-6" style="padding-top:7px;">
-				<strong><?= $me->username ?></strong>
+				<strong><?php echo $me->username; ?></strong>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-3 status-label">状态</label>
 			<div class="col-sm-6" style="padding-top:7px;">
-				<?= $me->getStatus() ?>
+				<?php echo $me->getStatus(); ?>
 			</div>
 		</div>
-		<?= $form->field($me->userInfo, 'website')->textInput(['maxlength'=>100]) ?>
-		<?= $form->field($me->userInfo, 'about')->textArea(['maxlength'=>255]) ?>
+		<?php echo $form->field($me->userInfo, 'website')->textInput(['maxlength'=>100]); ?>
+		<?php echo $form->field($me->userInfo, 'about')->textArea(['maxlength'=>255]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-            <?= Html::submitButton('修改', ['class' => 'btn btn-primary']) ?>
+            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -111,14 +111,14 @@ if ( $session->hasFlash('setAvatarNG') ) {
 		<div class="form-group">
 			<label class="control-label col-sm-3 avatar-label">当前头像</label>
 			<div class="col-sm-6">
-			<?= Html::img('@web/'.str_replace('{size}', 'large', $me->avatar)), ' ', Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar)), ' ', Html::img('@web/'.str_replace('{size}', 'small', $me->avatar)) ?>
+			<?php echo Html::img('@web/'.str_replace('{size}', 'large', $me->avatar)), ' ', Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar)), ' ', Html::img('@web/'.str_replace('{size}', 'small', $me->avatar)); ?>
 			</div>
 		</div>
-		<?= $form->field((new UploadForm()), 'file')->fileInput() ?>
+		<?php echo $form->field((new UploadForm()), 'file')->fileInput(); ?>
 
         <div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-            <?= Html::submitButton('上传', ['class' => 'btn btn-primary']) ?>
+            <?php echo Html::submitButton('上传', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -146,14 +146,14 @@ if ( $session->hasFlash('chgEmailNG') ) {
 		<div class="form-group">
 			<label class="control-label col-sm-3 username-label">当前邮箱</label>
 			<div class="col-sm-6" style="padding-top:7px;">
-				<strong><?= $me->email ?></strong>
+				<strong><?php echo $me->email; ?></strong>
 			</div>
 		</div>
-		<?= $form->field($ceModel, 'email')->textInput(['maxlength'=>50]) ?>
-		<?= $form->field($ceModel, 'password')->passwordInput(['maxlength'=>20]) ?>
+		<?php echo $form->field($ceModel, 'email')->textInput(['maxlength'=>50]); ?>
+		<?php echo $form->field($ceModel, 'password')->passwordInput(['maxlength'=>20]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-            <?= Html::submitButton('修改', ['class' => 'btn btn-primary']) ?>
+            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -178,12 +178,12 @@ if ( $session->hasFlash('chgPwdNG') ) {
 		'layout' => 'horizontal',
 		]);
 ?>
-		<?= $form->field($cpModel, 'old_password')->passwordInput(['maxlength'=>20]) ?>
-		<?= $form->field($cpModel, 'password')->passwordInput(['maxlength'=>20]) ?>
-		<?= $form->field($cpModel, 'password_repeat')->passwordInput(['maxlength'=>20]) ?>
+		<?php echo $form->field($cpModel, 'old_password')->passwordInput(['maxlength'=>20]); ?>
+		<?php echo $form->field($cpModel, 'password')->passwordInput(['maxlength'=>20]); ?>
+		<?php echo $form->field($cpModel, 'password_repeat')->passwordInput(['maxlength'=>20]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-            <?= Html::submitButton('修改', ['class' => 'btn btn-primary']) ?>
+            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -193,7 +193,7 @@ if ( $session->hasFlash('chgPwdNG') ) {
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

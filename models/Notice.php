@@ -67,67 +67,78 @@ class Notice extends ActiveRecord
 	private static function addMentions($from)
 	{
 		if ( !($targetNames = self::findMentions($from['text'])) ) {
-			return;
+			return false;
 		}
 		unset($from['text']);
 		if ( !($targets = User::find()->select('id')->where(['in', 'username', $targetNames])->asArray()->all()) ) {
-			return;
+			return false;
 		}
+		$topicAuthorNoticed = false;
+		$topicAuthor = false;
+		if ( !empty($from['topic_author'])) {
+			$topicAuthor = $from['topic_author'];
+			unset($from['topic_author']);
+		}
+
 		foreach($targets as $target) {
-			if( $target['id'] == $from['source_id']) {
+			if ($target['id'] == $from['source_id']) {
 				continue;
 			}
+			if ( !$topicAuthorNoticed && $topicAuthor && $target['id'] == $topicAuthor ) {
+				$topicAuthorNoticed = true;
+			}
 			$notice = new Notice($from);
-//			$notice->attributes = $from;
 			$notice->target_id = $target['id'];
 			$notice->save(false);
 		}
+		return $topicAuthorNoticed;
 	}
 
 	private static function addComment($from)
 	{
 		$notice = Notice::findOne(['type'=>self::TYPE_COMMENT, 'topic_id'=>$from['topic_id'], 'status'=>0]);
 		if ($notice) {
-			return $notice->updateCounters(['notice_count' => 1]);
+			if( $notice->position == $from['position']) {
+				return;
+			} else {
+				$notice->updateCounters(['notice_count' => 1]);
+				return;
+			}
 		}
 
-		if ( !($topic = Topic::find()->select(['user_id'])->where(['id'=>$from['topic_id']])->asArray()->one()) ) {
-			return false;
-		}
-		if ($topic['user_id'] == $from['source_id']) {
-			return true;
-		}
 		$notice = new Notice($from);
-//		$notice->attributes = $from;
-		$notice->target_id = $topic['user_id'];
-		return $notice->save(false);
+		$notice->save(false);
 	}
 
 	public static function afterCommentInsert($comment)
 	{
-		self::addComment([
-			'type' => self::TYPE_COMMENT,
-			'source_id' => $comment->user_id,
-			'topic_id' => $comment->topic_id,
-			'position' => $comment->position,
-		]);
-
-		return self::addMentions([
+		$topicAuthorNoticed = self::addMentions([
 			'type' => self::TYPE_MENTION,
 			'text' => $comment->content,
 			'source_id' => $comment->user_id,
 			'topic_id' => $comment->topic_id,
 			'position' => $comment->position,
+			'topic_author' => $comment->topic->user_id,
 		]);
+
+		if( $comment->user_id != $comment->topic->user_id && !$topicAuthorNoticed ) {
+			self::addComment([
+				'type' => self::TYPE_COMMENT,
+				'source_id' => $comment->user_id,
+				'target_id' => $comment->topic->user_id,
+				'topic_id' => $comment->topic_id,
+				'position' => $comment->position,
+			]);
+		}
 	}
 
-	public static function afterTopicInsert($topic)
+	public static function afterTopicInsert($topicContent)
 	{
 		return self::addMentions([
 			'type' => self::TYPE_MENTION,
-			'text' => $topic->content,
-			'source_id' => $topic->user_id,
-			'topic_id' => $topic->id,
+			'text' => $topicContent->content,
+			'source_id' => $topicContent->topic->user_id,
+			'topic_id' => $topicContent->topic_id,
 			'position'=> 0,
 		]);
 	}

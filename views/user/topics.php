@@ -18,9 +18,9 @@ $settings = Yii::$app->params['settings'];
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', 
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', 
 			Html::a(Html::encode($user['username']), ['user/view', 'username'=>$user['username']]), 
-			'&nbsp;›&nbsp;全部主题' ?>
+			'&nbsp;›&nbsp;全部主题'; ?>
 	</div>
 <?php
 foreach($topics as $topic){
@@ -62,7 +62,7 @@ foreach($topics as $topic){
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

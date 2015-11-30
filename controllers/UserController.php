@@ -11,7 +11,6 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
-use yii\imagine\Image;
 use yii\web\UploadedFile;
 use app\models\User;
 use app\models\UserInfo;
@@ -26,12 +25,6 @@ use app\lib\Util;
 
 class UserController extends AppController
 {
-	private $resizes = [
-		'large'=>'73x73',
-		'normal'=>'48x48',
-		'small'=>'24x24',
-	];
-
     public function behaviors()
     {
         return [
@@ -39,6 +32,7 @@ class UserController extends AppController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'avatar' => ['post'],
+                    'upload' => ['post'],
                     'edit-profile' => ['post'],
                     'change-email' => ['post'],
                     'change-password' => ['post'],
@@ -46,11 +40,11 @@ class UserController extends AppController
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['setting', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail'],
+                'only' => ['setting', 'upload', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['setting', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail'],
+                        'actions' => ['setting', 'upload', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -181,60 +175,45 @@ class UserController extends AppController
     public function actionAvatar()
     {
 		$session = Yii::$app->getSession();
-        $model = new UploadForm();
-		$suffix = 'png';
-
 		$me = Yii::$app->getUser()->getIdentity();
 
+        $model = new UploadForm(['scenario' => UploadForm::SCENARIO_AVATAR]);
         $model->file = UploadedFile::getInstance($model, 'file');
 
-        if ($model->file && $model->validate()) {
-	        $name = $me->id;
-			$myId = strtolower(Util::shorturl($me->id));
-			$savePath = 'avatar/'.substr($myId,0,1).'/'.substr($myId,1,1);
-			$avatar = $savePath. '/'.$name . '_{size}.' . $suffix . '?m='.time();
-			$this->resizeAvator( $this->resizes, $model->file->tempName, $savePath, $name, $suffix);
-			$me->avatar = $avatar;
+		$result = $model->uploadAvatar($me->id);
+		if ( $result ) {
+			$me->avatar = $result;
 			$me->save(false);
             $session->setFlash('setAvatarOK', '头像设定成功，显示可能有延迟，请刷新。');
-        } else {
-            $session->setFlash('setAvatarNG', '头像设定失败');
+		} else {
+            $session->setFlash('setAvatarNG', implode('<br />', $model->getFirstErrors()));
 		}
 
         return $this->redirect(['user/setting', '#'=>'avatar']);
     }
 
-	private function resizeAvator($resizes, $srcFile, $savePath, $name, $suffix='png')
-	{
-		@mkdir($savePath, 0755, true);
-		foreach($resizes as $key=>$resize) {
-			list($width, $height) = explode('x', $resize);
-			Image::thumbnail($srcFile, $width, $height)->save($savePath. '/' . $name . '_' . $key . '.' . $suffix);
-		}
-		return true;
-	}
-
-/*
-    private function saveTemporaryImage($filename, $name, $size)
+    public function actionUpload()
     {
-        list($width, $height) = explode('x', $size);
+	    \Yii::$app->getResponse()->format = \yii\web\Response::FORMAT_JSON;
 
-        $file = Image::getImagine()->open($filename);
+		$session = Yii::$app->getSession();
+		$me = Yii::$app->getUser()->getIdentity();
 
-        if ($file->getSize()->getWidth() < $width) {
-            $file->resize($file->getSize()->widen($width));
-        }
+		if( !$me->canUpload($this->settings) ) {
+			return ['jquery-upload-file-error'=> '您没有权限上传附件。' ];
+		}
 
-        if ($file->getSize()->getHeight() < $height) {
-            $file->resize($file->getSize()->heighten($height));
-        }
+        $model = new UploadForm(['scenario' => UploadForm::SCENARIO_UPLOAD]);
+        $model->files = UploadedFile::getInstances($model, 'files');
 
-        $file->thumbnail(new \Imagine\Image\Box::Box($width, $height), \Imagine\Image\ManipulatorInterface::THUMBNAIL_OUTBOUND)
-            ->save('avatar/' . $name);
+		$result = $model->upload($me->id);
+		if ( $result ) {
+			return $result;
+		} else {
+			return ['jquery-upload-file-error'=> implode('<br />', $model->getFirstErrors()) ];
+		}
 
-        return $name;
     }
-*/
 
     protected function findUserModel($username, $with=null)
     {

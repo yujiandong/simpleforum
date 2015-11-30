@@ -30,26 +30,26 @@ $settings = Yii::$app->params['settings'];
 			}
 		?>
 		<ul class="list-inline text-center favorite-list">
-		  <li><?=Html::a($myInfo->favorite_node_count.'<br /><span class="gray">节点收藏</span>', ['my/nodes']) ?></li>
-		  <li><?=Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">主题收藏</span>', ['my/topics']) ?></li>
-		  <li><?=Html::a($myInfo->favorite_user_count.'<br /><span class="gray">特别关注</span>', ['my/following']) ?></li>
+		  <li><?php echo Html::a($myInfo->favorite_node_count.'<br /><span class="gray">节点收藏</span>', ['my/nodes']); ?></li>
+		  <li><?php echo Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">主题收藏</span>', ['my/topics']); ?></li>
+		  <li><?php echo Html::a($myInfo->favorite_user_count.'<br /><span class="gray">特别关注</span>', ['my/following']); ?></li>
 		</ul>
 	</div>
-	<div class="cell"><?=Html::a('创作新主题', ['topic/new']) ?>
+	<div class="cell"><?php echo Html::a('创作新主题', ['topic/new']); ?>
 	</div>
-	<div class="cell"><?=Html::a($me->getNoticeCount().' 条未读提醒', ['user/notifications']) ?>
+	<div class="cell"><?php echo Html::a($me->getNoticeCount().' 条未读提醒', ['user/notifications']); ?>
 	</div>
 </div>
 <?php else: ?>
 <div class="box">
 	<div class="cell">
-		<strong><?= $settings['site_name'] ?></strong><br />
-		<span class="gray"><?= $settings['slogan'] ?></span>
+		<strong><?php echo $settings['site_name'] ?></strong><br />
+		<span class="gray"><?php echo $settings['slogan']; ?></span>
 	</div>
 	<div class="inner">
 		<div class="text-center">
-		<p><?=Html::a('现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']) ?></p>
-		已注册用户请  <?=Html::a('登录', ['site/login']) ?>
+		<p><?php echo Html::a('现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
+		已注册用户请  <?php echo Html::a('登录', ['site/login']); ?>
 		</div>
 	</div>
 </div>
@@ -68,7 +68,7 @@ if( !empty($hotTopics) ):
 	foreach($hotTopics as $ht):
 ?>
 	<div class="cell hot-topics-title">
-		<?= Html::a(Html::encode($ht['title']), ['topic/view', 'id'=>$ht['id']]) ?>
+		<?php echo Html::a(Html::encode($ht['title']), ['topic/view', 'id'=>$ht['id']]); ?>
 	</div>
 <?php
 	endforeach;
@@ -85,10 +85,10 @@ if( !empty($siteinfo) ):
 	<div class="inner gray">社区运行状况
 	</div>
 	<div class="cell clearfix">
-		<span class="si-label">注册会员:</span><span class="si-info"><?=$siteinfo['users'] ?></span>
-		<span class="si-label">节点:</span><span class="si-info"><?=$siteinfo['nodes'] ?></span>
-		<span class="si-label">主题:</span><span class="si-info"><?=$siteinfo['topics'] ?></span>
-		<span class="si-label">回复:</span><span class="si-info"><?=$siteinfo['comments'] ?></span>
+		<span class="si-label">注册会员:</span><span class="si-info"><?php echo $siteinfo['users']; ?></span>
+		<span class="si-label">节点:</span><span class="si-info"><?php echo $siteinfo['nodes']; ?></span>
+		<span class="si-label">主题:</span><span class="si-info"><?php echo $siteinfo['topics']; ?></span>
+		<span class="si-label">回复:</span><span class="si-info"><?php echo $siteinfo['comments']; ?></span>
 	</div>
 </div>
 <?php

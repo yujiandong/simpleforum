@@ -15,15 +15,18 @@ $settings = Yii::$app->params['settings'];
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
+<html lang="<?php echo Yii::$app->language; ?>">
 <head>
-    <meta charset="<?= Yii::$app->charset ?>">
+    <meta charset="<?php echo Yii::$app->charset; ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <?= Html::csrfMetaTags() ?>
-    <?= $settings['head_meta'] ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <?php echo Html::csrfMetaTags(); ?>
+    <?php echo $settings['head_meta']; ?>
+    <title><?php echo Html::encode($this->title); ?></title>
     <?php $this->head() ?>
+	<style>
+		table {font-size:14px;}
+	</style>
 </head>
 <body>
 
@@ -41,18 +44,17 @@ $settings = Yii::$app->params['settings'];
             NavBar::end();
         ?>
         <div class="container">
-            <?= $content ?>
+            <?php echo $content; ?>
         </div>
     </div>
 
     <footer class="footer">
         <div class="container">
-<p>
-	Powered by <a href="http://simpleforum.org/" rel="external">极简论坛 <?= SIMPLE_FORUM_VERSION ?></a>
-</p>
+			<p>
+				Powered by <a href="http://simpleforum.org/" rel="external">极简论坛 <?php echo SIMPLE_FORUM_VERSION; ?></a>
+			</p>
         </div>
     </footer>
-
 <?php $this->endBody() ?>
 </body>
 </html>

@@ -27,26 +27,26 @@ $settings = Yii::$app->params['settings'];
 			}
 		?>
 		<ul class="list-inline text-center favorite-list">
-		  <li><?=Html::a($myInfo->favorite_node_count.'<br /><span class="gray">节点收藏</span>', ['my/nodes']) ?></li>
-		  <li><?=Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">主题收藏</span>', ['my/topics']) ?></li>
-		  <li><?=Html::a($myInfo->favorite_user_count.'<br /><span class="gray">特别关注</span>', ['my/following']) ?></li>
+		  <li><?php echo Html::a($myInfo->favorite_node_count.'<br /><span class="gray">节点收藏</span>', ['my/nodes']); ?></li>
+		  <li><?php echo Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">主题收藏</span>', ['my/topics']); ?></li>
+		  <li><?php echo Html::a($myInfo->favorite_user_count.'<br /><span class="gray">特别关注</span>', ['my/following']); ?></li>
 		</ul>
 	</div>
-	<div class="cell"><?=Html::a('创作新主题', ['topic/new']) ?>
+	<div class="cell"><?php echo Html::a('创作新主题', ['topic/new']); ?>
 	</div>
-	<div class="cell"><?=Html::a($me->getNoticeCount().' 条未读提醒', ['user/notifications']) ?>
+	<div class="cell"><?php echo Html::a($me->getNoticeCount().' 条未读提醒', ['user/notifications']); ?>
 	</div>
 </div>
 <?php else: ?>
 <div class="box">
 	<div class="cell">
-		<strong><?= $settings['site_name'] ?></strong><br />
-		<span class="gray"><?= $settings['slogan'] ?></span>
+		<strong><?php echo $settings['site_name']; ?></strong><br />
+		<span class="gray"><?php echo $settings['slogan']; ?></span>
 	</div>
 	<div class="inner">
 		<div class="text-center">
-		<p><?=Html::a('现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']) ?></p>
-		已注册用户请  <?=Html::a('登录', ['site/login']) ?>
+		<p><?php echo Html::a('现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
+		已注册用户请  <?php echo Html::a('登录', ['site/login']); ?>
 		</div>
 	</div>
 </div>

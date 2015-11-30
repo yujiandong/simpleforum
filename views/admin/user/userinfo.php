@@ -24,7 +24,7 @@ $session = Yii::$app->getSession();
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
+		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 <?php $form = ActiveForm::begin([
     'layout' => 'horizontal',
@@ -44,7 +44,7 @@ $session = Yii::$app->getSession();
 		<div class="form-group">
 			<label class="control-label col-sm-2">用户名</label>
 			<div class="col-sm-10" style="padding-top:7px;">
-				<strong><?= $user->username ?></strong>
+				<strong><?php echo $user->username; ?></strong>
 			</div>
 		</div>
 	</div>
@@ -64,11 +64,11 @@ if ( $session->hasFlash('adminProfileNG') ) {
 		]);
 }
 ?>
-		<?= $form->field($user, "status")->dropDownList(User::$statusOptions) ?>
-		<?= $form->field($user, "email")->textInput(['maxlength'=>50]) ?>
+		<?php echo $form->field($user, "status")->dropDownList(User::$statusOptions); ?>
+		<?php echo $form->field($user, "email")->textInput(['maxlength'=>50]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-            <?= Html::submitButton('修改', ['class' => 'btn btn-primary']) ?>
+            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 	</div>
@@ -106,10 +106,10 @@ if ( $session->hasFlash('adminPwdNG') ) {
 	        ],
 	    ],
 	]); ?>
-		<?= $form->field($user, "password")->textInput(['maxlength'=>20]) ?>
+		<?php echo $form->field($user, "password")->textInput(['maxlength'=>20]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-            <?= Html::submitButton('修改', ['class' => 'btn btn-primary']) ?>
+            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 	<?php
@@ -123,7 +123,7 @@ if ( $session->hasFlash('adminPwdNG') ) {
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_admin-right') ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->
 

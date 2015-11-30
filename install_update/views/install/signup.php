@@ -8,7 +8,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '注册';
+$this->title = '创建管理员帐号';
 ?>
 
 <div class="row">
@@ -16,20 +16,20 @@ $this->title = '注册';
 <div class="col-md-8 sf-left">
 	<div class="box">
 		<div class="inner">
-			<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title ?>
+			<?php echo Html::a('极简论坛安装', ['index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
 		<div class="cell cell-form">
             <?php $form = ActiveForm::begin([
 			    'layout' => 'horizontal',
-				'id' => 'form-signup'
+				'id' => 'form-admin-signup'
 			]); ?>
-                <?= $form->field($model, 'username') ?>
-                <?= $form->field($model, 'email') ?>
-                <?= $form->field($model, 'password')->passwordInput() ?>
-                <?= $form->field($model, 'password_repeat')->passwordInput() ?>
+                <?php echo $form->field($model, 'username'); ?>
+                <?php echo $form->field($model, 'email'); ?>
+                <?php echo $form->field($model, 'password')->passwordInput(); ?>
+                <?php echo $form->field($model, 'password_repeat')->passwordInput(); ?>
                 <div class="form-group">
 					<div class="col-sm-offset-3 col-sm-9">
-                    <?= Html::submitButton('注册', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                    <?php echo Html::submitButton('创建', ['class' => 'btn btn-primary']); ?>
 					</div>
                 </div>
             <?php ActiveForm::end(); ?>
@@ -39,9 +39,6 @@ $this->title = '注册';
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
-</div>
 <!-- sf-right end -->
 
 </div>

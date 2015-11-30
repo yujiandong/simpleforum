@@ -13,6 +13,7 @@ return [
 	'new/<node:\w+>' => 'topic/add',
 	'n/<name:(\w|-)+>' => 'topic/node',
 //	'redirect/<tid:\d+>/<cid:\d+>' => 'topic/redirect',
+	'tag/<name>' => 'tag/index',
 	'my/<action:(nodes|topics|following)>' => 'favorite/<action>',
 	'my/<action:(notifications|info|setting)>' => 'user/<action>',
 //	'member/<username:(?!(notices|avatar|info))\w+>' => 'user/view',

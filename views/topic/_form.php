@@ -6,24 +6,36 @@
  */
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 
-$editor = new \app\lib\Editor(['editor'=>Yii::$app->params['settings']['editor']]);
+$settings = Yii::$app->params['settings'];
+$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
 $editor->registerAsset($this);
+$me = Yii::$app->getUser()->getIdentity();
 ?>
 
 <?php $form = ActiveForm::begin(); ?>
     <?php
 		if( $action === 'edit' && Yii::$app->getUser()->getIdentity()->isAdmin()) {
-		 	echo $form->field($model, 'invisible')->dropDownList(['公开主题', '隐藏主题'])->label(false);
-		 	echo $form->field($model, 'comment_closed')->dropDownList(['开放评论','关闭评论'])->label(false);
+			echo '<div class="row">',
+		 		'<div class="col-md-2 col-xs-4">', $form->field($model, 'invisible')->checkbox(), '</div>',
+		 		'<div class="col-md-2 col-xs-4">', $form->field($model, 'comment_closed')->checkbox(), '</div>',
+		 		'<div class="col-md-2 col-xs-4">', $form->field($model, 'alltop')->checkbox(), '</div>',
+		 		'<div class="col-md-2 col-xs-4">', $form->field($model, 'top')->checkbox(), '</div>',
+			'</div>';
 		}
 	?>
 	<p>主题标题 <span class="gray">( 如果标题能够表达完整内容，主题内容可为空 )</span></p>
-    <?= $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120])->label(false) ?>
+    <?php echo $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120])->label(false); ?>
 	<p>主题内容</p>
-	<?= $form->field($content, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false) ?>
+	<?php echo $form->field($content, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false); ?>
+<?php
+	if( $me->canUpload($settings) ) {
+		$editor->registerUploadAsset($this);
+		echo '<div class="form-group"><div id="fileuploader">图片上传</div></div>';
+	}
+?>
 	<div class="form-group">
-		<?= Html::submitButton($model->isNewRecord ? '创建' : '修改', ['class' => 'btn btn-primary']) ?>
+		<?php echo Html::submitButton($model->isNewRecord ? '创建' : '修改', ['class' => 'btn btn-primary']); ?>
 	</div>
 <?php ActiveForm::end(); ?>

@@ -21,9 +21,7 @@ $this->title = '创建新节点';
 		?>
 	</div>
 	<div class="cell">
-	    <?= $this->render('_form', [
-	        'model' => $model,
-	    ]) ?>
+	    <?php echo $this->render('_form', ['model' => $model]); ?>
 	</div>
 </div>
 
@@ -32,7 +30,7 @@ $this->title = '创建新节点';
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_admin-right') ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->
 

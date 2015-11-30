@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>SimpleMarkdown Editor</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="smd.css">
+	<script src="lib/jquery-1.11.3.min.js"></script>
+	<script src="lib/jquery.selection.js"></script>
+	<script src="lib/marked.js"></script>
+	<script src="smd.js"></script>
+	<script type="text/javascript">
+	$(function(){
+	    new SimpleMarkdown({
+	        target: '#smd1',
+		lan: 'zh-CN',
+	        preview: true,
+	    });
+	});
+	</script>
+</head>
+<body>
+<div class="wrap">
+	<div class="container">
+		<div class="box">
+			<div class="inner">
+				<span class="fr"><a href="http://simpleforum.org">Simple Forum</a></span>
+				<h1>SimpleMarkdown Editor</h1>
+			</div>
+			<div class="cell cell-form">
+<div style="width:600px;">
+	<textarea  id="smd1" style=""></textarea>
+</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer class="footer">
+<div class="container">
+    <p class="pull-left">&copy; SimpleForum.org</p>
+    <p class="pull-right"></p>
+</div>
+</footer>
+
+</body>
+</html>

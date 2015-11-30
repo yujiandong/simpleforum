@@ -20,6 +20,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         $app->getUrlManager()->addRules([
             'install/<action:[\w\-]+>' => $this->id . '/install/<action>',
+            'upgrade/<action:[\w\-]+>' => $this->id . '/upgrade/<action>',
             'install' => $this->id . '/install/index',
         ], false);
     }

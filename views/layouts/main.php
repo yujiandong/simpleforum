@@ -19,14 +19,14 @@ if( !$isGuest ) {
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
+<html lang="<?php echo Yii::$app->language; ?>">
 <head>
-    <meta charset="<?= Yii::$app->charset ?>">
+    <meta charset="<?php echo Yii::$app->charset; ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <?= Html::csrfMetaTags() ?>
-    <?= $settings['head_meta'] ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <?php echo Html::csrfMetaTags(); ?>
+    <?php echo $settings['head_meta']; ?>
+    <title><?php echo Html::encode($this->title); ?></title>
     <?php $this->head() ?>
 </head>
 <body>
@@ -66,7 +66,7 @@ if( !$isGuest ) {
             NavBar::end();
         ?>
         <div class="container">
-            <?= $content ?>
+            <?php echo $content; ?>
         </div>
     </div>
 
@@ -91,9 +91,9 @@ if( !$isGuest ) {
 ?>
 </p>
 <div>
-<span>Powered by <a href="http://simpleforum.org/" rel="external" target="_blank">SimpleForum <?= SIMPLE_FORUM_VERSION ?></a></span>
-<span><?= number_format( (microtime(true) - YII_BEGIN_TIME), 3) . 's' ?></span>
-<?= !empty($settings['analytics_code'])?'<span>'.$settings['analytics_code'].'</span>':'' ?>
+<span>Powered by <a href="http://simpleforum.org/" rel="external" target="_blank">SimpleForum <?php echo SIMPLE_FORUM_VERSION; ?></a></span>
+<span><?php echo number_format( (microtime(true) - YII_BEGIN_TIME), 3) . 's'; ?></span>
+<?php echo !empty($settings['analytics_code'])?'<span>'.$settings['analytics_code'].'</span>':''; ?>
 </div>
         </div>
     </footer>

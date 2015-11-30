@@ -22,12 +22,12 @@ $this->title = '添加回复';
 
 <div class="box">
 	<div class="cell topic-header">
-		<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
-			Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]) ?>
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
+			Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
 		<h3><?php echo Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]); ?></h3>
 		<small class="gray">
-		<?= 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', $topic['user_id']]), 
-			'  •  ', Yii::$app->getFormatter()->asRelativeTime($topic['created_at']) ?>
+		<?php echo 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', $topic['user_id']]), 
+			'  •  ', Yii::$app->getFormatter()->asRelativeTime($topic['created_at']); ?>
 		</small>
 	</div>
 </div>
@@ -38,10 +38,15 @@ $this->title = '添加回复';
 	</div>
 	<div class="cell">
 <?php $form = ActiveForm::begin(); ?>
-
-	<?= $form->field($comment, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false) ?>
+<?php
+	echo $form->field($comment, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false);
+	if($me->canUpload($settings)) {
+		$editor->registerUploadAsset($this);
+		echo '<div class="form-group"><div id="fileuploader">图片上传</div></div>';
+	}
+?>
     <div class="form-group">
-        <?= Html::submitButton('回复', ['class' => 'btn btn-primary']) ?>
+        <?php echo Html::submitButton('回复', ['class' => 'btn btn-primary']); ?>
     </div>
 
 <?php ActiveForm::end(); ?>	</div>
@@ -50,7 +55,7 @@ $this->title = '添加回复';
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

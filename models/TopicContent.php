@@ -41,4 +41,28 @@ class TopicContent extends ActiveRecord
         ];
     }
 
+	public function getTopic()
+    {
+        return $this->hasOne(Topic::className(), ['id' => 'topic_id'])
+			->select(['created_at', 'user_id', 'node_id', 'title']);
+    }
+
+	public function afterSave($insert, $changedAttributes)
+	{
+		if ($insert === true) {
+			(new History([
+				'user_id' => $this->topic->user_id,
+				'action' => History::ACTION_ADD_TOPIC,
+				'action_time' => $this->topic->created_at,
+				'target' => $this->topic_id,
+			]))->save(false);
+			Siteinfo::updateCounterInfo('addTopic');
+			UserInfo::updateCounterInfo('addTopic', $this->topic->user_id);
+			Node::updateCounterInfo('addTopic', $this->topic->node_id);
+			Notice::afterTopicInsert($this);
+			Tag::afterTopicInsert($this);
+		}
+		return parent::afterSave($insert, $changedAttributes);
+	}
+
 }

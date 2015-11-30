@@ -9,7 +9,6 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
-use yii\helpers\HtmlPurifier;
 use app\lib\Util;
 use app\models\User;
 use app\models\Favorite;
@@ -75,12 +74,12 @@ $this->title = Html::encode($topic['title']);
 <div class="box">
 	<div class="cell topic-header">
 		<div class="fr">
-			<?= Html::a(Html::img('@web/'.str_replace('{size}', 'large', $topic['author']['avatar']), ["alt" => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]) ?>
+			<?php echo Html::a(Html::img('@web/'.str_replace('{size}', 'large', $topic['author']['avatar']), ["alt" => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]); ?>
 		</div>
 		<?php
 			echo Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), $nodeUrl);
 		?>
-		<h1><?=$this->title ?></h1>
+		<h1><?php echo $this->title; ?></h1>
 		<small class="gray">
 		<?php
 			echo 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', 'username'=>Html::encode($topic['author']['username'])]), '  •  ', $formatter->asRelativeTime($topic['created_at']), '  •  ', $topic['views'], ' 次点击';
@@ -103,9 +102,29 @@ $this->title = Html::encode($topic['title']);
 	</div>
 </div>
 
-<?php if( intval($topic['comment_count']) > 0 ) : ?>
+<?php if( intval($topic['comment_count']) === 0 ) : ?>
+<?php if( !empty($topic['tags']) ) : ?>
+<div class="box topic-comments">
+	<div class="inner">
+<?php 
+  foreach($topic['tags'] as $tag) {
+	echo Html::a(Html::encode($tag['name']), ['tag/index', 'name'=>$tag['name']], ['class'=>'tag']);
+  }
+?>
+	</div>
+</div>
+<?php endif; ?>
+<?php else : ?>
 <div class="box topic-comments">
 	<div class="inner clearfix">
+<?php if( !empty($topic['tags']) ) {
+  echo '<span class="fr topic-tags">';
+  foreach($topic['tags'] as $tag) {
+	echo Html::a(Html::encode($tag['name']), ['tag/index', 'name'=>$tag['name']], ['class'=>'tag']);
+  }
+  echo '</span>';
+}
+?>
 <?= $topic['comment_count'], '&nbsp;回复&nbsp;|&nbsp;直到&nbsp;', 
 	$formatter->asDateTime($topic['replied_at'], 'y-MM-dd HH:mm:ss xxx') ?>
 	</div>
@@ -114,7 +133,7 @@ foreach($comments as $comment){
 //	$comment = $comment['comment'];
 	echo '<div class="cell clearfix" id="reply', $comment['position'] ,'">
 			<div class="item-avatar">',
-				Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $comment['author']['avatar']), ["alt" => Html::encode($comment['author']['username'])]), ['user/view', 'username'=>Html::encode($comment['author']['username'])]),
+				Html::img('@web/'.str_replace('{size}', 'normal', $comment['author']['avatar']), ["alt" => Html::encode($comment['author']['username'])]),
 			'</div>
 		 	 <div class="item-content link-external">
 				<div><small class="fr gray">';
@@ -180,10 +199,15 @@ foreach($comments as $comment){
 		<span class="fr"><a href="#">↑ 回到顶部</a></span>添加一条新回复
 	</div>
 	<div class="cell">
-<?php $form = ActiveForm::begin(['action' => ['comment/reply', 'id'=>$topic['id']]]); ?>
-	<?= $form->field(new \app\models\Comment(), 'content')->textArea(['id'=>'editor'])->label(false) ?>
+<?php $form = ActiveForm::begin(['action' => ['comment/reply', 'id'=>$topic['id']]]);
+	echo $form->field(new \app\models\Comment(), 'content')->textArea(['id'=>'editor'])->label(false);
+	if($me->canUpload($settings)) {
+		$editor->registerUploadAsset($this);
+		echo '<div class="form-group"><div id="fileuploader">图片上传</div></div>';
+	}
+?>
     <div class="form-group">
-        <?= Html::submitButton('回复', ['class' => 'btn btn-primary']) ?>
+        <?php echo Html::submitButton('回复', ['class' => 'btn btn-primary']); ?>
     </div>
 <?php ActiveForm::end(); ?>
 	</div>
@@ -193,7 +217,7 @@ foreach($comments as $comment){
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

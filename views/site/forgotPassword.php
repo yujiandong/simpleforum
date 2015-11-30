@@ -19,7 +19,7 @@ $this->title = '通过电子邮件重设密码';
 <div class="col-md-8 sf-left">
 	<div class="box">
 		<div class="inner">
-			<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title ?>
+			<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
 		<div class="cell cell-form">
 <?php
@@ -34,10 +34,10 @@ if ( $session->hasFlash('sendPwdNG') ) {
 			    'layout' => 'horizontal',
 				'id' => 'form-fogot-password'
 			]); ?>
-                <?= $form->field($model, 'email')->textInput(['maxlength'=>50]) ?>
+                <?php echo $form->field($model, 'email')->textInput(['maxlength'=>50]); ?>
                 <div class="form-group">
 					<div class="col-sm-offset-3 col-sm-9">
-                    <?= Html::submitButton('继续', ['class' => 'btn btn-primary']) ?>
+                    <?php echo Html::submitButton('继续', ['class' => 'btn btn-primary']); ?>
 					</div>
                 </div>
             <?php ActiveForm::end(); ?>
@@ -48,7 +48,7 @@ if ( $session->hasFlash('sendPwdNG') ) {
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->
 

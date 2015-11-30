@@ -16,23 +16,23 @@ $this->title = '创建新主题';
 
 <div class="box">
 	<div class="inner">
-		<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
 			Html::a(Html::encode($node['name']), ['topic/node', 'name'=>$node['ename']]), 
-			'&nbsp;/&nbsp;', $this->title ?>
+			'&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 	<div class="cell">
-    <?= $this->render('_form', [
+    <?php echo $this->render('_form', [
         'model' => $model,
         'content' => $content,
 		'action' => 'add',
-    ]) ?>
+    ]); ?>
 	</div>
 </div>
 
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

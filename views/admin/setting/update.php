@@ -26,6 +26,7 @@ $blocks = [
 		],
 	],
 	'cache'=>['title'=>'缓存设置', 'msg'=>'', 'parts'=>null],
+	'upload'=>['title'=>'上传设置', 'msg'=>'', 'parts'=>null],
 	'extend'=>['title'=>'扩展设置', 'msg'=>'', 'parts'=>null],
 	'other'=>['title'=>'其它设置', 'msg'=>'下面一般保持默认', 'parts'=>null],
 ];
@@ -82,9 +83,9 @@ function showSettingForm($settings, $form)
 <?php
 foreach ($blocks as $key=>$block):
 ?>
-	<div class="cell row bg-info" id="<?=$key ?>">
-    		<div class="text-right col-sm-3 col-xs-6"><strong>» <?=$block['title'] ?></strong></div>
-        	<div class="col-sm-9 col-xs-12"><?=$block['msg'] ?></div>
+	<div class="cell row bg-info" id="<?php echo $key; ?>">
+    		<div class="text-right col-sm-3 col-xs-6"><strong>» <?php echo $block['title']; ?></strong></div>
+        	<div class="col-sm-9 col-xs-12"><?php echo $block['msg']; ?></div>
     </div>
 	<div class="cell">
 <?php
@@ -100,7 +101,7 @@ if ( $block['parts'] ) {
 ?>
                 <div class="form-group">
 					<div class="col-sm-offset-3 col-sm-9">
-                    <?= Html::submitButton('修改', ['class' => 'btn btn-primary']) ?>
+                    <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 					</div>
                 </div>
 	</div>
@@ -116,7 +117,7 @@ ActiveForm::end();
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_admin-right') ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->
 

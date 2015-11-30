@@ -20,7 +20,7 @@ $this->title = Html::encode($settings['site_name']).'首页';
 
 <div class="box">
 	<div class="inner">
-	<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;最近更新' ?>
+	<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;最近更新'; ?>
 	</div>
 	<?php
 	foreach($topics as $topic){
@@ -47,7 +47,7 @@ $this->title = Html::encode($settings['site_name']).'首页';
 		}
 					echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'node']),
 					'  •  <strong>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), '</strong>',
-					' •  ', Yii::$app->formatter->asRelativeTime($topic['replied_at']);
+					' •  ', $topic['alltop']==1?'置顶':Yii::$app->formatter->asRelativeTime($topic['replied_at']);
 		if ($topic['comment_count']>0) {
 					echo '<span class="item-lastreply"> •  最后回复者 ', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
 		}
@@ -73,7 +73,7 @@ $this->title = Html::encode($settings['site_name']).'首页';
 if ( intval($settings['cache_enabled'])===0 || $this->beginCache('f-hot-nodes', ['duration' => intval($settings['cache_time'])*60])) :
 ?>
 <div class="box">
-	<div class="inner gray"><span class="fr"><?=Html::a('浏览全部节点', ['node/index']) ?></span>热门节点
+	<div class="inner gray"><span class="fr"><?php echo Html::a('浏览全部节点', ['node/index']); ?></span>热门节点
 	</div>
 	<div class="cell hot-nodes sf-btn">
 <?php
@@ -96,7 +96,7 @@ endif;
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_index-right') ?>
+<?php echo $this->render('@app/views/common/_index-right'); ?>
 </div>
 <!-- sf-right end -->
 

@@ -16,16 +16,16 @@ $this->title = '登录';
 <div class="col-md-8 sf-left">
 	<div class="box">
 		<div class="inner">
-			<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title ?>
+			<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
 		<div class="cell cell-form">
             <?php $form = ActiveForm::begin([
 			    'layout' => 'horizontal',
 				'id' => 'form-login'
 			]); ?>
-            <?= $form->field($model, 'username')->textInput(['maxlength'=>20]) ?>
-            <?= $form->field($model, 'password')->passwordInput(['maxlength'=>20]) ?>
-			<?= $form->field($model, 'rememberMe')->checkbox() ?>
+            <?php echo $form->field($model, 'username')->textInput(['maxlength'=>20]); ?>
+            <?php echo $form->field($model, 'password')->passwordInput(['maxlength'=>20]); ?>
+			<?php echo $form->field($model, 'rememberMe')->checkbox(); ?>
 <?php
 	if ( intval(Yii::$app->params['settings']['captcha_enabled']) === 1 ) {
 		echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname());
@@ -33,18 +33,18 @@ $this->title = '登录';
 ?>
             <div class="form-group">
 				<div class="col-sm-offset-3 col-sm-9">
-                <?= Html::submitButton('登录', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-				&nbsp;&nbsp;<?= Html::a('忘记密码了', ['site/forgot-password']) ?>
+                <?php echo Html::submitButton('登录', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
+				&nbsp;&nbsp;<?php echo Html::a('忘记密码了', ['site/forgot-password']); ?>
 				</div>
             </div>
             <?php ActiveForm::end(); ?>
 <?php if ( intval(Yii::$app->params['settings']['auth_enabled']) === 1 ) : ?>
 			<h6 class="login-three-home"><strong>第三方账号直接登录</strong></h6>
-			<?=
+			<?php echo
 			\yii\authclient\widgets\AuthChoice::widget([
 			    'baseAuthUrl' => ['site/auth'],
 			    'popupMode' => false,
-			])
+			]);
 			?>
 <?php endif; ?>
 		</div>
@@ -55,7 +55,7 @@ $this->title = '登录';
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->
 

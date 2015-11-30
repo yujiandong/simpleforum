@@ -11,8 +11,8 @@ use yii\web\AssetBundle;
 
 class SimditorAsset extends AssetBundle
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
+//    public $basePath = '@webroot';
+    public $baseUrl = '@web/static';
     public $css = [
         'assets/simditor-2.2.4/styles/simditor.css',
     ];

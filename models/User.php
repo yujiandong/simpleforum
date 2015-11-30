@@ -151,6 +151,23 @@ class User extends ActiveRecord implements IdentityInterface
 		return ( intval($model['comment_closed']) === 0 && self::isActive() );
 	}
 
+	public function canUpload($settings)
+	{
+		if ( $settings['upload_file'] === 'disable' ) {
+			return false;
+		}
+		if ( self::isAdmin() ) {
+			return true;
+		} else if ( !self::isActive() ) {
+			return false;
+		}
+
+		return (
+			$this->created_at+intval($settings['upload_file_regday'])*24*3600 < time()
+			&& $this->userInfo->topic_count >= intval($settings['upload_file_topicnum'])
+		);
+	}
+
 	public function getStatus()
 	{
 		return self::$statusOptions[$this->status];

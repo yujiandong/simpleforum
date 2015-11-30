@@ -14,6 +14,7 @@ $this->title = Html::encode($user['username']);
 $settings = Yii::$app->params['settings'];
 $editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
 
+$fomatter = Yii::$app->getFormatter();
 $isGuest = Yii::$app->getUser()->getIsGuest();
 if (!$isGuest) {
 	$me = Yii::$app->getUser()->getIdentity();
@@ -42,27 +43,27 @@ if (!$isGuest && $me->isAdmin() && $me->id != $user['id']) {
 
 <div class="box">
 	<div class="cell clearfix">
-		<span class="fr sf-btn"><?= $manage ?><?= $follow ?></span>
+		<span class="fr sf-btn"><?php echo $manage, $follow; ?></span>
 		<div class="item-largeavatar">
-			<?= Html::img('@web/'.str_replace('{size}', 'large', $user['avatar']), ["alt" => $this->title]) ?>
+			<?php echo Html::img('@web/'.str_replace('{size}', 'large', $user['avatar']), ["alt" => $this->title]); ?>
 		</div>
 		<div class="item-userinfo">
-			<h1><?= $this->title ?></h1>
-			<p class="gray"><?= $settings['site_name'],' 第 ',$user['id'],' 号会员，加入于 ',Yii::$app->getFormatter()->asDateTime($user['created_at'], 'y-MM-dd HH:mm:ss xxx') ?>
+			<h1><?php echo $this->title; ?></h1>
+			<p class="gray"><?php echo $settings['site_name'],' 第 ',$user['id'],' 号会员，加入于 ',$fomatter->asDateTime($user['created_at'], 'y-MM-dd HH:mm:ss xxx'); ?>
 			</p>
 		</div>
 	</div>
 	<?php if( !empty($user['userInfo']['about']) || !empty($user['userInfo']['website']) ) : ?>
 	<div class="cell link-external">
-		<?= empty($user['userInfo']['about'])?'':'<p>'.Html::encode($user['userInfo']['about']).'</p>' ?>
-		<?= empty($user['userInfo']['website'])?'':'个人网站： '.Html::a($user['userInfo']['website'], $user['userInfo']['website'], ['target'=>'_blank', 'rel' => 'external']) ?>
+		<?php echo empty($user['userInfo']['about'])?'':'<p>'.Html::encode($user['userInfo']['about']).'</p>'; ?>
+		<?php echo empty($user['userInfo']['website'])?'':'个人网站： '.Html::a($user['userInfo']['website'], $user['userInfo']['website'], ['target'=>'_blank', 'rel' => 'external']); ?>
 	</div>
 	<?php endif ?>
 </div>
 
 <div class="box">
 	<div class="inner gray">
-		<?= Html::encode($user['username']) ?> 最近创建的主题
+		<?php echo Html::encode($user['username']); ?> 最近创建的主题
 	</div>
 <?php
 foreach($user['topics'] as $topic){
@@ -81,7 +82,7 @@ foreach($user['topics'] as $topic){
 		echo '<div class="item-commentcount">', Html::a($topic['comment_count'], $url, ['class'=>'count_livid']),'</div>';
 	}
 				echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'node']),
-				' •  ', Yii::$app->getFormatter()->asRelativeTime($topic['replied_at']);
+				' •  ', $fomatter->asRelativeTime($topic['replied_at']);
 	if ($topic['comment_count']>0) {
 				echo '<span class="item-lastreply"> •  最后回复者 ', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
 	}
@@ -92,20 +93,20 @@ foreach($user['topics'] as $topic){
 }
 ?>
 	<div class="cell">
-		» <?= Html::a(Html::encode($user['username']).'创建的更多主题', ['topics', 'username'=>Html::encode($user['username'])]) ?>
+		» <?php echo Html::a(Html::encode($user['username']).'创建的更多主题', ['topics', 'username'=>Html::encode($user['username'])]); ?>
 	</div>
 </div>
 
 <div class="box">
 	<div class="inner gray">
-		<?= Html::encode($user['username']) ?> 最近回复了
+		<?php echo Html::encode($user['username']); ?> 最近回复了
 	</div>
 <?php
 foreach($user['comments'] as $comment) :
 ?>
 	<div class="cell gray small bg-info">
-		<p class='fr'><?= Yii::$app->getFormatter()->asRelativeTime($comment['created_at']) ?></p>
-		回复了 <?= Html::encode($comment['topic']['author']['username']) ?> 创建的主题 › <?=Html::a(Html::encode($comment['topic']['title']), ['topic/view', 'id'=>$comment['topic_id']]) ?>
+		<p class='fr'><?php echo $fomatter->asRelativeTime($comment['created_at']); ?></p>
+		回复了 <?php echo Html::encode($comment['topic']['author']['username']); ?> 创建的主题 › <?php echo Html::a(Html::encode($comment['topic']['title']), ['topic/view', 'id'=>$comment['topic_id']]); ?>
 	</div>
 	<div class="cell comment-content white-space">
 	<?php
@@ -125,14 +126,14 @@ foreach($user['comments'] as $comment) :
 	</div>
 <?php endforeach; ?>
 	<div class="cell">
-		» <?= Html::a(Html::encode($user['username']).'的更多回复', ['comments', 'username'=>Html::encode($user['username'])]) ?>
+		» <?php echo Html::a(Html::encode($user['username']).'的更多回复', ['comments', 'username'=>Html::encode($user['username'])]); ?>
 	</div>
 </div>
 
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>

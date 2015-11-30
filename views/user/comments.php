@@ -18,19 +18,19 @@ $settings = Yii::$app->params['settings'];
 
 <div class="box">
 	<div class="cell">
-		<?= Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', 
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', 
 			Html::a(Html::encode($user['username']), ['user/view', 'username'=>$user['username']]), 
-			'&nbsp;›&nbsp;全部回帖' ?>
+			'&nbsp;›&nbsp;全部回帖'; ?>
 	</div>
 <?php
 foreach($comments as $comment):
 ?>
 	<div class="cell gray small bg-info">
-		<p class='fr'><?= Yii::$app->getFormatter()->asRelativeTime($comment['created_at']) ?></p>
-		回复了 <?=Html::encode($comment['topic']['author']['username']) ?> 创建的主题 › <?=Html::a(Html::encode($comment['topic']['title']), ['topic/view', 'id'=>$comment['topic_id']]) ?>
+		<p class='fr'><?php echo Yii::$app->getFormatter()->asRelativeTime($comment['created_at']); ?></p>
+		回复了 <?php echo Html::encode($comment['topic']['author']['username']); ?> 创建的主题 › <?php echo Html::a(Html::encode($comment['topic']['title']), ['topic/view', 'id'=>$comment['topic_id']]); ?>
 	</div>
 	<div class="cell">
-		<?= Html::encode($comment['content']) ?>
+		<?php echo  Html::encode($comment['content']); ?>
 	</div>
 <?php endforeach; ?>
 	<div class="item-pagination">
@@ -46,7 +46,7 @@ foreach($comments as $comment):
 </div>
 
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_right') ?>
+<?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 
 </div>
