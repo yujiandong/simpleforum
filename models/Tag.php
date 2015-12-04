@@ -32,7 +32,7 @@ class Tag extends ActiveRecord
 		$pa->differMax  = true;
 		$pa->StartAnalysis();
 		$tagNames = $pa->GetFinallyKeywords(3);
-		$tagNames = explode(',', $tagNames);
+		$tagNames = explode(',', strtolower($tagNames));
 		$tags = static::find()->select(['id','name'])->where(['in', 'name', $tagNames])->indexBy('name')->all();
 		foreach($tagNames as $tn) {
 			if ( !empty($tags) && !empty($tags[$tn])) {
