@@ -27,7 +27,7 @@ class Tag extends ActiveRecord
 		$content = $editor->parse($tc->content);
 
 		$pa = new PhpAnalysis();
-		$pa->SetSource($tc->topic->title. strip_tags($content));
+		$pa->SetSource($tc->topic->title. ' ' .strip_tags($content));
 		$pa->resultType = 2;
 		$pa->differMax  = true;
 		$pa->StartAnalysis();
