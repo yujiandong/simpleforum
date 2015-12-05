@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS simpleforum_tag;
 CREATE TABLE simpleforum_tag (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(10) NOT NULL,
+  `name` varchar(20) NOT NULL,
   `topic_count` smallint(6) unsigned NOT NULL default 0,
   PRIMARY KEY id(`id`),
   UNIQUE KEY name(`name`)

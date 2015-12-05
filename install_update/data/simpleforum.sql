@@ -152,7 +152,7 @@ CREATE TABLE `simple_notice` (
 DROP TABLE IF EXISTS simple_tag;
 CREATE TABLE simple_tag (
   `id` int(10) unsigned NOT NULL auto_increment,
-  `name` varchar(10) NOT NULL,
+  `name` varchar(20) NOT NULL,
   `topic_count` smallint(6) unsigned NOT NULL default 0,
   PRIMARY KEY id(`id`),
   UNIQUE KEY name(`name`)
