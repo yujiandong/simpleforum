@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS simpleforum_tag;
-CREATE TABLE simpleforum_tag (
+DROP TABLE IF EXISTS simple_tag;
+CREATE TABLE simple_tag (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(20) NOT NULL,
   `topic_count` smallint(6) unsigned NOT NULL default 0,
@@ -7,8 +7,8 @@ CREATE TABLE simpleforum_tag (
   UNIQUE KEY name(`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS simpleforum_tag_topic;
-CREATE TABLE simpleforum_tag_topic (
+DROP TABLE IF EXISTS simple_tag_topic;
+CREATE TABLE simple_tag_topic (
   `id` int(10) unsigned NOT NULL auto_increment,
   `tag_id` int(10) unsigned NOT NULL,
   `topic_id` mediumint(8) unsigned NOT NULL,
@@ -28,11 +28,11 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (5,'upload', '第三方空间信息', 'text','upload_remote_info', 'text','', '逗号分隔。又拍云：空间名,操作员,密码；<br />七牛：空间名,access key,secret key', ''),
 (6,'upload', '第三方空间URL', 'text','upload_remote_url', 'text','', '', '');
 
-ALTER TABLE `simpleforum_post` ADD COLUMN `alltop` tinyint(1) unsigned NOT NULL default 0 AFTER `reply_id`;
-ALTER TABLE `simpleforum_post` ADD COLUMN `top` tinyint(1) unsigned NOT NULL default 0 AFTER `alltop`;
+ALTER TABLE `simple_post` ADD COLUMN `alltop` tinyint(1) unsigned NOT NULL default 0 AFTER `reply_id`;
+ALTER TABLE `simple_post` ADD COLUMN `top` tinyint(1) unsigned NOT NULL default 0 AFTER `alltop`;
 
-DROP INDEX replied_id ON simpleforum_topic;
-DROP INDEX node_replied_id ON simpleforum_topic;
-CREATE INDEX alllist ON simpleforum_topic(`alltop`, `replied_at`, `id`);
-CREATE INDEX nodelist ON simpleforum_topic(`node_id`, `top`, `replied_at`, `id`);
-OPTIMIZE TABLE simpleforum_topic;
+DROP INDEX replied_id ON simple_topic;
+DROP INDEX node_replied_id ON simple_topic;
+CREATE INDEX alllist ON simple_topic(`alltop`, `replied_at`, `id`);
+CREATE INDEX nodelist ON simple_topic(`node_id`, `top`, `replied_at`, `id`);
+OPTIMIZE TABLE simple_topic;
