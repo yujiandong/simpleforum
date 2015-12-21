@@ -28,8 +28,8 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (5,'upload', '第三方空间信息', 'text','upload_remote_info', 'text','', '逗号分隔。又拍云：空间名,操作员,密码；<br />七牛：空间名,access key,secret key', ''),
 (6,'upload', '第三方空间URL', 'text','upload_remote_url', 'text','', '', '');
 
-ALTER TABLE `simple_post` ADD COLUMN `alltop` tinyint(1) unsigned NOT NULL default 0 AFTER `reply_id`;
-ALTER TABLE `simple_post` ADD COLUMN `top` tinyint(1) unsigned NOT NULL default 0 AFTER `alltop`;
+ALTER TABLE `simple_topic` ADD COLUMN `alltop` tinyint(1) unsigned NOT NULL default 0 AFTER `reply_id`;
+ALTER TABLE `simple_topic` ADD COLUMN `top` tinyint(1) unsigned NOT NULL default 0 AFTER `alltop`;
 
 DROP INDEX replied_id ON simple_topic;
 DROP INDEX node_replied_id ON simple_topic;
