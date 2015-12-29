@@ -15,13 +15,26 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
+    const SCENARIO_BIND = 2;
+
     public $username;
     public $password;
     public $rememberMe = true;
-	public $captcha;
+    public $captcha;
 
     private $_user = false;
 
+
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_BIND] = ['username', 'password'];
+        return $scenarios;
+    }
 
     /**
      * @inheritdoc

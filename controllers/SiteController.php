@@ -169,7 +169,7 @@ class SiteController extends AppController
 		}
 		$attr = $session->get('authInfo');
 
-        $model = new LoginForm();
+        $model = new LoginForm(['scenario' => LoginForm::SCENARIO_BIND]);
         if ($model->load(Yii::$app->getRequest()->post()) && $model->login()) {
             $auth = new Auth([
                 'user_id' => Yii::$app->getUser()->id,
