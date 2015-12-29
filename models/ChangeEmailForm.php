@@ -14,8 +14,20 @@ use Yii;
  */
 class ChangeEmailForm extends \yii\base\Model
 {
+    const SCENARIO_VERIFY_EMAIL = 2;
+
     public $password;
     public $email;
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_VERIFY_EMAIL] = ['email'];
+        return $scenarios;
+    }
 
     public function rules()
     {

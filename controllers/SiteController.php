@@ -16,6 +16,7 @@ use yii\filters\AccessControl;
 use app\models\LoginForm;
 use app\models\ForgotPasswordForm;
 use app\models\ResetPasswordForm;
+use app\models\ChangeEmailForm;
 use app\models\SignupForm;
 use app\models\ContactForm;
 use app\models\Auth;
@@ -293,7 +294,7 @@ class SiteController extends AppController
 		$token->status = Token::STATUS_USED;
 		$token->save(false);
 
-		$model = new \app\models\ChangeEmailForm(['email'=>$token->ext]);
+		$model = new ChangeEmailForm(['scenario' => ChangeEmailForm::SCENARIO_VERIFY_EMAIL, 'email'=>$token->ext]);
 		if ( !$model->validate() ) {
         	return $this->render('opResult', ['title'=>'邮箱绑定失败', 'status'=>'warning', 'msg'=>'申请绑定邮箱['.$token->ext.']已被注册使用']);
 		}
