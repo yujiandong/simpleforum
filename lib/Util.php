@@ -56,7 +56,7 @@ class Util
 			}
 			if( is_int($v) ) {
 			} else if( is_string($v) ) {
-				$v = '\'' . $v . '\'';
+				$v = '\'' . str_replace('\'', '\\\'', $v) . '\'';
 			} else if( is_bool($v) ) {
 				$v = ($v===true?'true':'false');
 			} else if( is_array($v) ) {
