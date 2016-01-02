@@ -19,25 +19,36 @@ class Upload extends Component
 		'small'=>'24x24',
 	];
 
-	public static function upload($file, $fileDir, $fileName)
+	public static function upload($file, $fileDir, $fileName, $suffix='png')
 	{
 		$settings = Yii::$app->params['settings'];
-		$filePath = $fileDir.'/'.$fileName;
+		$filePath = $fileDir.'/'.$fileName.'.'.$suffix;
 		if ( $settings['upload_file'] === 'disable') {
 			return false;
-		} else if ($settings['upload_file'] === 'local') {
+		}
+		$imgInfo = @getimagesize($file->tempName);
+		if($imgInfo[0] > 600) {
+            $width = 600;
+            $height = round($imgInfo[1]*600/$imgInfo[0]);
+		} else {
+            $width = $imgInfo[0];
+            $height = $imgInfo[1];
+		}
+		$img = Image::thumbnail($file->tempName, $width, $height);
+		if ($settings['upload_file'] === 'local') {
 			@mkdir($fileDir, 0755, true);
-			$file->saveAs($filePath);
+//			$file->saveAs($filePath);
+			$img->save($filePath);
 			return Yii::getAlias('@web'.'/'.$filePath);
 		} else if ($settings['upload_remote'] === 'upyun') {
 			list($bucketName, $userName, $userPwd) = explode(',', $settings['upload_remote_info']);
             $upyun = new \app\lib\UpYun($bucketName, $userName, $userPwd);
-			$fh = fopen($file->tempName, 'r');
-            if($upyun->writeFile('/'.$filePath, $fh, true)){
-				fclose($fh);
+//			$fh = fopen($file->tempName, 'r');
+            if($upyun->writeFile('/'.$filePath, $img->get($suffix), true)){
+//				fclose($fh);
 				return $settings['upload_remote_url'].'/'.$filePath;
             }else{
-				fclose($fh);
+//				fclose($fh);
                 return false;
             }
 		} else if ($settings['upload_remote'] === 'qiniu') {
@@ -45,7 +56,8 @@ class Upload extends Component
 		    $upManager = new \Qiniu\Storage\UploadManager();
 		    $auth = new \Qiniu\Auth($accessKey, $secretKey);
 		    $token = $auth->uploadToken($bucketName);
-			list($ret, $err) = $upManager->putFile($token, $filePath, $file->tempName);
+//			list($ret, $err) = $upManager->putFile($token, $filePath, $file->tempName);
+			list($ret, $err) = $upManager->put($token, $filePath, $img->get($suffix));
 			if ($err !== null) {
 				Yii::error($err);
 			    return false;

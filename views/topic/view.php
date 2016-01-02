@@ -20,6 +20,8 @@ $formatter = Yii::$app->getFormatter();
 $editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
 $editor->registerAsset($this);
 
+$whiteWrapClass = $settings['editor']=='smd'?'white-wrap':'';
+
 $indexPage = intval($request->get('ip', 0));
 $nodePage = intval($request->get('np', 0));
 
@@ -71,25 +73,28 @@ $this->title = Html::encode($topic['title']);
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="cell topic-header">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
 		<div class="fr">
-			<?php echo Html::a(Html::img('@web/'.str_replace('{size}', 'large', $topic['author']['avatar']), ["alt" => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]); ?>
+			<?php echo Html::a(Html::img('@web/'.str_replace('{size}', 'large', $topic['author']['avatar']), ['class'=>'img-rounded media-object','alt'=> Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]); ?>
 		</div>
 		<?php
 			echo Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), $nodeUrl);
 		?>
-		<h1><?php echo $this->title; ?></h1>
+		<h2 class="word-wrap"><?php echo $this->title; ?></h2>
 		<small class="gray">
 		<?php
 			echo 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', 'username'=>Html::encode($topic['author']['username'])]), '  •  ', $formatter->asRelativeTime($topic['created_at']), '  •  ', $topic['views'], ' 次点击';
+			echo '  •  字体 <span class="fontsize-plus">大</span> <span class="fontsize-minus">小</span>';
 			if ( !$isGuest && !empty($topicOp) ) {
 				echo '  •  ', implode(' | ', $topicOp);
 			}
 		?></small>
 	</div>
-	<div class="cell topic-content link-external white-space">
+<?php if(!empty($topic['content']['content']) || !empty($topic['tags'])) : ?>
+	<div class="panel-body content link-external word-wrap <?php echo $whiteWrapClass; ?>">
 		<?php
+		if(!empty($topic['content']['content'])) {
 			if ( $topic['invisible'] == 1 || $topic['author']['status'] == User::STATUS_BANNED ) {
 				echo '<p class="bg-danger">此主题已被屏蔽</p>';
 				if (!$isGuest && $me->isAdmin()) {
@@ -98,44 +103,35 @@ $this->title = Html::encode($topic['title']);
 			} else {
 				echo $editor->parse($topic['content']['content']);
 			}
+		}
+		if( !empty($topic['tags']) ) {
+			echo '<div class="top10">';
+			$tags = explode(',', strtolower($topic['tags']));
+			foreach($tags as $tag) {
+				echo Html::a(Html::encode($tag), ['tag/index', 'name'=>$tag], ['class'=>'btn btn-default btn-sm tag']);
+			}
+			echo '</div>';
+		}
 		?>
 	</div>
+<?php endif; ?>
+	<div class="panel-footer bdsharebuttonbox"></div>
 </div>
 
-<?php if( intval($topic['comment_count']) === 0 ) : ?>
-<?php if( !empty($topic['tags']) ) : ?>
-<div class="box topic-comments">
-	<div class="inner">
-<?php 
-  foreach($topic['tags'] as $tag) {
-	echo Html::a(Html::encode($tag['name']), ['tag/index', 'name'=>$tag['name']], ['class'=>'tag']);
-  }
-?>
-	</div>
-</div>
-<?php endif; ?>
-<?php else : ?>
-<div class="box topic-comments">
-	<div class="inner clearfix">
-<?php if( !empty($topic['tags']) ) {
-  echo '<span class="fr topic-tags">';
-  foreach($topic['tags'] as $tag) {
-	echo Html::a(Html::encode($tag['name']), ['tag/index', 'name'=>$tag['name']], ['class'=>'tag']);
-  }
-  echo '</span>';
-}
-?>
-<?= $topic['comment_count'], '&nbsp;回复&nbsp;|&nbsp;直到&nbsp;', 
+<?php if( intval($topic['comment_count']) > 0 ) : ?>
+<ul class="list-group sf-box">
+	<li class="list-group-item">
+<?php echo $topic['comment_count'], '&nbsp;回复&nbsp;|&nbsp;直到&nbsp;', 
 	$formatter->asDateTime($topic['replied_at'], 'y-MM-dd HH:mm:ss xxx') ?>
-	</div>
+	</li>
 <?php
 foreach($comments as $comment){
 //	$comment = $comment['comment'];
-	echo '<div class="cell clearfix" id="reply', $comment['position'] ,'">
-			<div class="item-avatar">',
-				Html::img('@web/'.str_replace('{size}', 'normal', $comment['author']['avatar']), ["alt" => Html::encode($comment['author']['username'])]),
+	echo '<li class="list-group-item media" id="reply', $comment['position'] ,'">
+			<div class="media-left item-avatar">',
+				Html::img('@web/'.str_replace('{size}', 'normal', $comment['author']['avatar']), ['class'=>'img-rounded media-object','alt'=> Html::encode($comment['author']['username'])], ['class'=>'media-left item-avatar']),
 			'</div>
-		 	 <div class="item-content link-external">
+		 	 <div class="media-body link-external">
 				<div><small class="fr gray">';
 	if ( !$isGuest ) {
 		$commentUrl = ['comment/edit', 'id'=>$comment['id']];
@@ -172,33 +168,33 @@ foreach($comments as $comment){
 						'body' => '此回复已被屏蔽',
 					]);
 					if (!$isGuest && $me->isAdmin()) {
-						echo '<div class="comment-content white-space">', $editor->parse($comment['content']) , '</div>';
+						echo '<div class="comment-content word-wrap ',$whiteWrapClass,'">', $editor->parse($comment['content']) , '</div>';
 					}
 				} else {
-					echo '<div class="comment-content white-space">', $editor->parse($comment['content']) , '</div>';
+					echo '<div class="comment-content word-wrap ',$whiteWrapClass,'">', $editor->parse($comment['content']) , '</div>';
 				}
 			echo '</div>';
-	echo '</div>';
+	echo '</li>';
 }
 ?>
-	<div class="item-pagination">
+	<li class="list-group-item item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,
 		'maxButtonCount'=>5,
 	]);
 	?>
-	</div>
+	</li>
 
-</div>
+</ul>
 <?php endif; ?>
 
 <?php if( !$isGuest && $me->canReply($topic) ): ?>
-<div class="box topic-comment" id="reply">
-	<div class="inner">
+<div class="panel panel-default sf-box" id="reply">
+	<div class="panel-heading">
 		<span class="fr"><a href="#">↑ 回到顶部</a></span>添加一条新回复
 	</div>
-	<div class="cell">
+	<div class="panel-body">
 <?php $form = ActiveForm::begin(['action' => ['comment/reply', 'id'=>$topic['id']]]);
 	echo $form->field(new \app\models\Comment(), 'content')->textArea(['id'=>'editor'])->label(false);
 	if($me->canUpload($settings)) {

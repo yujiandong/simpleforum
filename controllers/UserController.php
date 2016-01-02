@@ -104,7 +104,7 @@ class UserController extends AppController
     {
 		$user = $this->findUserModel($username, ['userInfo']);
 	    $pages = new Pagination(['totalCount' => $user['userInfo']['comment_count'], 'pageSize' => $this->settings['list_pagesize'], 'pageParam'=>'p']);
-	    $comments = Comment::find()->select(['id', 'created_at', 'topic_id', 'content'])->where(['user_id' => $user['id']])
+	    $comments = Comment::find()->select(['id', 'created_at', 'topic_id', 'content', 'invisible'])->where(['user_id' => $user['id']])
 			->orderBy(['id'=>SORT_DESC])->offset($pages->offset)
 			->with(['topic.author'])
 	        ->limit($pages->limit)

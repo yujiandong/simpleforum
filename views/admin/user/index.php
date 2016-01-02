@@ -16,16 +16,16 @@ $this->title = '用户管理';
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
-	</div>
-	<div class="cell bg-info"><strong>
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>
 		<?php echo Html::a('待激活用户', ['index', 'status'=>User::STATUS_INACTIVE]),
 				'&nbsp;|&nbsp;', Html::a('待验证用户', ['index', 'status'=>User::STATUS_ADMIN_VERIFY]),
 				'&nbsp;|&nbsp;', Html::a('屏蔽用户', ['index', 'status'=>User::STATUS_BANNED]); ?></strong>
-	</div>
-	<div class="cell">
+	</li>
+	<li class="list-group-item">
 		<ul>
 		<?php
 			foreach($users as $user) {
@@ -33,16 +33,15 @@ $this->title = '用户管理';
 			}
 		?>
 		</ul>
-	</div>
-	<div class="item-pagination">
+	</li>
+	<li class="list-group-item item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,
 	]);
 	?>
-	</div>
-
-</div>
+	</li>
+</ul>
 
 </div>
 <!-- sf-left end -->

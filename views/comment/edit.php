@@ -20,8 +20,8 @@ $this->title = '修改回复';
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="cell topic-header">
+<div class="panel panel-default sf-box">
+	<div class="panel-body">
 		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
 			Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
 		<h3><?php echo Html::encode($topic['title']); ?></h3>
@@ -32,13 +32,10 @@ $this->title = '修改回复';
 	</div>
 </div>
 
-<div class="box topic-comment">
-	<div class="inner">
-		修改回复
-	</div>
-	<div class="cell">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">修改回复</div>
+	<div class="panel-body">
 <?php $form = ActiveForm::begin(); ?>
-
 <?php
 	if(Yii::$app->getUser()->getIdentity()->isAdmin()) {
 	 	echo $form->field($comment, 'invisible')->dropDownList(['公开回复', '屏蔽回复'])->label(false);

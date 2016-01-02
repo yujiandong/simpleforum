@@ -31,8 +31,8 @@ $this->title = Html::encode($node['name']);
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<span class="fr gray small">主题总数 <?php echo $node['topic_count'], $follow; ?></span>
 		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 		<p class="gray"><?php echo Html::encode($node['about']); ?></p>
@@ -41,7 +41,7 @@ $this->title = Html::encode($node['name']);
 				echo Html::a('创建主题', ['topic/add', 'node'=>$node['ename']], ['class'=>'btn btn-primary']);
 			}
 		?>
-	</div>
+	</li>
 	<?php
 	foreach($topics as $topic){
 		$topic = $topic['topic'];
@@ -49,21 +49,19 @@ $this->title = Html::encode($node['name']);
 //		if ( $currentPage > 1) {
 			$url['np'] = $currentPage;
 //		}
-		echo '<div class="cell item clearfix">
-				<div class="item-avatar">',
-					Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ["alt" => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]),
-				'</div>
-			 	 <div class="item-content">
-					<div class="item-title">',
+		echo '<li class="list-group-item media">',
+				Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-rounded media-object','alt'=>Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
+				'<div class="media-body">
+					<h5 class="media-heading">',
 					Html::a(Html::encode($topic['title']), $url),
-					'</div>
+					'</h5>
 					<div class="small">';
 		if($topic['comment_count'] > 0){
 		    $gotopage = ceil($topic['comment_count']/$settings['comment_pagesize']);
 		    if($gotopage > 1){
 				$url['p'] = $gotopage;
 		    }
-			echo '<div class="item-commentcount">', Html::a($topic['comment_count'], $url, ['class'=>'count_livid']),'</div>';
+			echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
 		}
 					echo '<strong>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), '</strong>',
 					' •  ', $topic['top']==1?'置顶':Yii::$app->formatter->asRelativeTime($topic['replied_at']);
@@ -72,19 +70,18 @@ $this->title = Html::encode($node['name']);
 		}
 					echo '</div>
 				</div>';
-		echo '</div>';
+		echo '</li>';
 	}
 	?>
-	<div class="item-pagination">
+	<li class="list-group-item item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,
 		'maxButtonCount'=>5,
 	]);
 	?>
-	</div>
-
-</div>
+	</li>
+</ul>
 
 </div>
 <!-- sf-left end -->

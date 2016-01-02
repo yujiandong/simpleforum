@@ -16,11 +16,11 @@ $this->title = '邮件发送测试';
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
-		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title; ?>
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
+		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title; ?>
 	</div>
-	<div class="cell cell-form">
+	<div class="panel-body sf-box-form">
 <?php
 if ( $rtnCd === 9 ) {
 	echo Alert::widget([

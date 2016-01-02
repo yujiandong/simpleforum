@@ -58,36 +58,36 @@ function showSettingForm($settings, $form)
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<?php
 			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
 		?>
-	</div>
-            <?php $form = ActiveForm::begin([
-			    'layout' => 'horizontal',
-				'id' => 'form-setting',
-			    'fieldConfig' => [
-//			        'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
-			        'horizontalCssClasses' => [
-			            'label' => 'col-sm-3',
-//			            'offset' => 'col-sm-offset-4',
-			            'wrapper' => 'col-sm-9',
-			            'error' => '',
-			            'hint' => 'col-sm-offset-3 col-sm-9',
-			        ],
-			    ],
-			]); ?>
-
-
+	</li>
+<?php $form = ActiveForm::begin([
+    'layout' => 'horizontal',
+	'id' => 'form-setting',
+    'fieldConfig' => [
+//		'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+        'horizontalCssClasses' => [
+            'label' => 'col-sm-3',
+//			'offset' => 'col-sm-offset-4',
+            'wrapper' => 'col-sm-9',
+            'error' => '',
+            'hint' => 'col-sm-offset-3 col-sm-9',
+        ],
+    ],
+]); ?>
 <?php
 foreach ($blocks as $key=>$block):
 ?>
-	<div class="cell row bg-info" id="<?php echo $key; ?>">
+	<li class="list-group-item list-group-item-info" id="<?php echo $key; ?>">
+		<div class="row">
     		<div class="text-right col-sm-3 col-xs-6"><strong>» <?php echo $block['title']; ?></strong></div>
         	<div class="col-sm-9 col-xs-12"><?php echo $block['msg']; ?></div>
-    </div>
-	<div class="cell">
+		</div>
+    </li>
+	<li class="list-group-item sf-box-form">
 <?php
 if ( !empty($settings[$key]) ) {
 	showSettingForm($settings[$key], $form);
@@ -99,18 +99,18 @@ if ( $block['parts'] ) {
 	}
 }
 ?>
-                <div class="form-group">
-					<div class="col-sm-offset-3 col-sm-9">
-                    <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
-					</div>
-                </div>
-	</div>
+        <div class="form-group">
+			<div class="col-sm-offset-3 col-sm-9">
+            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
+			</div>
+        </div>
+	</li>
 <?php endforeach; ?>
 
 <?php
 ActiveForm::end();
 ?>
-</div>
+</ul>
 
 </div>
 <!-- sf-left end -->

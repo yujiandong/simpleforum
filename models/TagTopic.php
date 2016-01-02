@@ -58,7 +58,7 @@ class TagTopic extends ActiveRecord
 				->asArray()
 		        ->all();
 			if ( intval($settings['cache_enabled']) !== 0 ) {
-				$dep = new DbDependency(['sql'=>'SELECT MAX(id) FROM '. self::tableName(). 'where tag_id = ' . $tagId]);
+				$dep = new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM '. Tag::tableName(). 'where id = ' . $tagId]);
 				$cache->set($key, $models, intval($settings['cache_time'])*60, $dep);
 			}
 		}

@@ -14,10 +14,10 @@ class Select2Asset extends AssetBundle
 //    public $basePath = '@webroot';
     public $baseUrl = '@web/static';
     public $css = [
-        'css/select2.min.css',
+        'assets/select2/select2.min.css',
     ];
     public $js = [
-        'js/select2.min.js',
+        'assets/select2/select2.min.js',
     ];
     public $depends = [
         'yii\web\JqueryAsset',

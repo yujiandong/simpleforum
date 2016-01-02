@@ -14,13 +14,13 @@ $this->title = '论坛安装完成';
 <div class="row">
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
-	<div class="box">
-		<div class="inner">
+	<div class="panel panel-default sf-box">
+		<div class="panel-heading">
 			<?php echo Html::a('极简论坛安装', ['index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
-		<div class="cell">
-			<h2>论坛安装完成，请登录管理后台设置论坛信息</h2>
-			<?php echo Html::a('管理后台', ['/admin/setting/all']); ?>
+		<div class="panel-body">
+				<h2>论坛安装完成，请登录管理后台设置论坛信息</h2>
+				<?php echo Html::a('管理后台', ['/admin/setting/all']); ?>
 		</div>
 	</div>
 </div>

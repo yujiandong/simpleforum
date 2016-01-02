@@ -82,7 +82,6 @@ var replyTo = function(username) {
 		oldContent = comment.val();
 	} 
 
-	prefix = '@' + username + ' ';
 	newContent = '';
 	scrollToAnchor(comment);
 	if( editorName == 'smd') {
@@ -198,4 +197,52 @@ $(function(){
 		return false;
 	});
 //	$(document).on('selectstart dragstart', '.insert-image', function (e) {e.preventDefault(); return false; });
+});
+
+$(function(){
+
+	if ($('.content').length>0) {
+	    var min=12, max=18;
+	    var elm = $('.content');
+	    var size = elm.css('fontSize').replace('px', '');
+
+	    $('.fontsize-plus').click(function() {
+	        if (size<max) {
+	            size++;
+	            elm.css({'fontSize' : size});
+	        }
+	        return false;   
+	    });
+
+	    $('.fontsize-minus').click(function() {
+	        if (size>min) {
+	            size--;
+	            elm.css({'fontSize' : size});
+	        }
+	        return false;   
+	    });
+	}
+});
+
+var showBaiduShare = function(target){
+	var shares = {
+	 'more': '',
+	 'tsina': '分享到新浪微博',
+	 'weixin': '分享到微信',
+	 'qzone': '分享到QQ空间',
+	 'renren': '分享到人人网',
+	 'kaixin001': '分享到开心网',
+	 'douban': '分享到豆瓣网',
+	 'copy': '复制网址',
+	};
+	$.each(shares, function(name, title){
+		$(target).append('<a href="#" class="bds_'+name+'" data-cmd="'+name+'" title="'+title+'"></a>');
+	});
+}
+
+$(function(){
+	if ($('.bdsharebuttonbox').length>0) {
+		showBaiduShare('.bdsharebuttonbox');
+		window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+	}
 });

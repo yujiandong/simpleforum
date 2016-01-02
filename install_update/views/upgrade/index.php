@@ -14,18 +14,18 @@ $this->title = '极简论坛升级';
 <div class="row">
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
-	<div class="box">
-		<div class="inner">
-			<?php echo $this->title; ?>
-		</div>
-		<div class="cell bg-info" id="activate"><strong>升级前确认</strong></div>
-		<div class="cell">
-        	<p>请先备份网站程序，并备份数据库数据。本站不对升级过程中造成的程序或数据损失等负责。</p>
-	        <?php
-					echo Html::a('已备份，开始升级', ['v1to11'], ['class'=>'btn btn-primary']);
-	        ?>
-		</div>
-	</div>
+<ul class="list-group sf-box">
+	<li class="list-group-item">
+		<?php echo $this->title; ?>
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>升级前确认</strong></li>
+	<li class="list-group-item">
+    	<p>请先备份网站程序，并备份数据库数据。本站不对升级过程中造成的程序或数据损失等负责。</p>
+        <?php
+			echo Html::a('已备份，开始升级', ['v1to11'], ['class'=>'btn btn-primary']);
+        ?>
+	</li>
+</ul>
 </div>
 <!-- sf-left end -->
 

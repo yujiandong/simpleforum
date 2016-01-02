@@ -17,10 +17,9 @@ $items = [
 
 ?>
 
-<div class="box">
-	<div class="inner gray">论坛管理
-	</div>
-	<div class="cell sf-btn">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading gray">论坛管理</div>
+	<div class="panel-body sf-btn">
 <?php
 	foreach($items as $k=>$v) {
 		echo Html::a($k, $v, ['class'=>'btn btn-default']);

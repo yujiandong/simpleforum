@@ -22,10 +22,10 @@ $session = Yii::$app->getSession();
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
-	</div>
+	</li>
 <?php $form = ActiveForm::begin([
     'layout' => 'horizontal',
 	'id' => 'form-setting',
@@ -40,17 +40,16 @@ $session = Yii::$app->getSession();
         ],
     ],
 ]); ?>
-	<div class="cell">
+	<li class="list-group-item">
 		<div class="form-group">
 			<label class="control-label col-sm-2">用户名</label>
 			<div class="col-sm-10" style="padding-top:7px;">
 				<strong><?php echo $user->username; ?></strong>
 			</div>
 		</div>
-	</div>
-	<div class="cell bg-info"><strong>修改信息</strong>
-	</div>
-	<div class="cell">
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>修改信息</strong></li>
+	<li class="list-group-item sf-box-form">
 <?php
 if ( $session->hasFlash('adminProfileNG') ) {
 	echo Alert::widget([
@@ -71,13 +70,12 @@ if ( $session->hasFlash('adminProfileNG') ) {
             <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
-	</div>
+	</li>
 <?php
 	ActiveForm::end();
 ?>
-	<div class="cell bg-info"><strong>修改密码</strong>
-	</div>
-	<div class="cell">
+	<li class="list-group-item list-group-item-info"><strong>修改密码</strong></li>
+	<li class="list-group-item sf-box-form">
 <?php
 if ( $session->hasFlash('adminPwdNG') ) {
 	echo Alert::widget([
@@ -115,8 +113,8 @@ if ( $session->hasFlash('adminPwdNG') ) {
 	<?php
 		ActiveForm::end();
 	?>
-	</div>
-</div>
+	</li>
+</ul>
 
 </div>
 <!-- sf-left end -->

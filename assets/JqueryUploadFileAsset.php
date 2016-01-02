@@ -14,10 +14,10 @@ class JqueryUploadFileAsset extends AssetBundle
 //    public $basePath = '@webroot';
     public $baseUrl = '@web/static';
     public $css = [
-        'assets/jquery-upload-file/css/uploadfile.css',
+        'assets/jquery-upload-file/uploadfile.css',
     ];
     public $js = [
-        'assets/jquery-upload-file/js/jquery.uploadfile.js',
+        'assets/jquery-upload-file/jquery.uploadfile.js',
     ];
     public $depends = [
         'yii\web\JqueryAsset',

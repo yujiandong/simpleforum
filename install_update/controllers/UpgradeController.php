@@ -34,16 +34,16 @@ class UpgradeController extends \yii\web\Controller
 		return $this->render('index');
     }
 
-    public function actionV1to11()
+    public function actionV11to111()
     {
-		if (file_exists(Yii::getAlias('@runtime/upv1to1.1.lock'))) {
+		if (file_exists(Yii::getAlias('@runtime/upv1.1to1.1.1.lock'))) {
 		    echo '您已升级完成';
 		    exist;
 		}
 		$error = false;
 		try {
-			$this->excuteSql($this->module->basePath . '/data/v1to1.1.sql');
-			file_put_contents(Yii::getAlias('@runtime/upv1to1.1.lock'), '');
+			$this->excuteSql($this->module->basePath . '/data/v1.1to1.1.1.sql');
+			file_put_contents(Yii::getAlias('@runtime/upv1to1.1.1.lock'), '');
 			return $this->render('completed');
 		} catch (\yii\db\Exception $e) {
 			$error = '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();

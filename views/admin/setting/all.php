@@ -23,13 +23,9 @@ $items = [
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
-		<?php
-			echo $this->title;
-		?>
-	</div>
-	<div class="cell sf-btn">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading"><?php echo $this->title;	?></div>
+	<div class="panel-body sf-btn">
 <?php
 	foreach($items as $k=>$v) {
 		echo Html::a($k, $v, ['class'=>'btn btn-default']);

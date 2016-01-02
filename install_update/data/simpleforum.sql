@@ -95,6 +95,7 @@ CREATE TABLE simple_topic (
   `favorite_count` smallint(6) unsigned NOT NULL default 0,
   `views` mediumint(8) unsigned NOT NULL default 0,
   `title` char(120) NOT NULL,
+  `tags` char(60) NOT NULL default '',
   PRIMARY KEY id(`id`),
   KEY alllist(`alltop`, `replied_at`, `id`),
   KEY nodelist(`node_id`, `top`, `replied_at`, `id`),
@@ -152,10 +153,14 @@ CREATE TABLE `simple_notice` (
 DROP TABLE IF EXISTS simple_tag;
 CREATE TABLE simple_tag (
   `id` int(10) unsigned NOT NULL auto_increment,
+  `created_at` int(10) unsigned NOT NULL,
+  `updated_at` int(10) unsigned NOT NULL,
   `name` varchar(20) NOT NULL,
   `topic_count` smallint(6) unsigned NOT NULL default 0,
   PRIMARY KEY id(`id`),
-  UNIQUE KEY name(`name`)
+  UNIQUE KEY name(`name`),
+  KEY updated(`updated_at`, `id`),
+  KEY topic_count(`topic_count`, `id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_tag_topic;
@@ -170,7 +175,7 @@ CREATE TABLE simple_tag_topic (
 DROP TABLE IF EXISTS simple_link;
 CREATE TABLE simple_link (
   `id` smallint(6) unsigned NOT NULL auto_increment,
-  `sortid` tinyint(1) unsigned NOT NULL default 99,
+  `sortid` tinyint(1) unsigned NOT NULL default 50,
   `name` varchar(20) NOT NULL,
   `url` varchar(100) NOT NULL,
   PRIMARY KEY id(`id`),
@@ -183,7 +188,7 @@ INSERT INTO simple_link VALUES(1, 0, '极简论坛', 'http://simpleforum.org/');
 DROP TABLE IF EXISTS simple_setting;
 CREATE TABLE simple_setting (
   `id` smallint(6) unsigned NOT NULL auto_increment,
-  `sortid` tinyint(1) unsigned NOT NULL default 99,
+  `sortid` tinyint(1) unsigned NOT NULL default 50,
   `block` varchar(10) NOT NULL default '',
   `label` varchar(50) NOT NULL default '',
   `type` varchar(10) NOT NULL default 'text',

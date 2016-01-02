@@ -19,6 +19,7 @@ use app\models\Topic;
 use app\models\TopicContent;
 use app\models\Comment;
 use app\models\Node;
+use app\models\Tag;
 use app\models\History;
 use app\lib\Util;
 
@@ -88,6 +89,20 @@ class TopicController extends AppController
 	    ]);
 	}
 
+    public function actionSearch($q)
+    {
+	    $pages = new Pagination([
+			'totalCount' => Topic::find()->where(['like', 'title', $q])->count('id'),
+			'pageSize' => intval($this->settings['index_pagesize']),
+			'pageParam' => 'p',
+		]);
+	    return $this->render('index', [
+	         'topics' => Topic::getTopicsFromSearch($pages, $q),
+	         'pages' => $pages,
+			 'title' => '搜索结果：'.$q,
+	    ]);
+    }
+
     public function actionView($id)
     {
 		$topic = Topic::getTopicFromView($id);
@@ -118,20 +133,22 @@ class TopicController extends AppController
 		$request = Yii::$app->getRequest();
 		$node = $this->findNodeModel($node);
 
-        $topic = new Topic(['node_id' => $node['id'], 'user_id' => Yii::$app->getUser()->id]);
+        $topic = new Topic(['scenario' => Topic::SCENARIO_ADD, 'node_id' => $node['id'], 'user_id' => Yii::$app->getUser()->id]);
         $content = new TopicContent();
         if ( $topic->load($request->post()) && $topic->validate() && 
-			$content->load($request->post()) && $content->validate() && 
-			$topic->save(false) ) {
+			$content->load($request->post()) && $content->validate() ) {
+
+//			$topic->tags = Tag::getTags($topic->tags, $topic->title, $content->content);
+			$topic->tags = Tag::getTags($topic->tags);
+			$topic->save(false);
 			$content->link('topic', $topic);
             return $this->redirect(['view', 'id' => $topic->id]);
-        } else {
-            return $this->render('add', [
-                'model' => $topic,
-                'content' => $content,
-                'node' => $node,
-            ]);
         }
+        return $this->render('add', [
+            'model' => $topic,
+            'content' => $content,
+            'node' => $node,
+        ]);
     }
 
     public function actionNew()
@@ -142,8 +159,11 @@ class TopicController extends AppController
         $content = new TopicContent();
 
         if ( $topic->load($request->post()) && $topic->validate() && 
-			$content->load($request->post()) && $content->validate() && 
-			$topic->save(false) ) {
+			$content->load($request->post()) && $content->validate() ) {
+
+//			$topic->tags = Tag::getTags($topic->tags, $topic->title, $content->content);
+			$topic->tags = Tag::getTags($topic->tags);
+			$topic->save(false);
 			$content->link('topic', $topic);
             return $this->redirect(['view', 'id' => $topic->id]);
         }
@@ -170,9 +190,13 @@ class TopicController extends AppController
 		if( !($content = $model->content) ) {
 			$content = new TopicContent(['topic_id'=>$model->id]);
 		}
+		$oldTags = $model->tags;
         if ($model->load($request->post()) && $model->validate() && 
-			$content->load($request->post()) && $content->validate() && 
-			$model->save(false) && $content->save(false)) {
+			$content->load($request->post()) && $content->validate() ) {
+//			$model->tags = Tag::editTags($model->tags, $oldTags);
+			$model->tags = Tag::getTags($model->tags);
+			$model->save(false) && $content->save(false);
+			Tag::afterTopicEdit($model->id, $model->tags, $oldTags);
 			(new History([
 				'user_id' => $me->id,
 				'action' => History::ACTION_EDIT_TOPIC,

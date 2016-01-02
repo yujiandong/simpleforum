@@ -25,11 +25,11 @@ if ($request->get('np', 1) > 1) {
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
 		<?php echo Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
-	<div class="cell">
+	<div class="panel-body">
     <?php echo $this->render('_form', [
         'model' => $model,
         'content' => $content,

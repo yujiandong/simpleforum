@@ -14,11 +14,11 @@ $this->title = '创建管理员帐号';
 <div class="row">
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
-	<div class="box">
-		<div class="inner">
+	<div class="panel panel-default sf-box">
+		<div class="panel-heading">
 			<?php echo Html::a('极简论坛安装', ['index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
-		<div class="cell cell-form">
+		<div class="panel-body sf-box-form">
             <?php $form = ActiveForm::begin([
 			    'layout' => 'horizontal',
 				'id' => 'form-admin-signup'

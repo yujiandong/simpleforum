@@ -16,8 +16,8 @@ $settings = Yii::$app->params['settings'];
 	$me = Yii::$app->getUser()->getIdentity();
 	$myInfo = $me->userInfo;
 ?>
-<div class="box">
-	<div class="cell">
+<ul class="list-group sf-box">
+  <li class="list-group-item">
 		<?php 
 			echo Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar), ["alt" => Html::encode($me->username)]) . ' ' . Html::a(Html::encode($me->username), ['user/view', 'username'=>Html::encode($me->username)]);
 			if ($me->isWatingActivation()) {
@@ -31,23 +31,21 @@ $settings = Yii::$app->params['settings'];
 		  <li><?php echo Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">主题收藏</span>', ['my/topics']); ?></li>
 		  <li><?php echo Html::a($myInfo->favorite_user_count.'<br /><span class="gray">特别关注</span>', ['my/following']); ?></li>
 		</ul>
-	</div>
-	<div class="cell"><?php echo Html::a('创作新主题', ['topic/new']); ?>
-	</div>
-	<div class="cell"><?php echo Html::a($me->getNoticeCount().' 条未读提醒', ['user/notifications']); ?>
-	</div>
+  </li>
+  <li class="list-group-item"><?php echo Html::a('创作新主题', ['topic/new']) ?></li>
+  <li class="list-group-item"><?php echo Html::a($me->getNoticeCount().' 条未读提醒', ['user/notifications']); ?></li>
 </div>
 <?php else: ?>
-<div class="box">
-	<div class="cell">
-		<strong><?php echo $settings['site_name']; ?></strong><br />
-		<span class="gray"><?php echo $settings['slogan']; ?></span>
-	</div>
-	<div class="inner">
+<ul class="list-group sf-box">
+  <li class="list-group-item">
+		<strong><?php echo  $settings['site_name']; ?></strong><br />
+		<span class="gray"><?php echo  $settings['slogan']; ?></span>
+	</li>
+  <li class="list-group-item">
 		<div class="text-center">
 		<p><?php echo Html::a('现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
 		已注册用户请  <?php echo Html::a('登录', ['site/login']); ?>
 		</div>
-	</div>
-</div>
+	</li>
+</ul>
 <?php endif; ?>

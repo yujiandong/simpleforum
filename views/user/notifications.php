@@ -16,17 +16,18 @@ $this->title = '提醒系统';
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 	<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
-</div>
+	</li>
 <?php
 foreach($notices as $notice) {
-	echo '<div class="cell item clearfix">
-			<div class="item-avatar-small">',
-				Html::a(Html::img('@web/'.str_replace('{size}', 'small', $notice['source']['avatar']), ["alt" => Html::encode($notice['source']['username'])]), ['user/view', 'username'=>Html::encode($notice['source']['username'])]),
-			'</div>
-		 	 <div class="item-notice">',
+	echo '<li class="list-group-item media">',
+			Html::a(Html::img('@web/'.str_replace('{size}', 'small', $notice['source']['avatar']), ['class'=>'media-object', 'alt' => Html::encode($notice['source']['username'])]), ['user/view', 'username'=>Html::encode($notice['source']['username'])], ['class'=>'media-left', ]),
+			'<div class="media-body">
+				<span class="fr gray small">',
+				Yii::$app->formatter->asRelativeTime($notice['created_at']),
+				'</span>',
 				Html::a(Html::encode($notice['source']['username']), ['user/view', 'username'=>Html::encode($notice['source']['username'])]), ' ';
 				if($notice['type'] == Notice::TYPE_COMMENT) {
 					echo '回复了您的帖子【'. Html::a(Html::encode($notice['topic']['title']), Topic::getRedirectUrl($notice['topic_id'], $notice['position'])) . '】',
@@ -43,18 +44,18 @@ foreach($notices as $notice) {
 						echo '关注了您';
 				}
 		echo '</div>';
-	echo '</div>';
+	echo '</li>';
 }
 ?>
-<div class="item-pagination">
-<?php
-echo LinkPager::widget([
-    'pagination' => $pages,
-]);
-?>
-</div>
+	<li class="list-group-item item-pagination">
+	<?php
+	echo LinkPager::widget([
+	    'pagination' => $pages,
+	]);
+	?>
+	</li>
 
-</div>
+</ul>
 </div>
 
 <div class="col-md-4 sf-right">

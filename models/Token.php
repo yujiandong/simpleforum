@@ -81,7 +81,7 @@ class Token extends ActiveRecord
 	public static function findByType($type, $user_id, $ext='')
 	{
 		$model = static::find()
-			->where(['user_id'=>$user_id, 'type'=>$type, 'status'=>Token::STATUS_VALID])
+			->where(['user_id'=>$user_id, 'type'=>$type, 'status'=>self::STATUS_VALID])
 			->andWhere(['>', 'expires', time()])
 			->orderBy(['expires'=>SORT_DESC])
 			->limit(1)

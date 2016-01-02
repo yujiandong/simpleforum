@@ -22,26 +22,28 @@ $this->title = Html::encode($tag['name']);
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<span class="fr gray small">主题总数 <?= $tag['topic_count'] ?></span>
 		<?= Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title ?>
-	</div>
+	</li>
 	<?php
 	foreach($topics as $topic){
 		$topic = $topic['topic'];
+		if( empty($topic) ) {
+			continue;
+		}
 		$url = ['topic/view', 'id'=>$topic['id']];
 //		if ( $currentPage > 1) {
 			$url['ip'] = $currentPage;
 //		}
-		echo '<div class="cell item clearfix">
-				<div class="item-avatar">',
-					Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ["alt" => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]),
-				'</div>
-			 	 <div class="item-content">
-					<div class="item-title">',
+		echo '<li class="list-group-item media">',
+				Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-rounded media-object','alt' => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
+				'<div class="media-body">
+					<h5 class="media-heading">',
 					Html::a(Html::encode($topic['title']), $url),
-					'</div>
+					'</h5>
 					<div class="small gray">';
 		if($topic['comment_count'] > 0){
 		    $gotopage = ceil($topic['comment_count']/intval($settings['comment_pagesize']));
@@ -59,20 +61,19 @@ $this->title = Html::encode($tag['name']);
 					echo '</div>
 				</div>';
 
-
-		echo '</div>';
+		echo '</li>';
 	}
 	?>
-	<div class="item-pagination">
+	<li class="list-group-item item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,
 		'maxButtonCount'=>5,
 	]);
 	?>
-	</div>
+	</li>
 
-</div>
+</ul>
 
 </div>
 <!-- sf-left end -->

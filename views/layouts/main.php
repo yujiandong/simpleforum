@@ -6,6 +6,7 @@
  */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 
@@ -51,14 +52,19 @@ if( !$isGuest ) {
 			} else {
 				$items = [
 	                    ['label' => '首页', 'url' => ['topic/index']],
-						['label' => Html::encode($me->username), 'url' => ['user/setting']],
+						['label' => Html::encode($me->username), 'url' => ['user/view', 'username'=>$me->username]],
+						['label' => '设置', 'url' => ['user/setting']],
                         ['label' => '退出', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
 				];
 				if ($me->isInactive()) {
 					$items[1]['options'] = ['class'=>'red'];
 				}
 			}
-
+echo '<form class="navbar-form navbar-left" action="'.Url::to(['topic/search']).'" role="search">
+       <div class="form-group">
+            <input id="q" name="q" type="text" placeholder="搜索" maxlength="40" class="form-control">
+        </div>
+  </form>';
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => $items,

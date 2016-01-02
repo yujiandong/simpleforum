@@ -29,10 +29,10 @@ class Topic extends ActiveRecord
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios[self::SCENARIO_ADD] = ['title'];
-        $scenarios[self::SCENARIO_NEW] = ['title', 'node_id'];
-        $scenarios[self::SCENARIO_AUTHOR_EDIT] = ['title'];
-        $scenarios[self::SCENARIO_ADMIN_EDIT] = ['invisible', 'comment_closed', 'alltop', 'top', 'title'];
+        $scenarios[self::SCENARIO_ADD] = ['title', 'tags'];
+        $scenarios[self::SCENARIO_NEW] = ['title', 'node_id', 'tags'];
+        $scenarios[self::SCENARIO_AUTHOR_EDIT] = ['title', 'tags'];
+        $scenarios[self::SCENARIO_ADMIN_EDIT] = ['invisible', 'comment_closed', 'alltop', 'top', 'title', 'tags'];
         $scenarios[self::SCENARIO_ADMIN_CHGNODE] = ['node_id'];
         return $scenarios;
     }
@@ -112,11 +112,13 @@ class Topic extends ActiveRecord
 			->select(['id', 'username']);
     }
 
-	public function getTags()
+/*
+	public function getTopicTags()
     {
         return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
 			->viaTable(TagTopic::tableName(), ['topic_id' => 'id']);
     }
+*/
 
 	public function getComments()
     {
@@ -234,7 +236,7 @@ class Topic extends ActiveRecord
 		$settings = Yii::$app->params['settings'];
 
 		if ( intval($settings['cache_enabled']) === 0 || ($model = $cache->get($key)) === false) {
-			$model = static::find()->where(['id'=>$id])->with(['content', 'node', 'author', 'tags'])->one();
+			$model = static::find()->where(['id'=>$id])->with(['content', 'node', 'author'])->one();
 	        if ( !$model ) {
 	            throw new \yii\web\NotFoundHttpException('未找到id为['.$id.']的主题');
 	        }
@@ -292,6 +294,16 @@ class Topic extends ActiveRecord
 				$cache->set($key, $models, intval($settings['cache_time'])*60, $dep);
 			}
 		}
+		return $models;
+	}
+
+	public static function getTopicsFromSearch($pages, $q)
+	{
+	    $models = static::find()->select('id')->where(['like', 'title', $q])->orderBy(['alltop'=>SORT_DESC, 'replied_at'=>SORT_DESC])->offset($pages->offset)
+			->with(['topic.node', 'topic.author', 'topic.lastReply'])
+	        ->limit($pages->limit)
+			->asArray()
+	        ->all();
 		return $models;
 	}
 

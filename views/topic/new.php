@@ -16,6 +16,7 @@ $this->registerJs('$(".nodes-select2").select2({placeholder:"请选择一个节�
 
 $editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
 $editor->registerAsset($this);
+$editor->registerTagItAsset($this);
 
 $this->title = '创建新主题';
 ?>
@@ -23,11 +24,11 @@ $this->title = '创建新主题';
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
 		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
-	<div class="cell">
+	<div class="panel-body">
 <?php $form = ActiveForm::begin(); ?>
 		<p>主题标题 <span class="gray">( 如果标题能够表达完整内容，主题内容可为空 )</span></p>
 	    <?php echo $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120])->label(false); ?>
@@ -42,6 +43,8 @@ $this->title = '创建新主题';
 			}
 		?>
 		</div>
+		<p>标签 <span class="gray">( 最多4个，以空格分隔 )</span></p>
+		<?php echo $form->field($model, 'tags')->textInput(['id'=>'tags', 'maxlength'=>60])->label(false); ?>
 <?php
 	if( Yii::$app->getUser()->getIdentity()->canUpload($settings) ) {
 		$editor->registerUploadAsset($this);

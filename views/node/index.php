@@ -19,11 +19,11 @@ $this->title = '全部节点';
 <?php
 if ( intval($settings['cache_enabled']) ===0 || $this->beginCache('f-all-nodes', ['duration' => intval($settings['cache_time'])*60])) :
 ?>
-<div class="box">
-	<div class="inner">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
 	<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
-	<div class="inner hot-nodes sf-btn">
+	<div class="panel-body hot-nodes sf-btn">
 <?php
 	$nodes = \app\models\Node::getAllNodes();
 	foreach($nodes as $node) {

@@ -14,13 +14,13 @@ $this->title = '创建新节点';
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="cell">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
 		<?php
 			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('节点管理', ['index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
-	<div class="cell">
+	<div class="panel-body">
 	    <?php echo $this->render('_form', ['model' => $model]); ?>
 	</div>
 </div>

@@ -44,7 +44,7 @@ class TopicContent extends ActiveRecord
 	public function getTopic()
     {
         return $this->hasOne(Topic::className(), ['id' => 'topic_id'])
-			->select(['created_at', 'user_id', 'node_id', 'title']);
+			->select(['created_at', 'user_id', 'node_id', 'title', 'tags']);
     }
 
 	public function afterSave($insert, $changedAttributes)

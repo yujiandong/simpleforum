@@ -14,11 +14,11 @@ $this->title = '论坛升级完成';
 <div class="row">
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
-	<div class="box">
-		<div class="inner">
+	<div class="panel panel-default sf-box">
+		<div class="panel-heading">
 			<?php echo $this->title; ?>
 		</div>
-		<div class="cell">
+		<div class="panel-body">
 			<h2>论坛升级完成</h2>
 			<p>1.可以删除目录： vendor/bbcodeparser , vendor/parsedown, vendor/simpleforum</p>
 			<p>2. <?php echo Html::a('登录管理后台更新论坛配置', ['/admin/setting/all']); ?></p>

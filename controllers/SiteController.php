@@ -291,17 +291,17 @@ class SiteController extends AppController
         	return $this->render('opResult', ['title'=>'邮箱绑定失败', 'status'=>'warning', 'msg'=>$e->getMessage()]);
         }
 
-		$token->status = Token::STATUS_USED;
-		$token->save(false);
+	$token->status = Token::STATUS_USED;
+	$token->save(false);
 
-		$model = new ChangeEmailForm(['scenario' => ChangeEmailForm::SCENARIO_VERIFY_EMAIL, 'email'=>$token->ext]);
-		if ( !$model->validate() ) {
+	$model = new ChangeEmailForm(['scenario' => ChangeEmailForm::SCENARIO_VERIFY_EMAIL, 'email'=>$token->ext]);
+	if ( !$model->validate() ) {
         	return $this->render('opResult', ['title'=>'邮箱绑定失败', 'status'=>'warning', 'msg'=>'申请绑定邮箱['.$token->ext.']已被注册使用']);
-		}
+	}
 
-		$user = $token->user;
-		$user->email = $token->ext;
-		$user->save(false);
+	$user = $token->user;
+	$user->email = $token->ext;
+	$user->save(false);
 
         return $this->render('opResult', ['title'=>'邮箱绑定成功', 'status'=>'success', 'msg'=>'新邮件绑定成功']);
     }

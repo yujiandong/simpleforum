@@ -15,16 +15,15 @@ $this->title = '链接管理';
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<p class='fr'><?php echo Html::a('创建新链接', ['add']); ?></p>
 		<?php
 			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
 		?>
-	</div>
-	<div class="cell bg-info"><strong>链接</strong>
-	</div>
-	<div class="cell">
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>链接</strong></li>
+	<li class="list-group-item">
 		<ul>
 		<?php
 			foreach($links as $link) {
@@ -38,16 +37,16 @@ $this->title = '链接管理';
 			}
 		?>
 		</ul>
-	</div>
-	<div class="item-pagination">
+	</li>
+	<li class="list-group-item item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,
 		'maxButtonCount'=>5,
 	]);
 	?>
-	</div>
-</div>
+	</li>
+</ul>
 
 
 </div>

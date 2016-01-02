@@ -24,13 +24,13 @@ $ceModel = new ChangeEmailForm();
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', $this->title; ?>
-	</div>
+	</li>
 <?php if ($me->isWatingActivation()) : ?>
-	<div class="cell bg-info" id="activate"><strong>会员激活</strong></div>
-	<div class="cell">
+	<li class="list-group-item list-group-item-info" id="activate"><strong>会员激活</strong></li>
+	<li class="list-group-item">
 <?php
 if ( $session->hasFlash('activateMailNG') ) {
 	echo Alert::widget([
@@ -46,10 +46,10 @@ if ( $session->hasFlash('activateMailNG') ) {
 ?>
 		您还有没有激活，请进您注册时填写的邮箱(<?php echo $me->email; ?>)，点击激活链接。<br />
 		<?php echo Html::a('重发激活邮件', ['user/send-activate-mail']); ?> | <a href="#password">修改邮箱</a>
-	</div>
+	</li>
 <?php endif; ?>
-	<div class="cell bg-info" id="info"><strong>修改信息</strong></div>
-	<div class="cell cell-form">
+	<li class="list-group-item list-group-item-info" id="info"><strong>修改信息</strong></li>
+	<li class="list-group-item">
 <?php
 if ( $session->hasFlash('EditProfileNG') ) {
 	echo Alert::widget([
@@ -87,9 +87,9 @@ if ( $session->hasFlash('EditProfileNG') ) {
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
-	</div>
-	<div class="cell bg-info" id="avatar"><strong>修改头像</strong></div>
-	<div class="cell cell-form">
+	</li>
+	<li class="list-group-item list-group-item-info" id="avatar"><strong>修改头像</strong></li>
+	<li class="list-group-item">
 <?php
 if ( $session->hasFlash('setAvatarNG') ) {
 	echo Alert::widget([
@@ -122,9 +122,9 @@ if ( $session->hasFlash('setAvatarNG') ) {
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
-	</div>
-	<div class="cell bg-info" id="email"><strong>修改邮箱</strong></div>
-	<div class="cell cell-form">
+	</li>
+	<li class="list-group-item list-group-item-info" id="email"><strong>修改邮箱</strong></li>
+	<li class="list-group-item">
 <?php
 if ( $session->hasFlash('chgEmailNG') ) {
 	echo Alert::widget([
@@ -157,9 +157,9 @@ if ( $session->hasFlash('chgEmailNG') ) {
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
-	</div>
-	<div class="cell bg-info" id="password"><strong>修改密码</strong></div>
-	<div class="cell cell-form">
+	</li>
+	<li class="list-group-item list-group-item-info" id="password"><strong>修改密码</strong></li>
+	<li class="list-group-item sf-box-form">
 <?php
 if ( $session->hasFlash('chgPwdNG') ) {
 	echo Alert::widget([
@@ -187,8 +187,8 @@ if ( $session->hasFlash('chgPwdNG') ) {
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
-	</div>
-</div>
+	</li>
+</ul>
 
 </div>
 

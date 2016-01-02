@@ -16,16 +16,16 @@ $this->title = '环境检测';
 <div class="row">
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
-	<div class="box">
-		<div class="inner">
+	<ul class="list-group sf-box">
+		<li class="list-group-item">
 			<?php echo Html::a('极简论坛安装', ['index']), '&nbsp;/&nbsp;', $this->title; ?>
-		</div>
-		<div class="cell bg-info" id="activate"><strong>服务器环境</strong></div>
-		<div class="cell">
+		</li>
+		<li class="list-group-item list-group-item-info"><strong>服务器环境</strong></li>
+		<li class="list-group-item">
         	<p><?php echo $check->getServerInfo() . ' ' . $check->getNowDate() ?></p>
-		</div>
-		<div class="cell bg-info" id="activate"><strong>检测结果</strong></div>
-		<div class="cell">
+		</li>
+		<li class="list-group-item list-group-item-info"><strong>检测结果</strong></li>
+		<li class="list-group-item">
 	        <?php if ($summary['errors'] > 0): ?>
 	            <div class="alert alert-danger">
 	                <strong>您的网站空间不符合要求，具体查看下面的列表</strong>
@@ -45,9 +45,9 @@ $this->title = '环境检测';
 					echo Html::a('下一步：数据库设置', ['db-setting'], ['class'=>'btn btn-primary']);
 				}
 	        ?>
-		</div>
-		<div class="cell bg-info" id="activate"><strong>详情</strong></div>
-		<div class="cell">
+		</li>
+		<li class="list-group-item list-group-item-info"><strong>详情</strong></li>
+		<li class="list-group-item">
 	        <table class="table table-bordered">
 	            <tr><th>条件</th><th>结果</th><th>备注</th></tr>
 	            <?php foreach ($requirements as $requirement): ?>
@@ -64,8 +64,8 @@ $this->title = '环境检测';
 	            </tr>
 	            <?php endforeach; ?>
 	        </table>
-		</div>
-	</div>
+		</li>
+	</ul>
 </div>
 <!-- sf-left end -->
 

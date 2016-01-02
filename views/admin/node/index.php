@@ -16,13 +16,15 @@ $this->title = '节点管理';
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<span class='fr'><?php echo Html::a('创建新节点', ['add']); ?></span>
 		<?php
 			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
 		?>
-	</div>
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>检索</strong></li>
+	<li class="list-group-item sf-box-form">
     <?php $form = ActiveForm::begin([
 	    'layout' => 'horizontal',
 		'id' => 'form-setting',
@@ -37,22 +39,18 @@ $this->title = '节点管理';
 	        ],
 	    ],
 	]); ?>
-	<div class="cell bg-info"><strong>检索</strong>
-	</div>
-	<div class="cell">
 		<?php echo $form->field($model, "name"); ?>
         <div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-            <?php echo Html::submitButton('检索', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
+            <?php echo Html::submitButton('搜索', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
 			</div>
         </div>
-	</div>
 	<?php
 		ActiveForm::end();
 	?>
-	<div class="cell bg-info"><strong>节点</strong>
-	</div>
-	<div class="cell">
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>节点</strong></li>
+	<li class="list-group-item">
 		<ul>
 		<?php
 			foreach($nodes as $node) {
@@ -60,16 +58,16 @@ $this->title = '节点管理';
 			}
 		?>
 		</ul>
-	</div>
-	<div class="item-pagination">
+	</li>
+	<li class="list-group-item item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,
 		'maxButtonCount'=>5,
 	]);
 	?>
-	</div>
-</div>
+	</li>
+</ul>
 
 </div>
 <!-- sf-left end -->

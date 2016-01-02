@@ -9,51 +9,49 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '节点管理';
+$this->title = '节点搜索';
 ?>
 
 <div class="row">
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('节点管理', ['admin/node/index']), '&nbsp;/&nbsp;', $this->title;
 		?>
-	</div>
-            <?php $form = ActiveForm::begin([
-			    'layout' => 'horizontal',
-				'id' => 'form-setting',
-			    'fieldConfig' => [
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>检索</strong></li>
+	<li class="list-group-item sf-box-form">
+<?php $form = ActiveForm::begin([
+    'layout' => 'horizontal',
+	'id' => 'form-setting',
+    'fieldConfig' => [
 //			        'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
-			        'horizontalCssClasses' => [
-			            'label' => 'col-sm-2',
+        'horizontalCssClasses' => [
+            'label' => 'col-sm-2',
 //			            'offset' => 'col-sm-offset-4',
-			            'wrapper' => 'col-sm-10',
-			            'error' => '',
-			            'hint' => 'col-sm-offset-2 col-sm-10',
-			        ],
-			    ],
-			]); ?>
-	<div class="cell bg-info"><strong>检索</strong>
-	</div>
-	<div class="cell">
+            'wrapper' => 'col-sm-10',
+            'error' => '',
+            'hint' => 'col-sm-offset-2 col-sm-10',
+        ],
+    ],
+]); ?>
 <?php
 		echo $form->field($model, "name");
 ?>
-                <div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-                    <?php echo Html::submitButton('检索', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
-					</div>
-                </div>
-	</div>
+        <div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+            <?php echo Html::submitButton('搜索', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
+			</div>
+        </div>
 <?php
 ActiveForm::end();
 ?>
-	<div class="cell bg-info"><strong>节点</strong>
-	</div>
-	<div class="cell">
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>节点</strong></li>
+	<li class="list-group-item">
 		<ul>
 		<?php
 			if( !empty($node) ) {
@@ -63,8 +61,8 @@ ActiveForm::end();
 			}
 		?>
 		</ul>
-	</div>
-</div>
+	</li>
+</ul>
 
 </div>
 <!-- sf-left end -->

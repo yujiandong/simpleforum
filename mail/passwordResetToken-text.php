@@ -12,13 +12,13 @@ $settings = Yii::$app->params['settings'];
 $url = Url::to(['site/reset-password', 'token'=>$token->token], true);
 
 ?>
-<?=$settings['site_name'] ?> 会员，您好<br />
+<?php echo $settings['site_name']; ?> 会员，您好<br />
 <br />
 您申请了重置密码，请点击以下链接确认：<br />
-<?= Html::a($url, $url) ?><br />
+<?php echo Html::a($url, $url); ?><br />
 <br />
 感谢您的访问，祝您使用愉快！<br />
 <br />
 此致<br />
-<?=$settings['site_name'] ?> 管理团队<br />
-<?=Yii::$app->getRequest()->getHostInfo() ?><br />
+<?php echo $settings['site_name']; ?> 管理团队<br />
+<?php echo Yii::$app->getRequest()->getHostInfo(); ?><br />

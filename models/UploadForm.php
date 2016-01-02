@@ -46,14 +46,19 @@ class UploadForm extends Model
      */
     public function rules()
     {
+		$params = [
+			'extensions' => 'png,jpg,gif,jpeg',
+			'mimeTypes'=>'image/jpeg,image/png,image/gif',
+			'maxSize'=>2*1024*1024,
+			'minWidth' => 30,
+			'maxWidth' => 2000,
+			'minHeight' => 30,
+			'maxHeight' => 2000
+		];
         return [
             [['file','files'], 'required'],
-			extension_loaded('fileinfo')?
-            	['file', 'image', 'extensions' => 'png,jpg,gif', 'mimeTypes'=>'image/jpeg,image/png,image/gif', 'maxSize'=>1024*1024, 'minWidth' => 30, 'maxWidth' => 600, 'minHeight' => 30, 'maxHeight' => 600] :
-				['file', 'checkImage', 'params' => ['extensions' => 'png,jpg,gif', 'mimeTypes'=>'image/jpeg,image/png,image/gif', 'maxSize'=>1024*1024, 'minWidth' => 30, 'maxWidth' => 600, 'minHeight' => 30, 'maxHeight' => 600]],
-			extension_loaded('fileinfo')?
-            	['files', 'image', 'extensions' => 'png,jpg,gif', 'maxFiles' => 4, 'mimeTypes'=>'image/jpeg,image/png,image/gif', 'maxSize'=>1024*1024, 'minWidth' => 30, 'maxWidth' => 600, 'minHeight' => 30, 'maxHeight' => 600] :
-				['files', 'checkImage', 'params' => ['extensions' => 'png,jpg,gif', 'maxFiles' => 4, 'mimeTypes'=>'image/jpeg,image/png,image/gif', 'maxSize'=>1024*1024, 'minWidth' => 30, 'maxWidth' => 600, 'minHeight' => 30, 'maxHeight' => 600]],
+			extension_loaded('fileinfo')? ['file', 'image'] + $params :  ['file', 'checkImage', 'params' => $params],
+			extension_loaded('fileinfo')? ['files', 'image', 'maxFiles' => 4] + $params : ['files', 'checkImage', 'params' => ['maxFiles' => 4]+$params],
         ];
     }
 
@@ -106,7 +111,8 @@ class UploadForm extends Model
         if ($this->files && $this->validate()) {
             foreach ($this->files as $file) {
 				$filePath = 'upload/'. date('Ym') . '/' . date('d');
-				$fileName = $uid . '_' . time() . '.' . $file->extension;
+//				$fileName = $uid . '_' . time() . '.' . $file->extension;
+				$fileName = $uid . '_' . time();
 				$rtn = Upload::upload($file, $filePath, $fileName);
 				if ($rtn) {
 					$result[] = $rtn;
@@ -128,13 +134,14 @@ class UploadForm extends Model
 	        $name = $uid;
 			$myId = strtolower(Util::shorturl($uid));
 			$savePath = 'avatar/'.substr($myId,0,1).'/'.substr($myId,1,1);
+//			$this->resizeAvator( $this->_avatarSizes, $this->file->tempName, $savePath, $name, $suffix);
 			Upload::uploadAvatar($this->file->tempName, $savePath, $name, $suffix);
 			return $savePath. '/'.$name . '_{size}.' . $suffix . '?m='.time();;
         }
 
         return false;
     }
-
+/*
 	private function resizeAvator($resizes, $srcFile, $savePath, $name, $suffix='png')
 	{
 		@mkdir($savePath, 0755, true);
@@ -144,5 +151,5 @@ class UploadForm extends Model
 		}
 		return true;
 	}
-
+*/
 }

@@ -17,13 +17,13 @@ $this->title = '我收藏的节点';
 <div class="row">
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="cell">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
 		<?php
 			echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
-	<div class="cell">
+	<div class="panel-body">
 		<ul>
 		<?php
 			foreach($nodes as $node) {
@@ -32,7 +32,7 @@ $this->title = '我收藏的节点';
 		?>
 		</ul>
 	</div>
-	<div class="item-pagination">
+	<div class="panel-footer item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,

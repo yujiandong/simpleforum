@@ -10,6 +10,7 @@ return [
 	'nodes' => 'node/index', 
 	't/<id:\d+>' => 'topic/view',
 	'new' => 'topic/new',
+	'search' => 'topic/search',
 	'new/<node:\w+>' => 'topic/add',
 	'n/<name:(\w|-)+>' => 'topic/node',
 //	'redirect/<tid:\d+>/<cid:\d+>' => 'topic/redirect',
