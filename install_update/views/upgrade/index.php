@@ -22,7 +22,7 @@ $this->title = '极简论坛升级';
 	<li class="list-group-item">
     	<p>请先备份网站程序，并备份数据库数据。本站不对升级过程中造成的程序或数据损失等负责。</p>
         <?php
-			echo Html::a('已备份，开始升级', ['v1to11'], ['class'=>'btn btn-primary']);
+			echo Html::a('已备份，开始升级', ['v11to111'], ['class'=>'btn btn-primary']);
         ?>
 	</li>
 </ul>

@@ -20,7 +20,7 @@ $this->title = '论坛升级完成';
 		</div>
 		<div class="panel-body">
 			<h2>论坛升级完成</h2>
-			<p>1.可以删除目录： vendor/bbcodeparser , vendor/parsedown, vendor/simpleforum</p>
+			<p>1. 可以删除目录： lib/phpanalysis</p>
 			<p>2. <?php echo Html::a('登录管理后台更新论坛配置', ['/admin/setting/all']); ?></p>
 		</div>
 	</div>
