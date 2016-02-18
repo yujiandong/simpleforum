@@ -1,13 +1,12 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use Yii;
 
 $this->title = '绑定本站帐号';
 ?>
