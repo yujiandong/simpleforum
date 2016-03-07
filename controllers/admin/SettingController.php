@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -117,14 +117,14 @@ class SettingController extends CommonController
 		$serverKeys = ['host', 'port', 'weight'];
 		$servers = explode("\r\n", $serverInfo);
 		$result = [];
-		foreach($servers as $server) {
+		foreach($servers as $key=>$server) {
 			$server = trim($server);
 			if ( empty($server) ) {
 				continue;
 			}
 			$info = explode(' ', $server);
 			foreach($info as $k=>$v) {
-				$result[$serverKeys[$k]] = $v;
+				$result[$key][$serverKeys[$k]] = $v;
 			}
 		}
 		return $result;
