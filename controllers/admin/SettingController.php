@@ -99,7 +99,8 @@ class SettingController extends CommonController
 				if ( !empty($settings['cache_servers']) && ($cache_servers = self::getCacheServerInfo($settings['cache_servers'])) ) {
 					$settings['cache_info'] = [
 				        'class' => $cache_class[$settings['cache_type']][0],
-						'servers' => $cache_servers,
+				        'useMemcached' => $settings['cache_type']==='memcached'?true:false,
+					'servers' => $cache_servers,
 				    ];
 				}
 			} else {
