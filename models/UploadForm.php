@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -112,7 +112,7 @@ class UploadForm extends Model
             foreach ($this->files as $file) {
 				$filePath = 'upload/'. date('Ym') . '/' . date('d');
 //				$fileName = $uid . '_' . time() . '.' . $file->extension;
-				$fileName = $uid . '_' . time();
+				$fileName = $uid . '_' . Util::shorturl(microtime(true));
 				$rtn = Upload::upload($file, $filePath, $fileName);
 				if ($rtn) {
 					$result[] = $rtn;
