@@ -1,6 +1,10 @@
 <?php
 /**
+<<<<<<< HEAD
  * @link http://simpleforum.org/
+=======
+ * @link http://www.simpleforum.org/
+>>>>>>> origin/master
  * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -100,8 +104,13 @@ class SettingController extends CommonController
 				if ( !empty($settings['cache_servers']) && ($cache_servers = self::getCacheServerInfo($settings['cache_servers'])) ) {
 					$settings['cache_info'] = [
 				        'class' => $cache_class[$settings['cache_type']][0],
+<<<<<<< HEAD
 						'useMemcached' => $settings['cache_type']==='memcached'?true:false,
 						'servers' => $cache_servers,
+=======
+				        'useMemcached' => $settings['cache_type']==='memcached'?true:false,
+					'servers' => $cache_servers,
+>>>>>>> origin/master
 				    ];
 				}
 			} else {
