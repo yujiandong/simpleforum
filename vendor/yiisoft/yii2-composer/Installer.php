@@ -121,6 +121,11 @@ class Installer extends LibraryInstaller
 
         if (!empty($autoload['psr-4'])) {
             foreach ($autoload['psr-4'] as $name => $path) {
+                if (is_array($path)) {
+                    // ignore psr-4 autoload specifications with multiple search paths
+                    // we can not convert them into aliases as they are ambiguous
+                    continue;
+                }
                 $name = str_replace('\\', '/', trim($name, '\\'));
                 if (!$fs->isAbsolutePath($path)) {
                     $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
@@ -146,7 +151,7 @@ class Installer extends LibraryInstaller
 
     protected function loadExtensions()
     {
-        $file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+        $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         if (!is_file($file)) {
             return [];
         }
@@ -175,7 +180,7 @@ class Installer extends LibraryInstaller
 
     protected function saveExtensions(array $extensions)
     {
-        $file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+        $file = $this->vendorDir . '/' . static::EXTENSION_FILE;
         if (!file_exists(dirname($file))) {
             mkdir(dirname($file), 0777, true);
         }
@@ -243,8 +248,13 @@ EOF
         foreach ($paths as $path => $permission) {
             echo "chmod('$path', $permission)...";
             if (is_dir($path) || is_file($path)) {
-                chmod($path, octdec($permission));
-                echo "done.\n";
+                try {
+                    if (chmod($path, octdec($permission))) {
+                        echo "done.\n";
+                    };
+                } catch (\Exception $e) {
+                    echo $e->getMessage() . "\n";
+                }
             } else {
                 echo "file not found.\n";
             }

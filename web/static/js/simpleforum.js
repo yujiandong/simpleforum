@@ -246,3 +246,35 @@ $(function(){
 		window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
 	}
 });
+
+$(function(){
+	$('input#q').focus(function(){
+        $(this).animate({width: "250"}, 'fast');
+    })
+    $('input#q').blur(function(){
+        $(this).animate({width: "180"}, 'fast');
+    })
+});
+
+
+$(function(){
+	$('.navi-nodes-add').click(function(e) {
+        e.preventDefault();
+		if($(".navi-nodes tr").length == 1) {
+			$(".navi-nodes tr .navi-nodes-del").show();
+		}
+        var last = $('.navi-nodes tr:last-child');
+		var id = parseInt(last.attr('id').replace('node_', ''))+1;
+		var newNode = last.clone(true).attr('id', 'node_'+id);
+		newNode.find('.node-id').val('').attr('id', 'navinode-'+id+'-node_id').attr('name', 'NaviNode['+id+'][node_id]');
+		newNode.find('.visible').prop('checked', false).attr('id', 'navinode-'+id+'-visible').siblings('input').andSelf().attr('name', 'NaviNode['+id+'][visible]');
+		newNode.find('.sortid').val('').attr('id', 'navinode-'+id+'-sortid').attr('name', 'NaviNode['+id+'][sortid]');
+		$('.navi-nodes').append(newNode);
+	});
+	$('.navi-nodes-del').on("click", function () {
+        $(this).closest('tr').remove();
+		if($(".navi-nodes tr").length == 1) {
+			$(".navi-nodes tr .navi-nodes-del").hide();
+		}
+    });
+});

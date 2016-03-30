@@ -38,7 +38,7 @@ final class Etag
 
         $fstat = fstat($fhandler);
         $fsize = $fstat['size'];
-        if ($fsize == 0) {
+        if ((int) $fsize === 0) {
             fclose($fhandler);
             return array('Fto5o-5ea0sNMlW_75VgGJCv2AcJ', null);
         }
@@ -52,7 +52,7 @@ final class Etag
                 fclose($fhandler);
                 return array(null, $err);
             }
-            list($sha1Code, ) = calSha1($fdata);
+            list($sha1Code, ) = self::calcSha1($fdata);
             $sha1Buf = array_merge($sha1Buf, $sha1Code);
         } else {
             array_push($sha1Buf, 0x96);

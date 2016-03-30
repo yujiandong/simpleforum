@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -22,11 +22,10 @@ $this->title = '修改回复';
 
 <div class="panel panel-default sf-box">
 	<div class="panel-body">
-		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', 
-			Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
 		<h3><?php echo Html::encode($topic['title']); ?></h3>
 		<small class="gray">
-		<?php echo 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', $topic['user_id']]), 
+		<?php echo 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', 'username'=>Html::encode($topic['author']['username'])]), 
 			'  •  ', Yii::$app->getFormatter()->asRelativeTime($topic['created_at']); ?>
 		</small>
 	</div>
@@ -47,7 +46,7 @@ $this->title = '修改回复';
 	}
 ?>
     <div class="form-group">
-        <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
+        <?php echo Html::submitButton('<i class="fa fa-pencil-square-o"></i>修改', ['class' => 'btn btn-primary']); ?>
     </div>
 
 <?php ActiveForm::end(); ?>	</div>

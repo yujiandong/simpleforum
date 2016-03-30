@@ -1,17 +1,18 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 return [
-	'index' => 'topic/index', 
-	'nodes' => 'node/index', 
+	'/' => 'topic/index', 
+	'navi/<name:(\w|-)+>' => 'topic/navi',
+	'nodes' => 'node/index',
 	't/<id:\d+>' => 'topic/view',
 	'new' => 'topic/new',
 	'search' => 'topic/search',
-	'new/<node:\w+>' => 'topic/add',
+	'new/<node:(\w|-)+>' => 'topic/add',
 	'n/<name:(\w|-)+>' => 'topic/node',
 //	'redirect/<tid:\d+>/<cid:\d+>' => 'topic/redirect',
 	'tag/<name>' => 'tag/index',

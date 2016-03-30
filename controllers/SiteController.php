@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -121,6 +121,9 @@ class SiteController extends AppController
                     'source_id' => (string)$attr['id'],
                 ]);
                 $auth->save();
+				if(Yii::$app->getRequest()->get('action') === 'bind') {
+					$this->redirect(['user/setting', '#'=>'auth']);
+				}
             }
         }
     }

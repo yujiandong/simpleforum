@@ -87,6 +87,9 @@ if (!defined('QINIU_FUNCTIONS_VERSION')) {
             JSON_ERROR_UTF8 => 'JSON_ERROR_UTF8 - Malformed UTF-8 characters, possibly incorrectly encoded'
         );
 
+        if (empty($json)) {
+            return null;
+        }
         $data = \json_decode($json, $assoc, $depth);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
@@ -118,5 +121,22 @@ if (!defined('QINIU_FUNCTIONS_VERSION')) {
             $en = $bucket . ':' . $key;
         }
         return base64_urlSafeEncode($en);
+    }
+
+    /**
+     * array 辅助方法，无值时不set
+     *
+     * @param $array 待操作array
+     * @param $key key
+     * @param $value value 为null时 不设置
+     *
+     * @return array 原来的array，便于连续操作
+     */
+    function setWithoutEmpty(&$array, $key, $value)
+    {
+        if (!empty($value)) {
+            $array[$key] = $value;
+        }
+        return $array;
     }
 }

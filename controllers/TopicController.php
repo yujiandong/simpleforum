@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -19,6 +19,7 @@ use app\models\Topic;
 use app\models\TopicContent;
 use app\models\Comment;
 use app\models\Node;
+use app\models\Navi;
 use app\models\Tag;
 use app\models\History;
 use app\lib\Util;
@@ -63,7 +64,7 @@ class TopicController extends AppController
     public function actionIndex()
     {
 	    $pages = new Pagination([
-			'totalCount' => Topic::find()->count('id'),
+			'totalCount' => Topic::find()->innerJoinWith('node', false)->where([Node::tableName().'.invisible'=>0])->count(Topic::tableName().'.id'),
 			'pageSize' => intval($this->settings['index_pagesize']),
 			'pageParam' => 'p',
 		]);
@@ -86,6 +87,17 @@ class TopicController extends AppController
 			 'node' => $node,
 	         'topics' => Topic::getTopicsFromNode($node['id'], $pages),
 	         'pages' => $pages,
+	    ]);
+	}
+
+	public function actionNavi($name)
+	{
+		$navi = $this->findNaviModel($name, ['visibleNaviNodes.node']);
+//		$navis = Navi::find()->where(['type'=>1])->orderBy(['sortid'=>SORT_ASC])->asArray()->all();
+	    return $this->render('navi', [
+			 'navi' => $navi,
+//			 'navis' => $navis,
+	         'topics' => Topic::getTopicsFromNavi($navi['id']),
 	    ]);
 	}
 
@@ -237,6 +249,20 @@ class TopicController extends AppController
             return $model;
         } else {
             throw new NotFoundHttpException('未找到['.$name.']的节点');
+        }
+    }
+
+    protected function findNaviModel($name, $with=null)
+    {
+		$model = Navi::find()->select(['id', 'name', 'ename'])->where(['ename' => $name, 'type'=>1]);
+		if ( !empty($with) ) {
+			$model = $model->with($with);
+		}
+		$model = $model->asArray()->one();
+        if ($model !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('未找到['.$name.']的导航');
         }
     }
 }

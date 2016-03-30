@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
-define('SIMPLE_FORUM_VERSION', 'v1.1.1');
+define('SIMPLE_FORUM_VERSION', 'v1.1.2');

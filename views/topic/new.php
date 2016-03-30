@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -18,7 +18,7 @@ $editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
 $editor->registerAsset($this);
 $editor->registerTagItAsset($this);
 
-$this->title = '创建新主题';
+$this->title = '发表新主题';
 ?>
 
 <div class="row">
@@ -52,7 +52,7 @@ $this->title = '创建新主题';
 	}
 ?>
 		<div class="form-group">
-			<?php echo Html::submitButton('创建', ['class' => 'btn btn-primary']); ?>
+			<?php echo Html::submitButton('<i class="fa fa-pencil"></i>发表', ['class' => 'btn btn-primary']); ?>
 		</div>
 <?php ActiveForm::end(); ?>
 	</div>

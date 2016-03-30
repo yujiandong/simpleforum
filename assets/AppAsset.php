@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -14,6 +14,7 @@ class AppAsset extends AssetBundle
 //    public $basePath = '@webroot';
     public $baseUrl = '@web/static';
     public $css = [
+        'assets/font-awesome/css/font-awesome.min.css',
         'css/default.css',
     ];
     public $js = [

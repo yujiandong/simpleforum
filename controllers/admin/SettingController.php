@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -47,6 +47,7 @@ class SettingController extends CommonController
 	public function actionClearCache()
 	{
 		Yii::$app->getCache()->flush();
+        return $this->render('clearCache');
 	}
 
 	private function createConfigFile($settings)
@@ -99,6 +100,7 @@ class SettingController extends CommonController
 				if ( !empty($settings['cache_servers']) && ($cache_servers = self::getCacheServerInfo($settings['cache_servers'])) ) {
 					$settings['cache_info'] = [
 				        'class' => $cache_class[$settings['cache_type']][0],
+						'useMemcached' => $settings['cache_type']==='memcached'?true:false,
 						'servers' => $cache_servers,
 				    ];
 				}
@@ -117,14 +119,14 @@ class SettingController extends CommonController
 		$serverKeys = ['host', 'port', 'weight'];
 		$servers = explode("\r\n", $serverInfo);
 		$result = [];
-		foreach($servers as $server) {
+		foreach($servers as $key=>$server) {
 			$server = trim($server);
 			if ( empty($server) ) {
 				continue;
 			}
 			$info = explode(' ', $server);
 			foreach($info as $k=>$v) {
-				$result[$serverKeys[$k]] = $v;
+				$result[$key][$serverKeys[$k]] = $v;
 			}
 		}
 		return $result;

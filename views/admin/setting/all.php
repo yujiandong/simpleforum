@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -13,9 +13,11 @@ $this->title = '论坛管理';
 $items = [
 	'配置管理'=>['admin/setting'],
 	'节点管理'=>['admin/node'],
+	'导航管理'=>['admin/navi'],
 	'用户管理'=>['admin/user'],
 	'链接管理'=>['admin/link'],
 	'邮件测试'=>['admin/setting/test-email'],
+	'清空缓存'=>['admin/setting/clear-cache'],
 ];
 
 ?>

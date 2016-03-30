@@ -64,7 +64,7 @@ use yii\helpers\StringHelper;
  * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
- * @property string $rawBody The request body. This property is read-only.
+ * @property string $rawBody The request body.
  * @property string $referrer URL referrer, null if not present. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
@@ -231,11 +231,17 @@ class Request extends \yii\base\Request
     {
         if (isset($_POST[$this->methodParam])) {
             return strtoupper($_POST[$this->methodParam]);
-        } elseif (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-            return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
-        } else {
-            return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
         }
+        
+        if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+            return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+        }
+        
+        if (isset($_SERVER['REQUEST_METHOD'])) {
+            return strtoupper($_SERVER['REQUEST_METHOD']);
+        }
+        
+        return 'GET';
     }
 
     /**
@@ -350,7 +356,7 @@ class Request extends \yii\base\Request
 
     /**
      * Sets the raw HTTP request body, this method is mainly used by test scripts to simulate raw HTTP requests.
-     * @param $rawBody
+     * @param string $rawBody the request body
      */
     public function setRawBody($rawBody)
     {
@@ -723,7 +729,7 @@ class Request extends \yii\base\Request
             throw new InvalidConfigException('Unable to determine the path info of the current request.');
         }
 
-        if ($pathInfo[0] === '/') {
+        if (substr($pathInfo, 0, 1) === '/') {
             $pathInfo = substr($pathInfo, 1);
         }
 
@@ -1011,11 +1017,11 @@ class Request extends \yii\base\Request
      */
     public function getContentType()
     {
-        if (isset($_SERVER["CONTENT_TYPE"])) {
-            return $_SERVER["CONTENT_TYPE"];
-        } elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            return $_SERVER['CONTENT_TYPE'];
+        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             //fix bug https://bugs.php.net/bug.php?id=66606
-            return $_SERVER["HTTP_CONTENT_TYPE"];
+            return $_SERVER['HTTP_CONTENT_TYPE'];
         }
 
         return null;
@@ -1183,7 +1189,7 @@ class Request extends \yii\base\Request
      * Returns the cookie collection.
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
-     * ~~~
+     * ```php
      * $cookie = $request->cookies['name']
      * if ($cookie !== null) {
      *     $value = $cookie->value;
@@ -1191,7 +1197,7 @@ class Request extends \yii\base\Request
      *
      * // alternatively
      * $value = $request->cookies->getValue('name');
-     * ~~~
+     * ```
      *
      * @return CookieCollection the cookie collection.
      */

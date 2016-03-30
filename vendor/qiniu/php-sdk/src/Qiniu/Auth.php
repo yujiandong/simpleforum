@@ -38,8 +38,7 @@ final class Auth
         }
         $data .= "\n";
 
-        if ($body !== null &&
-            in_array((string) $contentType, array('application/x-www-form-urlencoded', 'application/json'), true)) {
+        if ($body !== null && $contentType === 'application/x-www-form-urlencoded') {
             $data .= $body;
         }
         return $this->sign($data);
@@ -107,6 +106,7 @@ final class Auth
 
         'detectMime',
         'mimeLimit',
+        'fsizeMin',
         'fsizeLimit',
 
         'persistentOps',

@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -45,29 +45,31 @@ if( !$isGuest ) {
 
 			if ($isGuest) {
 				$items = [
-	                    ['label' => '首页', 'url' => ['topic/index']],
-	                    ['label' => '登录', 'url' => ['/site/login']],
-	                    ['label' => '注册', 'url' => ['/site/signup']],
+	                    ['label' => '<i class="fa fa-home"></i>首页', 'url' => ['topic/index']],
+	                    ['label' => '<i class="fa fa-sign-in"></i>登录', 'url' => ['/site/login']],
+	                    ['label' => '<i class="fa fa-user-plus"></i>注册', 'url' => ['/site/signup']],
 				];
 			} else {
 				$items = [
-	                    ['label' => '首页', 'url' => ['topic/index']],
-						['label' => Html::encode($me->username), 'url' => ['user/view', 'username'=>$me->username]],
-						['label' => '设置', 'url' => ['user/setting']],
-                        ['label' => '退出', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+	                    ['label' => '<i class="fa fa-home"></i>首页', 'url' => ['topic/index']],
+						['label' => '<i class="fa fa-user"></i>'.Html::encode($me->username), 'url' => ['user/view', 'username'=>$me->username]],
+						['label' => '<i class="fa fa-cog"></i>设置', 'url' => ['user/setting']],
+                        ['label' => '<i class="fa fa-sign-out"></i>退出', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
 				];
 				if ($me->isInactive()) {
 					$items[1]['options'] = ['class'=>'red'];
 				}
 			}
 echo '<form class="navbar-form navbar-left" action="'.Url::to(['topic/search']).'" role="search">
-       <div class="form-group">
-            <input id="q" name="q" type="text" placeholder="搜索" maxlength="40" class="form-control">
+       <div class="form-group input-group">
+			<span class="input-group-addon"><i class="fa fa-search fa-no-mr"></i></span>
+            <input id="q" name="q" type="search" placeholder="搜索" maxlength="40" class="form-control">
         </div>
   </form>';
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => $items,
+                'encodeLabels'=>false,
             ]);
             NavBar::end();
         ?>

@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -77,6 +77,12 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(Notice::className(), ['target_id' => 'id'])
 			->where(['status'=>0])->orderBy(['updated_at'=>SORT_DESC]);
+    }
+
+	public function getAuths()
+    {
+        return $this->hasMany(Auth::className(), ['user_id' => 'id'])
+			->orderBy(['id'=>SORT_DESC]);
     }
 
 	public function getTopics()

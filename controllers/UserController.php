@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -21,6 +21,7 @@ use app\models\Token;
 use app\models\UploadForm;
 use app\models\ChangePasswordForm;
 use app\models\ChangeEmailForm;
+use app\models\Auth;
 use app\lib\Util;
 
 class UserController extends AppController
@@ -40,11 +41,11 @@ class UserController extends AppController
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['setting', 'upload', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail'],
+                'only' => ['setting', 'upload', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail', 'unbind-account'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['setting', 'upload', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail'],
+                        'actions' => ['setting', 'upload', 'avatar', 'notifications', 'edit-profile', 'change-password', 'change-email', 'send-activate-mail', 'unbind-account'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -147,6 +148,13 @@ class UserController extends AppController
 
 //		return $this->goBack();
         return $this->redirect(['user/setting', '#'=>'email']);
+    }
+
+    public function actionUnbindAccount($source)
+    {
+        $model = Auth::find()->where(['source'=>$source, 'user_id'=>Yii::$app->getUser()->id])->limit(1)->one();
+		$model->delete();
+        return $this->redirect(['user/setting', '#'=>'auth']);
     }
 
     public function actionChangePassword()

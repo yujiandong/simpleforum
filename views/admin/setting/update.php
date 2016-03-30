@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -40,7 +40,7 @@ function showSettingForm($settings, $form)
 				$options = \DateTimeZone::listIdentifiers();
 				$options = array_combine($options,$options);
 			} else {
-				$options = json_decode($setting->option);
+				$options = json_decode($setting->option,true);
 			}
 			echo $form->field($setting, "[$id]value", ['enableError'=>false,])
 					->dropDownList($options)->label($setting->label)->hint($setting->description);

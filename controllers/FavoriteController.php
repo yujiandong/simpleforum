@@ -50,7 +50,7 @@ class FavoriteController extends AppController
 //	    $countQuery = clone $query;
 	    $pages = new Pagination(['totalCount' => $me->userInfo->favorite_node_count, 'pageSize' => $this->settings['list_pagesize'], 'pageParam'=>'p']);
 	    $nodes = $query->orderBy(['id'=>SORT_DESC])->offset($pages->offset)
-				->with(['node'])
+				->innerJoinWith(['node'])
 	        	->limit($pages->limit)
 				->asArray()
 	        	->all();

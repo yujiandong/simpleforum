@@ -53,6 +53,6 @@ $this->registerJs('$("#fileuploader").uploadFile({
 	}
 ?>
 	<div class="form-group">
-		<?php echo Html::submitButton($model->isNewRecord ? '创建' : '修改', ['class' => 'btn btn-primary']); ?>
+		<?php echo Html::submitButton($model->isNewRecord ? '<i class="fa fa-pencil"></i>发表' : '<i class="fa fa-pencil-square-o"></i>修改', ['class' => 'btn btn-primary']); ?>
 	</div>
 <?php ActiveForm::end(); ?>

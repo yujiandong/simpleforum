@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -38,7 +38,7 @@ $this->title = Html::encode($node['name']);
 		<p class="gray"><?php echo Html::encode($node['about']); ?></p>
 		<?php
 			if (!Yii::$app->getUser()->getIsGuest() && Yii::$app->getUser()->getIdentity()->status >= User::STATUS_ACTIVE ) {
-				echo Html::a('创建主题', ['topic/add', 'node'=>$node['ename']], ['class'=>'btn btn-primary']);
+				echo Html::a('<i class="fa fa-pencil"></i>发表新主题', ['topic/add', 'node'=>$node['ename']], ['class'=>'btn btn-primary']);
 			}
 		?>
 	</li>
@@ -50,12 +50,12 @@ $this->title = Html::encode($node['name']);
 			$url['np'] = $currentPage;
 //		}
 		echo '<li class="list-group-item media">',
-				Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-rounded media-object','alt'=>Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
+				Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-circle media-object','alt'=>Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
 				'<div class="media-body">
 					<h5 class="media-heading">',
 					Html::a(Html::encode($topic['title']), $url),
 					'</h5>
-					<div class="small">';
+					<div class="small gray">';
 		if($topic['comment_count'] > 0){
 		    $gotopage = ceil($topic['comment_count']/$settings['comment_pagesize']);
 		    if($gotopage > 1){
@@ -63,10 +63,10 @@ $this->title = Html::encode($node['name']);
 		    }
 			echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
 		}
-					echo '<strong>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), '</strong>',
-					' •  ', $topic['top']==1?'置顶':Yii::$app->formatter->asRelativeTime($topic['replied_at']);
+					echo '<strong><i class="fa fa-user"></i>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), '</strong>',
+					' •  ', $topic['top']==1?'<i class="fa fa-arrow-up"></i>置顶':'<i class="fa fa-clock-o"></i>'.Yii::$app->formatter->asRelativeTime($topic['replied_at']);
 		if ($topic['comment_count']>0) {
-					echo '<span class="item-lastreply"> •  最后回复来自 ', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
+					echo '<span class="item-lastreply"> • <i class="fa fa-reply"></i>', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
 		}
 					echo '</div>
 				</div>';

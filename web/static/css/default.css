@@ -22,7 +22,9 @@ blockquote {font-size:14px;}
 /* bootstrap reset end */
 
 h5>a {font-weight:400;}
-
+.fa {margin-right:2px;}
+.fa-no-mr {margin-right:0;}
+input#q {width:180px;}
 a.external{
     background: url("img/view_reference.gif") no-repeat scroll right 4px transparent;
     padding-right: 13px;
@@ -57,6 +59,11 @@ float: right;
 text-align: right;
 }
 
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+
 a.btn {color:#fff;}
 a.btn-default {color:#555;}
 
@@ -65,7 +72,6 @@ a.btn-default {color:#555;}
 
 a.node:link, a.node:visited, a.node:active {
 	background-color: #f5f5f5;
-	font-size: 0.8571em;
 	color: #555;
 }
 a.node:hover {background-color: #e5e5e5;}
@@ -81,43 +87,8 @@ a.count-info:link, a.count-info:visited, a.count-info:active {
 .notice-time {width:100px !important;}
 .new-hot-nodes {padding-bottom:10px;}
 .new-hot-nodes a {margin-left:5px;}
-
-/*
-.box {
-border: 1px solid #eaeaea;
-overflow: hidden;
-background-color: #fff;
-margin-bottom: 10px;
-border-radius: 4px;
-}
-
-.cell {
-padding: 10px;
-text-align: left;
-border-bottom: 1px solid #e2e2e2;
-}
-
-.inner {
-padding: 10px;
-line-height: 150%;
-text-align: left;
-border-bottom: 1px solid #e2e2e2;
-}
-
-.item {
-background-position: 0 bottom;
-background-repeat: repeat-x;
-}
-
-.item-title {
-font-size: 1.14285714em;
-line-height: 1.3;
-padding-bottom: 5px;
-text-shadow: 0px 1px 0px #fff;
-word-wrap: break-word;
-hyphens: auto;
-}
-*/
+.navi-links a {margin-right:10px;}
+.bottom-navi .navi-links {padding-left:0;}
 
 .media-heading, .word-wrap {
 	word-wrap: break-word; 
@@ -156,6 +127,7 @@ hyphens: auto;
 .footer span {margin-right:8px;}
 .footer-links a {margin-right:10px;}
 
+.navi-nodes .sortid {width:60px;}
 
 /* bootstrap reset start */
 .wrap {
@@ -172,29 +144,39 @@ padding: 0
 
 /* navbar start */
 .navbar-inverse {
-	background-color: #fff;
 	border-bottom: 1px solid #EAEAEA;
 	border-color: rgba(0,0,0,.08);
-	box-shadow: 0 1px 3px rgba(0,0,0,.03);
+/*	box-shadow: 0 1px 3px rgba(0,0,0,.03);
+	background-color: #fff; */
+	background-color: #0767c8;
+	background: -webkit-linear-gradient(top,#086ed5,#055db5);
+    background: linear-gradient(to bottom,#086ed5,#055db5);
+    border-bottom: 1px solid #044e97;
+    box-shadow: 0 1px 2px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.15);
 }
 .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
     border-color: #EAEAEA;
 }
+.navbar-inverse .navbar-brand {
+    color: #eee;
+}
 .navbar-toggle {background-color:#fff; border:0px;}
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {background-color: #e5e5e5;}
 .navbar-inverse .navbar-toggle .icon-bar {background-color: #555;}
-.navbar-inverse .navbar-nav>li>a:focus, .navbar-inverse .navbar-nav>li>a:hover {color:#428bca;}
-.navbar-inverse .navbar-brand:focus, .navbar-inverse .navbar-brand:hover {color:#428bca;}
+.navbar-inverse .navbar-nav>li>a:focus, .navbar-inverse .navbar-nav>li>a:hover {color:#eee;}
+.navbar-inverse .navbar-brand:focus, .navbar-inverse .navbar-brand:hover {color:#eee;}
 
 .navbar-nav > li > a:link, .navbar-nav > li > a:visited {
-	color: #556;
+	color: #eee;
 	text-deco
 	ration: none;
 }
 
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
-    color: #999;
-    background-color: #f5f5f5;
+	background: #075fb6;
+    background: -webkit-linear-gradient(top,#055fb8,#095fb3);
+    background: linear-gradient(to bottom,#055fb8,#095fb3);
+    box-shadow: inset 0 0 2px rgba(0,0,0,.12);
 }
 /* navbar end */
 
@@ -251,6 +233,11 @@ form .form-group {
 .sf-box>.sf-box-form, .sf-box-form {padding-top:20px;}
 .sf-box>.item-pagination {text-align:center; padding:0;}
 
+li.navi-top-list {padding-top:5px; padding-bottom:5px;}
+.navi-top-list a, .navi-top-nodes a {margin-right:10px;}
+.navi-top-list a.current {}
+.navi-top-list .fr {margin-top:3px;}
+
 /* auth login start */
 .login-three-home {
   color: #666;
@@ -267,7 +254,7 @@ ul.auth-clients {
   margin: 0 0 0 0;
 }
 
-ul.auth-clients li.auth-client a.auth-link {
+ul.auth-clients li.auth-client a.auth-link, .auth-client a.auth-link {
   width: 90px;
   height: 24px;
   float: left;
@@ -330,6 +317,7 @@ ul.auth-clients li.auth-client a.auth-link {
 	.item-avatar {padding-right:10px;}
 	.item-avatar img{width:48px;height:48px;}
 	.video-link {width:480px;height:400px;}
+	.user-auth-label {text-align:right;}
 }
 
 @media (min-width: 992px) {

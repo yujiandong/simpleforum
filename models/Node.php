@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -27,10 +27,14 @@ class Node extends ActiveRecord
     public function rules()
     {
         return [
+            [['name', 'ename', 'about'], 'trim'],
             [['name', 'ename'], 'required'],
             ['ename', 'match', 'pattern' => '/^[a-z0-9\-]*$/i'],
-            [['name', 'ename'], 'string', 'max' => 50],
+            [['name', 'ename'], 'string', 'max' => 20],
             [['about'], 'string'],
+            ['invisible', 'boolean'],
+            ['name', 'unique'],
+            ['ename', 'unique'],
         ];
     }
 
@@ -57,6 +61,7 @@ class Node extends ActiveRecord
             'name' => '节点名称',
             'ename' => '节点英文名',
             'topic_count' => '主题数',
+            'invisible' => '主题只显示在本节点',
             'about' => '介绍',
         ];
     }

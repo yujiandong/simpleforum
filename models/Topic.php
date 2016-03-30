@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -112,6 +112,12 @@ class Topic extends ActiveRecord
 			->select(['id', 'username']);
     }
 
+	public function getNaviNode()
+    {
+        return $this->hasOne(NaviNode::className(), ['node_id' => 'node_id'])
+			->select(['id', 'node_id']);
+    }
+
 /*
 	public function getTopicTags()
     {
@@ -212,8 +218,9 @@ class Topic extends ActiveRecord
 		$settings = Yii::$app->params['settings'];
 
 		if ( intval($settings['cache_enabled']) === 0 || ($models = $cache->get($key)) === false ) {
-		    $models = static::find()->select(['id', 'title'])
-				->where(['>','created_at', time()-24*60*60])
+		    $models = static::find()->innerJoinWith('node', false)->where([Node::tableName().'.invisible' => 0])
+				->select([self::tableName().'.id', 'title'])
+				->where(['>',self::tableName().'.created_at', time()-24*60*60])
 				->orderBy(['comment_count'=>SORT_DESC, 'replied_at'=>SORT_DESC])
 //				->with(['author'])
 		        ->limit($settings['hot_topic_num'])
@@ -284,7 +291,7 @@ class Topic extends ActiveRecord
 		$settings = Yii::$app->params['settings'];
 
 		if ( intval($settings['cache_enabled']) === 0 || ($models = $cache->get($key)) === false) {
-		    $models = static::find()->select('id')->orderBy(['alltop'=>SORT_DESC, 'replied_at'=>SORT_DESC])->offset($pages->offset)
+		    $models = static::find()->select(Topic::tableName().'.id')->innerJoinWith('node', false)->where([Node::tableName().'.invisible' => 0])->orderBy(['alltop'=>SORT_DESC, 'replied_at'=>SORT_DESC])->offset($pages->offset)
 				->with(['topic.node', 'topic.author', 'topic.lastReply'])
 		        ->limit($pages->limit)
 				->asArray()
@@ -304,6 +311,32 @@ class Topic extends ActiveRecord
 	        ->limit($pages->limit)
 			->asArray()
 	        ->all();
+		return $models;
+	}
+
+	public static function getTopicsFromNavi($navi_id)
+	{
+		$key = 'topics-navi-'. $navi_id;
+		$cache = Yii::$app->getCache();
+		$settings = Yii::$app->params['settings'];
+
+		if ( intval($settings['cache_enabled']) === 0 || ($models = $cache->get($key)) === false) {
+		    $models = static::find()->innerJoinWith(['naviNode', 'node'],false)
+				->where([NaviNode::tableName().'.navi_id' => $navi_id, Node::tableName().'.invisible' => 0])->select([self::tableName().'.id', self::tableName().'.node_id'])
+				->orderBy(['top'=>SORT_DESC, 'replied_at'=>SORT_DESC])
+				->with(['topic.author', 'topic.lastReply', 'topic.node'])
+		        ->limit(intval($settings['list_pagesize']))
+				->asArray()
+		        ->all();
+
+			if ( intval($settings['cache_enabled']) !== 0 ) {
+				if ($models === null) {
+					$models = [];
+				}
+				$dep = new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM '. self::tableName(). ' t1, '.NaviNode::tableName().' t2 where t1.node_id = t2.node_id and t2.navi_id='.$navi_id]);
+				$cache->set($key, $models, intval($settings['cache_time'])*60, $dep);
+			}
+		}
 		return $models;
 	}
 

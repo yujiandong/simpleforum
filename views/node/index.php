@@ -1,12 +1,12 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
-use yii\widgets\LinkPager;
+use app\models\Navi;
 
 $settings = Yii::$app->params['settings'];
 $this->title = '全部节点';
@@ -23,16 +23,28 @@ if ( intval($settings['cache_enabled']) ===0 || $this->beginCache('f-all-nodes',
 	<div class="panel-heading">
 	<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
+</div>
+<?php
+	$navis = Navi::getAllNaviNodes();
+	foreach($navis as $cNavi) :
+?>
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
+	<span class="fr gray"><?php echo count($cNavi['naviNodes']); ?>个节点</span>
+	<?php echo Html::encode($cNavi['name']); ?>
+	</div>
 	<div class="panel-body hot-nodes sf-btn">
 <?php
-	$nodes = \app\models\Node::getAllNodes();
-	foreach($nodes as $node) {
-		echo Html::a(Html::encode($node['name']), ['topic/node', 'name'=>$node['ename']], ['class'=>'btn btn-default']);
+	foreach($cNavi['naviNodes'] as $cNode) {
+		$cNode = $cNode['node'];
+		echo Html::a(Html::encode($cNode['name']), ['topic/node', 'name'=>$cNode['ename']], ['class'=>'btn btn-default']);
 	}
 ?>
 	</div>
 </div>
 <?php
+	endforeach;
+
 if ( intval($settings['cache_enabled']) !== 0 ) {
 	$this->endCache();
 }

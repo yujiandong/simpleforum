@@ -115,6 +115,13 @@ class BBCodeParser
         ]
     ];
 
+    private $enabledParsers;
+
+    public function __construct()
+    {
+        $this->enabledParsers = $this->parsers;
+    }
+
     /**
      * Parses the BBCode string
      * @param  string $source String containing the BBCode
@@ -122,7 +129,7 @@ class BBCodeParser
      */
     public function parse($source, $caseInsensitive = false)
     {
-        foreach ($this->parsers as $name => $parser) {
+        foreach ($this->enabledParsers as $name => $parser) {
             $pattern = ($caseInsensitive) ? $parser['pattern'].'i' : $parser['pattern'];
 
             $source = $this->searchAndReplace($pattern, $parser['replace'], $source);
@@ -186,7 +193,7 @@ class BBCodeParser
     public function only($only = null)
     {
         $only = (is_array($only)) ? $only : func_get_args();
-        $this->parsers = $this->arrayOnly($this->parsers, $only);
+        $this->enabledParsers = $this->arrayOnly($this->parsers, $only);
         return $this;
     }
 
@@ -198,7 +205,7 @@ class BBCodeParser
     public function except($except = null)
     {
         $except = (is_array($except)) ? $except : func_get_args();
-        $this->parsers = $this->arrayExcept($this->parsers, $except);
+        $this->enabledParsers = $this->arrayExcept($this->parsers, $except);
         return $this;
     }
 
@@ -208,7 +215,7 @@ class BBCodeParser
      */
     public function getParsers()
     {
-        return $this->parsers;
+        return $this->enabledParsers;
     }
 
     /**
@@ -222,6 +229,11 @@ class BBCodeParser
     public function setParser($name, $pattern, $replace)
     {
         $this->parsers[$name] = array(
+            'pattern' => $pattern,
+            'replace' => $replace
+        );
+
+        $this->enabledParsers[$name] = array(
             'pattern' => $pattern,
             'replace' => $replace
         );

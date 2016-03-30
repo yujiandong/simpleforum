@@ -1,13 +1,11 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
-
-$this->title = '修改主题';
 
 $request = Yii::$app->getRequest();
 $me = Yii::$app->getUser()->getIdentity();
@@ -20,6 +18,9 @@ if ($request->get('ip', 1) > 1) {
 if ($request->get('np', 1) > 1) {
 	$nodeUrl['p'] = $request->get('np', 1);
 }
+
+$this->title = '修改主题';
+
 ?>
 
 <div class="row">

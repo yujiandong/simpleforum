@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -52,7 +52,7 @@ if ( $rtnCd === 9 ) {
 </div>
 
 <div class="col-md-4 sf-right">
-<?php echo $this->render('@app/views/common/_right'); ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 
 </div>

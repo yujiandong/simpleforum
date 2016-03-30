@@ -46,7 +46,7 @@ if (!$isGuest && $me->isAdmin() && $me->id != $user['id']) {
 <div class="panel panel-default sf-box">
 	<div class="panel-heading media">
 		<div class="media-left item-largeavatar">
-			<?php echo Html::img('@web/'.str_replace('{size}', 'large', $user['avatar']), ["alt" => $this->title]); ?>
+			<?php echo Html::img('@web/'.str_replace('{size}', 'large', $user['avatar']), ['class'=>'img-circle', "alt" => $this->title]); ?>
 		</div>
 		<div class="media-body">
 			<span class="fr sf-btn"><?php echo $manage, $follow; ?></span>

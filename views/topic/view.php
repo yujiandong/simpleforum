@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -45,22 +45,24 @@ $topicOp = [];
 if(!$isGuest) {
 	$me = Yii::$app->getUser()->getIdentity();
 	if ($me->isActive()) {
-		$topicOp['follow'] = Favorite::checkFollow($me->id, Favorite::TYPE_TOPIC, $topic['id'])?Html::a('取消收藏', ['favorite/cancel', 'type'=>'topic', 'id'=>$topic['id']], [
+		$topicOp['follow'] = Favorite::checkFollow($me->id, Favorite::TYPE_TOPIC, $topic['id'])?Html::a('<i class="fa fa-star fa-lg"></i>', ['favorite/cancel', 'type'=>'topic', 'id'=>$topic['id']], [
+			'title' => '取消收藏',
 		    'data' => [
 		        'method' => 'post',
-		    ]]):Html::a('加入收藏', ['favorite/add', 'type'=>'topic', 'id'=>$topic['id']]);
+		    ]]):Html::a('<i class="fa fa-star-o fa-lg"></i>', ['favorite/add', 'type'=>'topic', 'id'=>$topic['id']], ['title' => '加入收藏']);
 	}
 	if ( $me->canReply($topic) ) {
-		$topicOp['reply'] = Html::a('回复', null, ['href' => '#reply']);
+		$topicOp['reply'] = Html::a('<i class="fa fa-reply fa-lg"></i>', null, ['href' => '#reply', 'title' => '回复']);
 	}
 	if ( $me->canEdit($topic) ) {
-		$topicOp['edit'] = Html::a('修改', $topicUrl);
+		$topicOp['edit'] = Html::a('<i class="fa fa-pencil-square-o fa-lg"></i>', $topicUrl, ['title' => '修改']);
 	}
 	if ($me->isAdmin()) {
 		$topicUrl[0] = 'admin/topic/change-node';
-		$topicOp['changeNode'] = Html::a('转移节点', $topicUrl);
+		$topicOp['changeNode'] = Html::a('<i class="fa fa-retweet fa-lg"></i>', $topicUrl, ['title' => '转移节点']);
 		$topicUrl[0] = 'admin/topic/delete';
-		$topicOp['delete'] = Html::a('删除', $topicUrl, [
+		$topicOp['delete'] = Html::a('<i class="fa fa-trash fa-lg"></i>', $topicUrl, [
+			'title' => '删除',
 		    'data' => [
 		        'confirm' => '注意：删除后将不会恢复！确认删除！',
 		        'method' => 'post',
@@ -76,7 +78,7 @@ $this->title = Html::encode($topic['title']);
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
 		<div class="fr">
-			<?php echo Html::a(Html::img('@web/'.str_replace('{size}', 'large', $topic['author']['avatar']), ['class'=>'img-rounded media-object','alt'=> Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]); ?>
+			<?php echo Html::a(Html::img('@web/'.str_replace('{size}', 'large', $topic['author']['avatar']), ['class'=>'img-circle media-object','alt'=> Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])]); ?>
 		</div>
 		<?php
 			echo Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), $nodeUrl);
@@ -84,10 +86,11 @@ $this->title = Html::encode($topic['title']);
 		<h2 class="word-wrap"><?php echo $this->title; ?></h2>
 		<small class="gray">
 		<?php
-			echo 'by ', Html::a(Html::encode($topic['author']['username']), ['user/view', 'username'=>Html::encode($topic['author']['username'])]), '  •  ', $formatter->asRelativeTime($topic['created_at']), '  •  ', $topic['views'], ' 次点击';
-			echo '  •  字体 <span class="fontsize-plus">大</span> <span class="fontsize-minus">小</span>';
+			echo '<i class="fa fa-user"></i>', Html::a(Html::encode($topic['author']['username']), ['user/view', 'username'=>Html::encode($topic['author']['username'])]),
+				' • <i class="fa fa-clock-o"></i>', $formatter->asRelativeTime($topic['created_at']), ' • ', $topic['views'], ' 点击';
+			echo ' • 字体 <i class="fa fa-font fa-2x fontsize-plus" title="加大"></i> <i class="fa fa-font fa-lg fontsize-minus" title="缩小"></i>';
 			if ( !$isGuest && !empty($topicOp) ) {
-				echo '  •  ', implode(' | ', $topicOp);
+				echo '  •  ', implode(' ', $topicOp);
 			}
 		?></small>
 	</div>
@@ -108,7 +111,7 @@ $this->title = Html::encode($topic['title']);
 			echo '<div class="top10">';
 			$tags = explode(',', strtolower($topic['tags']));
 			foreach($tags as $tag) {
-				echo Html::a(Html::encode($tag), ['tag/index', 'name'=>$tag], ['class'=>'btn btn-default btn-sm tag']);
+				echo Html::a('<i class="fa fa-tag"></i>'.Html::encode($tag), ['tag/index', 'name'=>$tag], ['class'=>'btn btn-default btn-sm tag']);
 			}
 			echo '</div>';
 		}
@@ -129,7 +132,7 @@ foreach($comments as $comment){
 //	$comment = $comment['comment'];
 	echo '<li class="list-group-item media" id="reply', $comment['position'] ,'">
 			<div class="media-left item-avatar">',
-				Html::img('@web/'.str_replace('{size}', 'normal', $comment['author']['avatar']), ['class'=>'img-rounded media-object','alt'=> Html::encode($comment['author']['username'])], ['class'=>'media-left item-avatar']),
+				Html::img('@web/'.str_replace('{size}', 'normal', $comment['author']['avatar']), ['class'=>'img-circle media-object','alt'=> Html::encode($comment['author']['username'])], ['class'=>'media-left item-avatar']),
 			'</div>
 		 	 <div class="media-body link-external">
 				<div><small class="fr gray">';
@@ -142,24 +145,25 @@ foreach($comments as $comment){
 			$commentUrl['np'] = $nodePage;
 		}*/
 		if ( $me->canEdit($comment, $topic['comment_closed']) ) {
-			echo Html::a('修改', $commentUrl), ' | ';
+			echo Html::a('<i class="fa fa-pencil-square-o fa-lg"></i>', $commentUrl, ['title'=>'修改']), ' | ';
 		}
 		if ( $me->isAdmin() ) {
 			$commentUrl[0] = 'admin/comment/delete';
-			echo Html::a('删除', $commentUrl, [
+			echo Html::a('<i class="fa fa-trash fa-lg"></i>', $commentUrl, [
+				'title' => '删除',
 			    'data' => [
 			        'confirm' => '注意：删除后将不会恢复！确认删除！',
 			        'method' => 'post',
 			    ]]), ' | ';
 		}
 		if ( $me->canReply($topic) ) {
-			echo Html::a('回复', null, ['href' => 'javascript:replyTo("'. Html::encode($comment['author']['username']) .'");']), ' | ';
+			echo Html::a('<i class="fa fa-reply fa-lg"></i>', null, ['title'=>'回复', 'href' => 'javascript:replyTo("'. Html::encode($comment['author']['username']) .'");']), ' | ';
 		}
 	}
 					echo $comment['position'].'楼',
 				'</small>
-				<small class="gray"><strong>', Html::a(Html::encode($comment['author']['username']), ['user/view', 'username'=>Html::encode($comment['author']['username'])]), '</strong> •  ',
-				 $formatter->asRelativeTime($comment['created_at']),
+				<small class="gray"><strong>', Html::a('<i class="fa fa-user"></i>'.Html::encode($comment['author']['username']), ['user/view', 'username'=>Html::encode($comment['author']['username'])]), '</strong> •  ',
+				 '<i class="fa fa-clock-o"></i>', $formatter->asRelativeTime($comment['created_at']),
 				'</small></div>';
 				if ( $comment['invisible'] == 1 || $comment['author']['status'] == User::STATUS_BANNED ) {
 					echo Alert::widget([
@@ -192,7 +196,7 @@ foreach($comments as $comment){
 <?php if( !$isGuest && $me->canReply($topic) ): ?>
 <div class="panel panel-default sf-box" id="reply">
 	<div class="panel-heading">
-		<span class="fr"><a href="#">↑ 回到顶部</a></span>添加一条新回复
+		<span class="fr"><a href="#"><i class="fa fa-arrow-up"></i>回到顶部</a></span>添加一条新回复
 	</div>
 	<div class="panel-body">
 <?php $form = ActiveForm::begin(['action' => ['comment/reply', 'id'=>$topic['id']]]);
@@ -203,7 +207,7 @@ foreach($comments as $comment){
 	}
 ?>
     <div class="form-group">
-        <?php echo Html::submitButton('回复', ['class' => 'btn btn-primary']); ?>
+        <?php echo Html::submitButton('<i class="fa fa-reply"></i>回复', ['class' => 'btn btn-primary']); ?>
     </div>
 <?php ActiveForm::end(); ?>
 	</div>

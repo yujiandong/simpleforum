@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -62,7 +62,7 @@ class InstallController extends \yii\web\Controller
 		$gdOK = $imagickOK = false;
 
 		if (extension_loaded('imagick')) {
-		    $imagick = new Imagick();
+		    $imagick = new \Imagick();
 		    $imagickFormats = $imagick->queryFormats('PNG');
 		    if (in_array('PNG', $imagickFormats)) {
 		        $imagickOK = true;

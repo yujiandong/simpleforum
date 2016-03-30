@@ -112,7 +112,7 @@ class UploadForm extends Model
             foreach ($this->files as $file) {
 				$filePath = 'upload/'. date('Ym') . '/' . date('d');
 //				$fileName = $uid . '_' . time() . '.' . $file->extension;
-				$fileName = $uid . '_' . time();
+				$fileName = $uid . '_' . Util::shorturl(microtime(true));
 				$rtn = Upload::upload($file, $filePath, $fileName);
 				if ($rtn) {
 					$result[] = $rtn;

@@ -1,17 +1,20 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
+use yii\authclient\Collection;
 use app\models\UserInfo;
 use app\models\UploadForm;
 use app\models\ChangePasswordForm;
 use app\models\ChangeEmailForm;
+use app\models\Auth;
 
 $this->title = '会员设置';
 $session = Yii::$app->getSession();
@@ -111,7 +114,7 @@ if ( $session->hasFlash('setAvatarNG') ) {
 		<div class="form-group">
 			<label class="control-label col-sm-3 avatar-label">当前头像</label>
 			<div class="col-sm-6">
-			<?php echo Html::img('@web/'.str_replace('{size}', 'large', $me->avatar)), ' ', Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar)), ' ', Html::img('@web/'.str_replace('{size}', 'small', $me->avatar)); ?>
+			<?php echo Html::img('@web/'.str_replace('{size}', 'large', $me->avatar), ['class'=>'img-circle']), ' ', Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar), ['class'=>'img-circle']), ' ', Html::img('@web/'.str_replace('{size}', 'small', $me->avatar), ['class'=>'img-circle']); ?>
 			</div>
 		</div>
 		<?php echo $form->field((new UploadForm()), 'file')->fileInput(); ?>
@@ -187,6 +190,28 @@ if ( $session->hasFlash('chgPwdNG') ) {
 			</div>
         </div>
 <?php ActiveForm::end(); ?>
+	</li>
+	<li class="list-group-item list-group-item-info" id="auth"><strong>第三方帐号登录</strong></li>
+	<li class="list-group-item sf-box-form">
+<?php
+	$auths = ArrayHelper::getColumn($me->auths, 'source');
+$authed = $unauthed = [];
+foreach (Yii::$app->authClientCollection->getClients() as $client){
+	if( in_array($client->getId(), $auths) ) {
+		$authed[] = Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', ['user/unbind-account', 'source'=>$client->getId()], ['class'=>'auth-link '. $client->getId(), 'title'=>'解绑']);
+	} else {
+		$unauthed[] = Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId(), 'action'=>'bind'], ['class'=>'auth-link '. $client->getId(), 'title'=>'绑定']);
+	}
+}
+?>
+		<div class="row">
+		<div class="col-sm-3 user-auth-label"><strong>已绑定</strong></div>
+		<div class="col-sm-9 auth-client">&nbsp;<?php echo implode('', $authed); ?></div>
+		</div>
+		<div class="row" style="padding-top:7px;">
+		<div class="col-sm-3 user-auth-label"><strong>未绑定</strong></div>
+		<div class="col-sm-9 auth-client"><?php echo implode('', $unauthed); ?>
+		</div>
 	</li>
 </ul>
 

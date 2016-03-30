@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -62,7 +62,7 @@ $config = [
                     'sourcePath' => null,
 		    'baseUrl' => '@web/static',
                     'js' => [
-                    'js/jquery-1.11.3.min.js',
+                    'js/jquery-1.12.2.min.js',
                     ]
                 ],
                 'yii\bootstrap\BootstrapAsset' => [

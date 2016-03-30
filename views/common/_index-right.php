@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -22,7 +22,7 @@ $settings = Yii::$app->params['settings'];
 <ul class="list-group sf-box">
   <li class="list-group-item">
 		<?php 
-			echo Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar), ['class'=>'img-rounded', 'alt' => Html::encode($me->username)]) . ' ' . Html::a(Html::encode($me->username), ['user/view', 'username'=>Html::encode($me->username)]);
+			echo Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar), ['class'=>'img-circle', 'alt' => Html::encode($me->username)]) . ' ' . Html::a(Html::encode($me->username), ['user/view', 'username'=>Html::encode($me->username)]);
 			if ($me->isWatingActivation()) {
 				echo ' <small class="red">[ ', Html::a('未激活', ['user/setting']), ' ]</small>';
 			} else if ($me->isWatingVerification()) {
@@ -35,8 +35,8 @@ $settings = Yii::$app->params['settings'];
 		  <li><?php echo Html::a($myInfo->favorite_user_count.'<br /><span class="gray">特别关注</span>', ['my/following']); ?></li>
 		</ul>
   </li>
-  <li class="list-group-item"><?php echo Html::a('创作新主题', ['topic/new']) ?></li>
-  <li class="list-group-item"><?php echo Html::a($me->getNoticeCount().' 条未读提醒', ['user/notifications']); ?></li>
+  <li class="list-group-item"><?php echo Html::a('<i class="fa fa-pencil"></i>发表新主题', ['topic/new']) ?></li>
+  <li class="list-group-item"><?php echo Html::a('<i class="fa fa-envelope"></i>'.$me->getNoticeCount().' 条未读提醒', ['user/notifications']); ?></li>
 </ul>
 <?php else: ?>
 <ul class="list-group sf-box">
@@ -46,8 +46,8 @@ $settings = Yii::$app->params['settings'];
 	</li>
   <li class="list-group-item">
 		<div class="text-center">
-		<p><?php echo Html::a('现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
-		已注册用户请  <?php echo Html::a('登录', ['site/login']); ?>
+		<p><?php echo Html::a('<i class="fa fa-user-plus"></i>现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
+		已注册用户请  <?php echo Html::a('<i class="fa fa-sign-in"></i>登录', ['site/login']); ?>
 		</div>
 	</li>
 </ul>
