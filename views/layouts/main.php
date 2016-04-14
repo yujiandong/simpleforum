@@ -27,7 +27,7 @@ if( !$isGuest ) {
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <?php echo Html::csrfMetaTags(); ?>
     <?php echo $settings['head_meta']; ?>
-    <title><?php echo Html::encode($this->title); ?></title>
+    <title><?php echo Html::encode($this->title), $this->title==$settings['site_name']?'':' - '.Html::encode($settings['site_name']); ?></title>
     <?php $this->head() ?>
 </head>
 <body>

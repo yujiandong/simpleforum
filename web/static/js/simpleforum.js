@@ -59,7 +59,7 @@
 /* jquery.focus.js end */
 
 var replyTo = function(username) {
-	var atString = '@' + username + ' ', editorName, comment, oldContent, newContent;
+	var atString = '@' + username + "\u00a0", editorName, comment, oldContent, newContent;
 	if($('.wysibb-body').length>0) {
 		editorName = 'wysibb';
     	comment = $('.wysibb-body');
