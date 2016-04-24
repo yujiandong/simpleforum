@@ -20,13 +20,13 @@ class AppController extends Controller
         $this->settings = Yii::$app->params['settings'];
         $user = Yii::$app->getUser();
 
-        $this->setReturnUrl($action, $user);
-
         if ( $this->isOffline($action, $user) ) {
             return Yii::$app->getResponse()->redirect(['site/offline']);
         }
+        $this->setReturnUrl($action, $user);
+
         if ( $this->needLogin($action, $user) ) {
-            Yii::$app->getSession()->setFlash('accessNG', 'Äú²é¿´µÄÒ³ÃæĞèÒªÏÈµÇÂ¼');
+            Yii::$app->getSession()->setFlash('accessNG', 'æ‚¨æŸ¥çœ‹çš„é¡µé¢éœ€è¦å…ˆç™»å½•');
             return Yii::$app->getResponse()->redirect(['site/login']);
         }
 //      Yii::$app->getUser()->setReturnUrl(Util::getReferrer());
@@ -35,7 +35,21 @@ class AppController extends Controller
 
     public function setReturnUrl($action, $user)
     {
-        if( $action->controller->id !== 'site' || $action->id !== 'login' ) {
+        $exceptActions = [
+            'error',
+            'captcha',
+            'auth',
+            'offline',
+            'login',
+            'signup',
+            'forgot-password',
+            'reset-password',
+            'verify-email',
+            'activate',
+            'auth-signup',
+            'auth-bind-account',
+        ];
+        if( $action->controller->id !== 'site' || !in_array( $action->id, $exceptActions) ) {
             $user->setReturnUrl(Yii::$app->getRequest()->url);
         }
     }
