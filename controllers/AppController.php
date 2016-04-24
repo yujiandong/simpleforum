@@ -20,11 +20,11 @@ class AppController extends Controller
         $this->settings = Yii::$app->params['settings'];
         $user = Yii::$app->getUser();
 
+        $this->setReturnUrl($action, $user);
+
         if ( $this->isOffline($action, $user) ) {
             return Yii::$app->getResponse()->redirect(['site/offline']);
         }
-        $this->setReturnUrl($action, $user);
-
         if ( $this->needLogin($action, $user) ) {
             Yii::$app->getSession()->setFlash('accessNG', '您查看的页面需要先登录');
             return Yii::$app->getResponse()->redirect(['site/login']);
@@ -48,8 +48,13 @@ class AppController extends Controller
             'activate',
             'auth-signup',
             'auth-bind-account',
+            'delete',
+            'add',
+            'cancel',
+            'activate',
+            'reset-password',
         ];
-        if( $action->controller->id !== 'site' || !in_array( $action->id, $exceptActions) ) {
+        if( !in_array( $action->id, $exceptActions) ) {
             $user->setReturnUrl(Yii::$app->getRequest()->url);
         }
     }
