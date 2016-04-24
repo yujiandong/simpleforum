@@ -10,6 +10,21 @@ if (file_exists(__DIR__.'/../runtime/install.lock')) {
     exit;
 }
 
+if ( !is_writeable(__DIR__.'/../config') ) {
+    echo 'config目录没有写权限。请加上写权限。';
+    exit;
+}
+
+if ( !is_writeable(__DIR__.'/assets') ) {
+    echo 'web/assets目录没有写权限。请加上写权限。';
+    exit;
+}
+
+if ( !is_writeable(__DIR__.'/../runtime') ) {
+    echo 'runtime目录没有写权限。请加上写权限。';
+    exit;
+}
+
 if (!file_exists(__DIR__.'/../config/db.php')) {
     if (!copy(__DIR__.'/../config/db.php.default', __DIR__.'/../config/db.php')) {
         echo "文件copy出错，请手动将config目录下db.php.default改名为db.php";
