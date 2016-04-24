@@ -66,6 +66,7 @@ CREATE TABLE simple_node (
   `updated_at` int(10) unsigned NOT NULL,
   `topic_count` mediumint(8) unsigned NOT NULL default 0,
   `favorite_count` smallint(6) unsigned NOT NULL default 0,
+  `access_auth` tinyint(1) unsigned NOT NULL default 0,
   `invisible` tinyint(1) unsigned NOT NULL default 0,
   `name` varchar(20) NOT NULL,
   `ename` varchar(20) NOT NULL,
@@ -77,7 +78,7 @@ CREATE TABLE simple_node (
   KEY invisible(`invisible`, `id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO simple_node VALUES(1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 0, 0, 0, '默认分类', 'default', '');
+INSERT INTO simple_node VALUES(1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 0, 0, 0, 0, '默认分类', 'default', '');
 
 DROP TABLE IF EXISTS simple_navi;
 CREATE TABLE simple_navi (
@@ -244,7 +245,11 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (5,'manage', '注册需管理员验证', 'select','admin_verify','integer', '0', '默认0（不用验证），若需要管理员验证就设为1（适合内部交流）', '["0(关闭验证)","1(开启验证)"]'),
 (6,'manage', '关闭用户注册', 'select','close_register', 'integer', '0','默认0，若停止新用户注册就设为1（仍旧可以通过第三方帐号登录方式注册）', '["0(开启注册)","1(关闭注册)"]'),
 (7,'manage', '过滤用户名', 'text','username_filter', 'text', '','指定用户名不能含有某些指定词汇，用半角逗号(,)分割，例：<br />admin,webmaster,admin*', ''),
-(8,'manage', '开启验证码', 'select','captcha_enabled', 'integer', '0','开启后，注册和登录时会要求输入验证码', '["0(关闭","1(开启)"]'),
+(8,'manage', '开启验证码', 'select','captcha_enabled', 'integer', '0','开启后，注册和登录时会要求输入验证码', '["0(关闭)","1(开启)"]'),
+(9,'manage', '开启自动链接', 'select','autolink', 'integer', '0','自动给帖子内容中的网址加上链接', '["0(关闭)","1(开启)"]'),
+(10,'manage', '自动链接排除列表', 'textarea','autolink_filter', 'text', '','不包含http://，可设置主域名或二级域名等，一行一个网址', '["0(关闭","1(开启)"]'),
+(11,'manage', '模板', 'text','theme', 'text', '','模板名请用字母数字横杠下划线命名，模板放在"themes/模板名/"目录下', ''),
+(12,'manage', '移动模板', 'text','theme_mobile', 'text', '','移动设备（手机/平板）专用模板，模板名请用字母数字横杠下划线命名，放在"themes/移动模板名/"目录下', ''),
 (1,'extend', '放在页面头部<br/>head标签里面的<br/>meta或其它信息', 'textarea','head_meta', 'text', '','示例:<br/>&lt;meta property="qc:admins" content="331146677212163161xxxxxxx" /&gt;<br/>&lt;meta name="cpalead-verification" content="ymEun344mP9vt-B2idFRxxxxxxx" /&gt;', ''),
 (2,'extend', '放在页面底部的<br/>统计代码', 'textarea','analytics_code', 'text', '','示例： 直接粘贴google 或 百度统计代码', ''),
 (3,'extend', '底部链接', 'textarea','footer_links','text', '', '一行一个链接，格式： 描述 http://url<br />如：关于本站 http://simpleforum.org/t/1', ''),
@@ -266,9 +271,11 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (4,'other', '最热主题数', 'text','hot_topic_num', 'integer', '10','默认10', ''),
 (5,'other', '最热节点数', 'text','hot_node_num', 'integer', '20','默认20', ''),
 (6,'other', '可编辑时间(分)', 'text','edit_space', 'integer', '30','默认30，主题贴和回复发表后可修改时间。', ''),
-(7,'other', 'static目录自定义网址', 'text','alias_static','text', '', '自定义web/static目录的网址，可用于CDN。例：http://static.simpleforum.org', ''),
-(8,'other', '头像目录自定义网址', 'text','alias_avatar','text', '', '自定义web/avatar目录的网址，可用于CDN。例：http://avatar.simpleforum.org', ''),
-(9,'other', '附件目录自定义网址', 'text','alias_upload','text', '', '自定义web/upload目录的网址，可用于CDN。例：http://upload.simpleforum.org', ''),
+(7,'other', '发表主题间隔(秒)', 'text','topic_space', 'integer', '30','默认30', ''),
+(8,'other', '发表回复间隔(秒)', 'text','comment_space', 'integer', '20','默认20', ''),
+(9,'other', 'static目录自定义网址', 'text','alias_static','text', '', '自定义web/static目录的网址，可用于CDN。例：http://static.simpleforum.org', ''),
+(10,'other', '头像目录自定义网址', 'text','alias_avatar','text', '', '自定义web/avatar目录的网址，可用于CDN。例：http://avatar.simpleforum.org', ''),
+(11,'other', '附件目录自定义网址', 'text','alias_upload','text', '', '自定义web/upload目录的网址，可用于CDN。例：http://upload.simpleforum.org', ''),
 (1,'mailer', 'SMTP服务器', 'text','mailer_host', 'text', '','', ''),
 (2,'mailer', 'SMTP端口', 'text','mailer_port', 'integer', '','', ''),
 (3,'mailer', 'SMTP加密协议', 'text','mailer_encryption', 'text', '','如ssl,tls等，不加密留空', ''),

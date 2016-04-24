@@ -11,6 +11,8 @@ use Yii;
 use yii\base\Component;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
+use app\lib\Util;
 
 class Editor extends Component
 {
@@ -77,13 +79,13 @@ class Editor extends Component
             $this->_parser->setParser('image', '/\[img\](.*?)\[\/img\]/s', '<img src="'.\Yii::getAlias('@web/static/css/img/grey.gif').'" data-original="$1" class="lazy">');
             $this->_parser->setParser('listitem', '/\[\*\](.*?)\[\/\*\]/', '<li>$1</li>');
             $this->_parser->setParser('listitem2', '/\[\*\](.*)/', '<li>$1</li>');
-            return $this->_parser->parse(Html::encode($text));
+            return Util::autoLink($this->_parser->parse(Html::encode($text)));
         } else if ($this->editor === 'smd') {
             if ( empty($this->_parser) ) {
                 $this->_parser = new \app\lib\SimpleParsedown();
             }
-//          return $this->_parser->setUrlsLinked(false)->setMarkupEscaped(true)->text($text);
-            return $this->_parser->setMarkupEscaped(true)->text($text);
+            return $this->_parser->setUrlsLinked(intval(ArrayHelper::getValue(Yii::$app->params, 'settings.autolink', 0))===0?false:true)->setMarkupEscaped(true)->text($text);
+//          return $this->_parser->setMarkupEscaped(true)->text($text);
         } else if ($this->editor === 'simditor') {
             return \yii\helpers\HtmlPurifier::process($text);
         }

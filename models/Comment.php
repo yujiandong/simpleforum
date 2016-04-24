@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -63,120 +63,121 @@ class Comment extends ActiveRecord
        ];
     }
 
-	public static function primaryKey()
-	{
-		return ['topic_id', 'position'];
-	}
+    public static function primaryKey()
+    {
+        return ['topic_id', 'position'];
+    }
 
-	public function getTopic()
+    public function getTopic()
     {
         return $this->hasOne(Topic::className(), ['id' => 'topic_id'])
-			->select(['id', 'created_at', 'node_id', 'user_id', 'title']);
+            ->select(['id', 'created_at', 'node_id', 'user_id', 'title']);
     }
 
-	public function getComment()
+    public function getComment()
     {
         return $this->hasOne(self::className(), ['id' => 'id'])
-			->select(['id', 'created_at', 'user_id', 'position', 'invisible', 'content']);
+            ->select(['id', 'created_at', 'user_id', 'position', 'invisible', 'content']);
     }
 
-	public function getAuthor()
+    public function getAuthor()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id'])
-			->select(['id', 'username', 'avatar', 'status']);
+            ->select(['id', 'username', 'avatar', 'status']);
     }
 
-	public function afterSave($insert, $changedAttributes)
-	{
-		if ($insert === true) {
-			(new History([
-				'user_id' => $this->user_id,
-				'action' => History::ACTION_ADD_COMMENT,
-				'action_time' => $this->created_at,
-				'target' => $this->id,
-			]))->save(false);
-			Siteinfo::updateCounterInfo('addComment');
-			UserInfo::updateCounterInfo('addComment', $this->user_id);
-			Topic::afterCommentInsert($this->topic_id, $this->user_id);
-			Notice::afterCommentInsert($this);
-		}
-		return parent::afterSave($insert, $changedAttributes);
-	}
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert === true) {
+            (new History([
+                'user_id' => $this->user_id,
+                'action' => History::ACTION_ADD_COMMENT,
+                'action_time' => $this->created_at,
+                'target' => $this->id,
+            ]))->save(false);
+            Siteinfo::updateCounterInfo('addComment');
+            UserInfo::updateCounterInfo('addComment', $this->user_id);
+            Topic::afterCommentInsert($this->topic_id, $this->user_id);
+            Notice::afterCommentInsert($this);
+        }
+        return parent::afterSave($insert, $changedAttributes);
+    }
 
-	public function afterDelete()
-	{
-		(new History([
-			'user_id' => $this->user_id,
-			'action' => History::ACTION_DELETE_COMMENT,
-			'target' => $this->id,
-		]))->save(false);
-		Siteinfo::updateCounterInfo('deleteComment');
-		UserInfo::updateCounterInfo('deleteComment', $this->user_id);
-		Topic::afterCommentDelete($this->topic_id);
-		return parent::afterDelete();
-	}
+    public function afterDelete()
+    {
+        (new History([
+            'user_id' => $this->user_id,
+            'action' => History::ACTION_DELETE_COMMENT,
+            'target' => $this->id,
+        ]))->save(false);
+        Siteinfo::updateCounterInfo('deleteComment');
+        UserInfo::updateCounterInfo('deleteComment', $this->user_id);
+        Topic::afterCommentDelete($this->topic_id);
+        return parent::afterDelete();
+    }
 
-	public static function afterTopicDelete($topic_id)
-	{
-		$limit = 100;
-		$offset = 0;
-		while ( 1 ) {
-			$comments = static::find()->select(['user_id'])->where(['topic_id'=>$topic_id])->orderBy(['position'=>SORT_ASC])->limit($limit)->offset($offset)->asArray()->all();
-			if ( empty($comments) ) {
-				break;
-			}
-			$uids = ArrayHelper::getColumn($comments, 'user_id');
-			unset($comments);
-			sort($uids);
-			$uidCount = array_count_values($uids);
-			unset($uids);
-			$result = [];
-			foreach($uidCount as $key=>$value) {
-				$result[$value][] = $key;
-			}
-			foreach($result as $key=>$value) {
-				UserInfo::updateAllCounters(['comment_count'=>-$key], ['user_id'=>$value]);
-			}
-			unset($result);
-			$offset = $offset + 100;
-		}
-		return static::deleteAll(['topic_id'=>$topic_id]);
-	}
+    public static function afterTopicDelete($topic_id)
+    {
+        $limit = 100;
+        $offset = 0;
+        while ( 1 ) {
+            $comments = static::find()->select(['user_id'])->where(['topic_id'=>$topic_id])->orderBy(['position'=>SORT_ASC])->limit($limit)->offset($offset)->asArray()->all();
+            if ( empty($comments) ) {
+                break;
+            }
+            $uids = ArrayHelper::getColumn($comments, 'user_id');
+            unset($comments);
+            sort($uids);
+            $uidCount = array_count_values($uids);
+            unset($uids);
+            $result = [];
+            foreach($uidCount as $key=>$value) {
+                $result[$value][] = $key;
+            }
+            foreach($result as $key=>$value) {
+                UserInfo::updateAllCounters(['comment_count'=>-$key], ['user_id'=>$value]);
+            }
+            unset($result);
+            $offset = $offset + 100;
+        }
+        return static::deleteAll(['topic_id'=>$topic_id]);
+    }
 
-	public static function getCommentsFromView($topic_id, $pages)
-	{
-		$settings = Yii::$app->params['settings'];
-		$cache = Yii::$app->getCache();
-		$key = 'comments-t-'.$topic_id.'-p-'. $pages->getPage();
+    public static function getCommentsFromView($topic_id, $pages)
+    {
+        $settings = Yii::$app->params['settings'];
+        $cache = Yii::$app->getCache();
+        $key = 'comments-t-'.$topic_id.'-p-'. $pages->getPage();
 
-		if ( intval($settings['cache_enabled']) === 0 || ($models = $cache->get($key)) === false ) {
-		    $pids = static::find()->select('position')->where(['topic_id' => $topic_id])
-				->orderBy(['position'=>SORT_ASC])
-				->offset($pages->offset)
-		        ->limit($pages->limit)
-				->asArray()
-		        ->all();
+        if ( intval($settings['cache_enabled']) === 0 || ($models = $cache->get($key)) === false ) {
+            $pids = static::find()->select('position')->where(['topic_id' => $topic_id])
+                ->orderBy(['position'=>SORT_ASC])
+                ->offset($pages->offset)
+                ->limit($pages->limit)
+                ->asArray()
+                ->all();
 
-			if ( !empty($pids) ) {
-			    $models = static::find()->select(['id', 'position', 'user_id', 'created_at', 'invisible', 'content'])
-					->where(['topic_id' => $topic_id, 'position'=>$pids])
-					->with(['author'])
-			        ->limit($pages->limit)
-					->asArray()
-			        ->all();
-			} else {
-				$models = null;
-			}
+            if ( !empty($pids) ) {
+                $models = static::find()->select(['id', 'position', 'user_id', 'created_at', 'invisible', 'content'])
+                    ->where(['topic_id' => $topic_id, 'position'=>$pids])
+                    ->orderBy(['position'=>SORT_ASC])
+                    ->with(['author'])
+                    ->limit($pages->limit)
+                    ->asArray()
+                    ->all();
+            } else {
+                $models = null;
+            }
 
-			if ( intval($settings['cache_enabled']) !== 0 ) {
-				if ($models === null) {
-					$models = [];
-				}
-				$dep = new \yii\caching\DbDependency(['sql'=>'SELECT MAX(updated_at) FROM '. self::tableName(). 'where topic_id='.$topic_id]);
-				$cache->set($key, $models, intval($settings['cache_time'])*60, $dep);
-			}
-		}
-		return $models;
-	}
+            if ( intval($settings['cache_enabled']) !== 0 ) {
+                if ($models === null) {
+                    $models = [];
+                }
+                $dep = new \yii\caching\DbDependency(['sql'=>'SELECT MAX(updated_at) FROM '. self::tableName(). 'where topic_id='.$topic_id]);
+                $cache->set($key, $models, intval($settings['cache_time'])*60, $dep);
+            }
+        }
+        return $models;
+    }
 
 }

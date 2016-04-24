@@ -19,7 +19,6 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/jquery.lazyload.min.js',
-//        'js/jquery.selection.js',
         'js/simpleforum.js',
     ];
     public $depends = [

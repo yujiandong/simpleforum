@@ -31,32 +31,32 @@ class UpgradeController extends \yii\web\Controller
 
     public function actionIndex()
     {
-		return $this->render('index');
+        return $this->render('index');
     }
 
-    public function actionV111to112()
+    public function actionV112to113()
     {
-		if (file_exists(Yii::getAlias('@runtime/upv1.1.1to1.1.2.lock'))) {
-		    echo '您已升级完成';
-		    exist;
-		}
-		$error = false;
-		try {
-			$this->excuteSql($this->module->basePath . '/data/v1.1.1to1.1.2.sql');
-			file_put_contents(Yii::getAlias('@runtime/upv1.1.1to1.1.2.lock'), '');
-			return $this->render('completed');
-		} catch (\yii\db\Exception $e) {
-			$error = '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();
-		}
-		return $this->render('dbSetting', ['model'=>$model, 'error'=>$error]);
-	}
+        if (file_exists(Yii::getAlias('@runtime/upv1.1.2to1.1.3.lock'))) {
+            echo '您已升级完成';
+            exist;
+        }
+        $error = false;
+        try {
+            $this->excuteSql($this->module->basePath . '/data/v1.1.2to1.1.3.sql');
+            file_put_contents(Yii::getAlias('@runtime/upv1.1.2to1.1.3.lock'), '');
+            return $this->render('completed');
+        } catch (\yii\db\Exception $e) {
+            $error = '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();
+        }
+        return $this->render('dbSetting', ['model'=>$model, 'error'=>$error]);
+    }
 
-	private function excuteSql($file)
-	{
-		$db = Yii::$app->getDb();
-		$sql = file_get_contents($file);
-		$sql = str_replace('simple_', $db->tablePrefix, $sql);
-     	$db->createCommand($sql)->execute();
-	}
+    private function excuteSql($file)
+    {
+        $db = Yii::$app->getDb();
+        $sql = file_get_contents($file);
+        $sql = str_replace('simple_', $db->tablePrefix, $sql);
+        $db->createCommand($sql)->execute();
+    }
 
 }

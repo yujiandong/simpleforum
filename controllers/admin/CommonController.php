@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -28,21 +28,21 @@ class CommonController extends \app\controllers\AppController
                     [
                         'allow' => true,
                         'matchCallback' => function ($rule, $action) {
-							$me = Yii::$app->getUser();
+                            $me = Yii::$app->getUser();
                             return ( !$me->getIsGuest() && $me->getIdentity()->isAdmin() );
                         },
                     ],
                 ],
-				'denyCallback' => function ($rule, $action) {
-				    throw new \yii\web\NotFoundHttpException('该网页不存在');
-				}
+                'denyCallback' => function ($rule, $action) {
+                    throw new \yii\web\NotFoundHttpException('该网页不存在');
+                }
             ],
         ];
     }
 
-	public function isOffline($action)
-	{
-		return false;
-	}
+    public function isOffline($action, $user)
+    {
+        return false;
+    }
 
 }

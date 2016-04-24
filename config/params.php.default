@@ -49,5 +49,9 @@ return [
     'upload_remote' => 'qiniu',
     'upload_remote_info' => '',
     'upload_remote_url' => '',
+    'theme' => '',
+    'theme_mobile' => '',
+    'topic_space' => 30,
+    'comment_space' => 20,
   ]
 ];
