@@ -22,7 +22,7 @@
 **安装步骤：**
 
 1. 下载simpleforum安装文件，解压
-2. 修改core/config/web.php第27行，随便改几位就行了，这是检证cookie用的
+2. 修改core/config/web.php第19行，随便改几位就行了，这是检证cookie用的
  ```
  'cookieValidationKey' => 'hwdn8-iyIh5LylPLpD1PoplqjUka98Ba',
  ```
