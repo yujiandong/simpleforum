@@ -4,4 +4,4 @@
  * @copyright Copyright (c) 2016 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
-define('SIMPLE_FORUM_VERSION', 'v1.1.3');
+define('SIMPLE_FORUM_VERSION', 'v1.1.4');
