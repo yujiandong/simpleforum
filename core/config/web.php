@@ -7,13 +7,6 @@
 
 $params = require(__DIR__ . '/params.php');
 
-$baseUrl = (new yii\web\Request)->getBaseUrl();
-$assetBaseUrl = '';
-if ($baseUrl != '') {
-    $baseUrl = str_replace('/'.WEBROOT_DIR, '', $baseUrl);
-    $assetBaseUrl = substr($baseUrl, 1);
-}
-
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
@@ -23,7 +16,6 @@ $config = [
     'defaultRoute' => 'topic/index',
     'components' => [
         'request' => [
-            'baseUrl' => $baseUrl,
             'cookieValidationKey' => 'hwdn8-iyIh5LylPLpD1PoplqjUka98Ba',
         ],
         'cache' => [
@@ -50,7 +42,6 @@ $config = [
         ],
         'db' => require(__DIR__ . '/db.php'),
         'urlManager' => [
-            'baseUrl' => $baseUrl,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => require(__DIR__ . '/urlrules.php'),

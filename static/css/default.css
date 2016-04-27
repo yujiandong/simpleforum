@@ -99,8 +99,21 @@ a.count-info:link, a.count-info:visited, a.count-info:active {
 
 .item-avatar, .item-avatar-small {padding-right:5px;}
 .item-avatar img, .item-avatar-small img{width:24px;height:24px;}
-
 .item-largeavatar {float:left; padding-right:10px;}
+
+
+.item-avatar img{   
+    -webkit-transition: 0.6s;      
+    -webkit-transition: -webkit-transform 0.6s ease-out;   
+    transition: transform 0.6s ease-out;
+    -moz-transition: -moz-transform 0.6s ease-out;   
+}
+.item-avatar img:hover{
+    transform: rotateZ(360deg);
+    -webkit-transform: rotateZ(360deg);   
+    -moz-transform: rotateZ(360deg);   
+}
+
 .item-commentcount {float:right;}
 
 .item-info {

@@ -14,6 +14,11 @@ return [
     'close_register' => 0,
     'username_filter' => '',
     'captcha_enabled' => 0,
+    'autolink' => 0,
+    'autolink_filter' => [
+    ],
+    'theme' => '',
+    'theme_mobile' => '',
     'head_meta' => '',
     'analytics_code' => '',
     'footer_links' => [
@@ -34,6 +39,8 @@ return [
     'hot_topic_num' => 10,
     'hot_node_num' => 20,
     'edit_space' => 30,
+    'topic_space' => 30,
+    'comment_space' => 20,
     'alias_static' => '',
     'alias_avatar' => '',
     'alias_upload' => '',
@@ -46,12 +53,8 @@ return [
     'upload_file' => 'disable',
     'upload_file_regday' => 30,
     'upload_file_topicnum' => 20,
-    'upload_remote' => 'qiniu',
+    'upload_remote' => '',
     'upload_remote_info' => '',
     'upload_remote_url' => '',
-    'theme' => '',
-    'theme_mobile' => '',
-    'topic_space' => 30,
-    'comment_space' => 20,
   ]
 ];

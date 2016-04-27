@@ -8,7 +8,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '极简论坛升级v1.1.2 => v1.1.3';
+$this->title = '极简论坛升级';
 ?>
 
 <div class="row">

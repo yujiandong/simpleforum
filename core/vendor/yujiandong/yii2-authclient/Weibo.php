@@ -80,7 +80,7 @@ class Weibo extends OAuth2
      */
     protected function defaultTitle()
 	{
-        return '”÷”';
+        return 'å¾®åš';
     }
 
     /**
