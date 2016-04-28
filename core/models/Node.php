@@ -32,7 +32,7 @@ class Node extends ActiveRecord
             ['ename', 'match', 'pattern' => '/^[a-z0-9\-]*$/i'],
             [['name', 'ename'], 'string', 'max' => 20],
             [['about'], 'string'],
-            ['invisible', 'boolean'],
+            [['access_auth', 'invisible'], 'boolean'],
             ['name', 'unique'],
             ['ename', 'unique'],
         ];
