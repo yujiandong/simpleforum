@@ -149,13 +149,13 @@ class Util
         $linkList = $linkList[0];
         $str = preg_replace('/<a.*?href=.*?>.*?<\/a>/i','<{link}>',$content);
 
-/*
+
         preg_match_all('/<img[^>]+>/im',$content,$imgList);
         $imgList=$imgList[0];
         $str=preg_replace('/<img[^>]+>/im','<{img}>',$str);
-*/
+
 //        $str=preg_replace('(https?[-a-zA-Z0-9@:%_/+.~#?&//=]+)','<a href="\0" target="_blank">\0</a>',$str);
-        if ( preg_match_all('/https?:[\/]{2}[^\s<]+\b\/*/ui', $str, $matchs) ) {
+        if ( preg_match_all('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $str, $matchs) ) {
             $urls = $matchs[0];
         } else {
             return $content;
@@ -184,12 +184,9 @@ class Util
         foreach($linkList as $link) {
             $str = preg_replace('/<{link}>/', $link, $str, 1); 
         }
-/*
-        $arrLen2=count($imgList);
-        for($i=0;$i<$arrLen2;$i++){
-            $str=preg_replace('/<{img}>/',$imgList[$i],$str,1); 
+        foreach($imgList as $link) {
+            $str = preg_replace('/<{img}>/', $link, $str, 1); 
         }
-*/
          return $str;
     }
 }
