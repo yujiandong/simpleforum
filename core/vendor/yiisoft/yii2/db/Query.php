@@ -252,7 +252,7 @@ class Query extends Component implements QueryInterface
      * The value returned will be the first column in the first row of the query results.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return string|boolean the value of the first column in the first row of the query result.
+     * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
      */
     public function scalar($db = null)
@@ -360,11 +360,11 @@ class Query extends Component implements QueryInterface
      */
     public function exists($db = null)
     {
-        $select = $this->select;
-        $this->select = [new Expression('1')];
         $command = $this->createCommand($db);
-        $this->select = $select;
-        return $command->queryScalar() !== false;
+        $params = $command->params;
+        $command->setSql($command->db->getQueryBuilder()->selectExists($command->getSql()));
+        $command->bindValues($params);
+        return (boolean)$command->queryScalar();
     }
 
     /**
@@ -372,7 +372,7 @@ class Query extends Component implements QueryInterface
      * Restores the value of select to make this query reusable.
      * @param string|Expression $selectExpression
      * @param Connection|null $db
-     * @return bool|string
+     * @return boolean|string
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -579,6 +579,43 @@ class Query extends Component implements QueryInterface
         }
         $this->addParams($params);
         return $this;
+    }
+
+    /**
+     * Adds a filtering condition for a specific column and allow the user to choose a filter operator.
+     *
+     * It adds an additional WHERE condition for the given field and determines the comparison operator
+     * based on the first few characters of the given value.
+     * The condition is added in the same way as in [[andFilterWhere]] so [[isEmpty()|empty values]] are ignored.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     *
+     * The comparison operator is intelligently determined based on the first few characters in the given value.
+     * In particular, it recognizes the following operators if they appear as the leading characters in the given value:
+     *
+     * - `<`: the column must be less than the given value.
+     * - `>`: the column must be greater than the given value.
+     * - `<=`: the column must be less than or equal to the given value.
+     * - `>=`: the column must be greater than or equal to the given value.
+     * - `<>`: the column must not be the same as the given value.
+     * - `=`: the column must be equal to the given value.
+     * - If none of the above operators is detected, the `$defaultOperator` will be used.
+     *
+     * @param string $name the column name.
+     * @param string $value the column value optionally prepended with the comparison operator.
+     * @param string $defaultOperator The operator to use, when no operator is given in `$value`.
+     * Defaults to `=`, performing an exact match.
+     * @return $this The query object itself
+     * @since 2.0.8
+     */
+    public function andFilterCompare($name, $value, $defaultOperator = '=')
+    {
+        if (preg_match("/^(<>|>=|>|<=|<|=)/", $value, $matches)) {
+            $operator = $matches[1];
+            $value = substr($value, strlen($operator));
+        } else {
+            $operator = $defaultOperator;
+        }
+        return $this->andFilterWhere([$operator, $name, $value]);
     }
 
     /**

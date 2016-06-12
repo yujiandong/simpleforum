@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -27,9 +27,6 @@ class Editor extends Component
             } else if ($this->editor === 'smd') {
                 $view->registerAssetBundle('app\assets\SmdAsset');
                 $view->registerJs("var editor = new SimpleMarkdown({target: '#editor', lan:'zh-CN'});");
-            } else if ($this->editor === 'simditor') {
-                $view->registerAssetBundle('app\assets\SimditorAsset');
-                $view->registerJs("var editor = new Simditor({textarea: $('#editor')});");
             }
     }
 
@@ -37,7 +34,7 @@ class Editor extends Component
     {
         $view->registerAssetBundle('app\assets\JqueryUploadFileAsset');
         $view->registerJs('$("#fileuploader").uploadFile({
-            url:"'.Url::to(['user/upload']).'",
+            url:"'.Url::to(['service/upload']).'",
             fileName:"UploadForm[files]",
             returnType:"json",
             maxFileCount:4,
@@ -76,9 +73,9 @@ class Editor extends Component
             if ( empty($this->_parser) ) {
                 $this->_parser = new \Golonka\BBCode\BBCodeParser();
             }
-            $this->_parser->setParser('image', '/\[img\](.*?)\[\/img\]/s', '<img src="'.\Yii::getAlias('@web/static/css/img/grey.gif').'" data-original="$1" class="lazy">');
-            $this->_parser->setParser('listitem', '/\[\*\](.*?)\[\/\*\]/', '<li>$1</li>');
-            $this->_parser->setParser('listitem2', '/\[\*\](.*)/', '<li>$1</li>');
+            $this->_parser->setParser('image', '/\[img\](.*?)\[\/img\]/s', '<img src="'.\Yii::getAlias('@web/static/css/img/grey.gif').'" data-original="$1" class="lazy">', '$1');
+            $this->_parser->setParser('listitem', '/\[\*\](.*?)\[\/\*\]/', '<li>$1</li>', '$1');
+            $this->_parser->setParser('listitem2', '/\[\*\](.*)/', '<li>$1</li>', '$1');
             return Util::autoLink($this->_parser->parse(Html::encode($text)));
         } else if ($this->editor === 'smd') {
             if ( empty($this->_parser) ) {
@@ -86,8 +83,6 @@ class Editor extends Component
             }
             return $this->_parser->setUrlsLinked(intval(ArrayHelper::getValue(Yii::$app->params, 'settings.autolink', 0))===0?false:true)->setMarkupEscaped(true)->text($text);
 //          return $this->_parser->setMarkupEscaped(true)->text($text);
-        } else if ($this->editor === 'simditor') {
-            return \yii\helpers\HtmlPurifier::process($text);
         }
     }
 
@@ -113,6 +108,13 @@ class Editor extends Component
             }else{
                 $text = preg_replace('/http:\/\/v\.qq\.com\/(.+)\/([a-zA-Z0-9]{8,})\.(html?)/', '<embed  class="video-link" src="http://static.video.qq.com/TPout.swf?vid=\2&auto=0" allowFullScreen="true" quality="high" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>', $text);
             }
+        }
+        // youtube
+        if(strpos($text, 'youtu.be')){
+            $text = preg_replace('/https?:\/\/youtu\.be\/([a-zA-Z0-9\-]+)/', '<iframe class="video-link" src="https://www.youtube.com/embed/\1" frameborder=0 allowfullscreen></iframe>', $text);
+        }
+        if(strpos($text, 'www.youtube.com')){
+            $text = preg_replace('/https?:\/\/www\.youtube\.com\/watch\?v\=([a-zA-Z0-9\-]+)/', '<iframe class="video-link" src="https://www.youtube.com/embed/\1" frameborder=0 allowfullscreen></iframe>', $text);
         }
 
         return $text;

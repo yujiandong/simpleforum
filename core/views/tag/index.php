@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -39,7 +39,7 @@ $this->title = Html::encode($tag['name']);
 			$url['ip'] = $currentPage;
 //		}
 		echo '<li class="list-group-item media">',
-				Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-rounded media-object','alt' => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
+				Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-circle media-object','alt' => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
 				'<div class="media-body">
 					<h5 class="media-heading">',
 					Html::a(Html::encode($topic['title']), $url),
@@ -50,7 +50,7 @@ $this->title = Html::encode($tag['name']);
 		    if($gotopage > 1){
 				$url['p'] = $gotopage;
 		    }
-			echo '<div class="item-commentcount">', Html::a($topic['comment_count'], $url, ['class'=>'count_livid']),'</div>';
+			echo '<div class="item-commentcount">', Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']),'</div>';
 		}
 					echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
 					'  •  <strong><i class="fa fa-user"></i>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), '</strong>',

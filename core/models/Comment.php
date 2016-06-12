@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -83,17 +83,22 @@ class Comment extends ActiveRecord
     public function getAuthor()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id'])
-            ->select(['id', 'username', 'avatar', 'status']);
+            ->select(['id', 'username', 'avatar', 'status', 'score', 'comment']);
     }
 
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert === true) {
+            $me = Yii::$app->getUser()->getIdentity();
+            $cost = User::getCost('addComment');
+            $me->afterAddComment($cost, $this);
             (new History([
                 'user_id' => $this->user_id,
+                'type' => History::TYPE_POINT,
                 'action' => History::ACTION_ADD_COMMENT,
                 'action_time' => $this->created_at,
                 'target' => $this->id,
+                'ext' => json_encode(['topic_id'=>$this->topic_id, 'title'=>$this->topic->title, 'score'=>$me->score, 'cost'=>$cost]),
             ]))->save(false);
             Siteinfo::updateCounterInfo('addComment');
             UserInfo::updateCounterInfo('addComment', $this->user_id);

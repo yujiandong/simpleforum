@@ -395,7 +395,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
     {
         $relations = [];
-        foreach((array) $with as $name => $callback) {
+        foreach ((array) $with as $name => $callback) {
             if (is_int($name)) {
                 $name = $callback;
                 $callback = null;
@@ -405,7 +405,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 // relation is defined with an alias, adjust callback to apply alias
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
-                $callback = function($query) use ($callback, $alias) {
+                $callback = function ($query) use ($callback, $alias) {
                     /** @var $query ActiveQuery */
                     $query->alias($alias);
                     if ($callback !== null) {

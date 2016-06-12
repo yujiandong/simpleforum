@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -72,6 +72,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function getNoticeCount()
     {
         return Notice::find()->where(['status'=>0, 'target_id' => $this->id])->count('id');
+    }
+
+    public function getSystemNoticeCount()
+    {
+        return Notice::find()->where(['status'=>0, 'target_id' => $this->id])->andWhere(['<>', 'type', Notice::TYPE_MSG])->count('id');
+    }
+
+    public function getSmsCount()
+    {
+        return Notice::find()->where(['status'=>0, 'target_id' => $this->id, 'type'=>Notice::TYPE_MSG])->count('id');
     }
 
     public function getNotices()
@@ -201,6 +211,30 @@ class User extends ActiveRecord implements IdentityInterface
         return self::$roleOptions[$this->role];
     }
 
+    public static function getCost($action)
+    {
+        $costs = [
+            'reg' => 1000,  //注册
+            'addTopic' => -20,  //发表主题
+            'addComment' => -5, //发表回复
+            'commented' => 5,   //被回复,不能为负数
+            'sendMsg' => -5,    //发送短消息
+            'buyInviteCode' => -50, //购买邀请码
+            'signin_10days' => 200, //连续签到10天奖励
+            'signin' => function() {return rand(10, 50);},  //签到奖励10-50的随机数
+        ];
+        if ($action === 'signin') {
+            return $costs[$action]();
+        } else {
+            return $costs[$action];
+        }
+    }
+
+    public function checkActionCost($action)
+    {
+        return ($this->score + static::getCost($action))>=0;
+    }
+
     /**
      * @inheritdoc
      */
@@ -310,9 +344,11 @@ class User extends ActiveRecord implements IdentityInterface
             }*/
             (new History([
                 'user_id' => $this->id,
+                'type' => History::TYPE_POINT,
                 'action' => History::ACTION_REG,
                 'action_time' => $this->created_at,
                 'target' => $userIP,
+                'ext' => json_encode(['score'=>$this->score, 'cost'=>static::getCost('reg')]),
             ]))->save(false);
         }
         return parent::afterSave($insert, $changedAttributes);
@@ -334,4 +370,92 @@ class User extends ActiveRecord implements IdentityInterface
         return parent::afterDelete();
     }
 */
+
+    public function updateScore($cost) {
+        $this->score = ($this->score + $cost)<0?0:($this->score + $cost);
+        $this->save(false);
+    }
+
+    public function afterAddComment($cost, $comment)
+    {
+        $this->updateScore($cost);
+        $author_id = $comment->topic->user_id;
+        if ($this->id != $author_id) {
+            $author = static::findOne($author_id);
+            if($author) {
+                $commentedCost = abs(static::getCost('commented'));
+                $author->updateCounters(['score' => $commentedCost]);
+                (new History([
+                    'user_id' => $author_id,
+                    'type' => History::TYPE_POINT,
+                    'action' => History::ACTION_COMMENTED,
+                    'action_time' => $comment->created_at,
+                    'target' => $comment->topic_id,
+                    'ext' => json_encode(['topic_id'=>$comment->topic_id, 'title'=>$comment->topic->title, 'commented_by'=>$this->username, 'score'=>$author->score, 'cost'=>$commentedCost]),
+                ]))->save(false);
+            }
+        }
+    }
+
+    public function signin()
+    {
+
+        $flgToday = false;
+        $flg10Days = false;
+        $action = $this->getLastAction(History::ACTION_SIGNIN)->one();
+        if ( !$action ) {
+            $flagToday = true;
+            $continue = 1;
+        } else if (  date('Y-m-d') === date('Y-m-d', $action->action_time) ) {
+            return;
+        } else if ( date('Y-m-d', strtotime('-1 days')) == date('Y-m-d', $action->action_time) ) {
+            $flagToday = true;
+            $ext = json_decode($action->ext, true);
+            if ( intval($ext['continue']) % 10 === 9 ) {
+                $flg10Days = true;
+            }
+            $continue = intval($ext['continue'])+1;
+        } else {
+            $flagToday = true;
+            $continue = 1;
+        }
+        $cost = static::getCost('signin');
+        $now = time();
+        $this->updateScore($cost);
+        (new History([
+            'user_id' => $this->id,
+            'type' => History::TYPE_POINT,
+            'action' => History::ACTION_SIGNIN,
+            'action_time' => $now,
+            'ext' => json_encode(['score'=>$this->score, 'cost'=>$cost, 'continue'=>$continue]),
+        ]))->save(false);
+
+        if ($flg10Days === true) {
+            $cost = static::getCost('signin_10days');
+            $this->updateScore($cost);
+            (new History([
+                'user_id' => $this->id,
+                'type' => History::TYPE_POINT,
+                'action' => History::ACTION_SIGNIN_10DAYS,
+                'action_time' => $now,
+                'ext' => json_encode(['score'=>$this->score, 'cost'=>$cost, 'continue'=>$continue]),
+            ]))->save(false);
+        }
+
+    }
+
+    public function checkTodaySigned()
+    {
+        $session = Yii::$app->getSession();
+        if($session->get('mission_signin') === date('Y-m-d')) {
+            return true;
+        }
+
+        $action = $this->getLastAction(History::ACTION_SIGNIN)->asArray()->one();
+        if ( !empty($action) && date('Y-m-d') === date('Y-m-d', $action['action_time']) ) {
+            $session->set('mission_signin', date('Y-m-d'));
+            return true;
+        }
+        return false;
+    }
 }

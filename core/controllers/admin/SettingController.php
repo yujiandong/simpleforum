@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -55,6 +55,7 @@ class SettingController extends CommonController
         $settings = self::getCacheInfo($settings);
         $settings['footer_links'] = self::getFootLinks($settings['footer_links']);
         $settings['autolink_filter'] = self::textAreaToArray($settings['autolink_filter']);
+        $settings['groups'] = self::getFootLinks($settings['groups']);
 
         $config = '<?php'."\n";
         $config = $config. 'return ['."\n";

@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -8,6 +8,7 @@
 namespace app\controllers;
 
 use yii\data\Pagination;
+use yii\web\NotFoundHttpException;
 use app\models\Tag;
 use app\models\TagTopic;
 

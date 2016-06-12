@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -14,19 +14,6 @@ $editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
 $editor->registerAsset($this);
 $editor->registerTagItAsset($this);
 
-/*
-$this->registerAssetBundle('app\assets\JqueryUploadFileAsset');
-$this->registerJs('$("#fileuploader").uploadFile({
-	url:"'.Url::to(['user/upload']).'",
-	fileName:"UploadForm[files]",
-	returnType:"json",
-	maxFileCount:4,
-	maxFileSize:1024*1024,
-	onSuccess:function(files,data,xhr,pd) {
-		pd.filename.append("  <a id=\""+data+"\" class=\"insert-image\" href=\"javascript:void(0);\">插入图片</a>");
-	}
-});');
-*/
 ?>
 
 <?php $form = ActiveForm::begin(); ?>

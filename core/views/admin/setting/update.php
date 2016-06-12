@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -50,7 +50,7 @@ function showSettingForm($settings, $form)
             echo $form->field($setting, "[$setting->id]value", ['enableError'=>false,])
                     ->textArea()->label($setting->label)->hint($setting->description);
         } else  {
-            echo $form->field($setting, "[$setting->id]value", ['enableError'=>false,])
+            echo $form->field($setting, "[$setting->id]value", ['enableError'=>false,])->input($setting->type)
                     ->label($setting->label)->hint($setting->description);
         }
     endforeach;

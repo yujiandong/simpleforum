@@ -141,22 +141,46 @@ class MessageController extends Controller
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), [
-                'sourcePath',
-                'messagePath',
-                'languages',
-                'translator',
-                'sort',
-                'overwrite',
-                'removeUnused',
-                'markUnused',
-                'except',
-                'only',
-                'format',
-                'db',
-                'sourceMessageTable',
-                'messageTable',
-                'catalog',
-                'ignoreCategories'
+            'sourcePath',
+            'messagePath',
+            'languages',
+            'translator',
+            'sort',
+            'overwrite',
+            'removeUnused',
+            'markUnused',
+            'except',
+            'only',
+            'format',
+            'db',
+            'sourceMessageTable',
+            'messageTable',
+            'catalog',
+            'ignoreCategories',
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'c' => 'catalog',
+            'e' => 'except',
+            'f' => 'format',
+            'i' => 'ignoreCategories',
+            'l' => 'languages',
+            'u' => 'markUnused',
+            'p' => 'messagePath',
+            'o' => 'only',
+            'w' => 'overwrite',
+            'S' => 'sort',
+            't' => 'translator',
+            'm' => 'sourceMessageTable',
+            's' => 'sourcePath',
+            'r' => 'removeUnused',
         ]);
     }
 
@@ -574,7 +598,7 @@ EOD;
      * Finds out a line of the first non-char PHP token found
      *
      * @param array $tokens
-     * @return int|string
+     * @return integer|string
      * @since 2.0.1
      */
     protected function getLine($tokens)

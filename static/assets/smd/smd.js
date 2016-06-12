@@ -1,6 +1,6 @@
 /**
  * simple markdown - a html markdown editor
- * Copyright (c) 2015-2015, Jiandong Yu. (MIT Licensed)
+ * Copyright (c) 2015, Jiandong Yu. (MIT Licensed)
  * https://github.com/yujiandong/simplemarkdown
  * http://simpleforum.org/n/smd
  */
@@ -46,7 +46,7 @@ var blockquote = function(e, self) {
 	if (result === '') {
 		result = "> quote text";
 	} else {
-		result = '> ' + result;
+		result = '> ' + result.replace(/[\n\r]/g, "\n\> ");
 	}
 	$(self).selection('replace',{text: result, caret:'end'});
 };

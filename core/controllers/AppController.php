@@ -35,26 +35,29 @@ class AppController extends Controller
 
     public function setReturnUrl($action, $user)
     {
-        $exceptActions = [
-            'error',
-            'captcha',
-            'auth',
-            'offline',
-            'login',
-            'signup',
-            'forgot-password',
-            'reset-password',
-            'verify-email',
-            'activate',
-            'auth-signup',
-            'auth-bind-account',
+        $exceptAllActions = [
             'delete',
-            'add',
-            'cancel',
-            'activate',
-            'reset-password',
         ];
-        if( !in_array( $action->id, $exceptActions) ) {
+        $exceptActions = [
+            'site/error',
+            'site/captcha',
+            'site/auth',
+            'site/offline',
+            'site/login',
+            'site/signup',
+            'site/auth-signup',
+            'site/forgot-password',
+            'site/reset-password',
+            'site/verify-email',
+            'site/activate',
+            'site/auth-bind-account',
+            'admin/user/activate',
+            'admin/user/reset-password',
+            'service/favorite',
+            'service/unfavorite',
+        ];
+        if( !in_array( $action->id, $exceptAllActions) 
+				&& !in_array( $action->controller->id.'/'.$action->id, $exceptActions) ) {
             $user->setReturnUrl(Yii::$app->getRequest()->url);
         }
     }

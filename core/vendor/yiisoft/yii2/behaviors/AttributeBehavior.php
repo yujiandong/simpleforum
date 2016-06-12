@@ -11,6 +11,7 @@ use Yii;
 use Closure;
 use yii\base\Behavior;
 use yii\base\Event;
+use yii\db\ActiveRecord;
 
 /**
  * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord
@@ -40,6 +41,9 @@ use yii\base\Event;
  *     ];
  * }
  * ```
+ *
+ * Because attribute values will be set automatically, it's a good idea to make sure attribute names aren't
+ * in `rules()` method of the model.
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -76,6 +80,12 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $value;
+    /**
+     * @var boolean whether to skip this behavior when the `$owner` has not been
+     * modified
+     * @since 2.0.8
+     */
+    public $skipUpdateOnClean = true;
 
 
     /**
@@ -83,7 +93,10 @@ class AttributeBehavior extends Behavior
      */
     public function events()
     {
-        return array_fill_keys(array_keys($this->attributes), 'evaluateAttributes');
+        return array_fill_keys(
+            array_keys($this->attributes),
+            'evaluateAttributes'
+        );
     }
 
     /**
@@ -92,6 +105,13 @@ class AttributeBehavior extends Behavior
      */
     public function evaluateAttributes($event)
     {
+        if ($this->skipUpdateOnClean
+            && $event->name == ActiveRecord::EVENT_BEFORE_UPDATE
+            && empty($this->owner->dirtyAttributes)
+        ) {
+            return;
+        }
+
         if (!empty($this->attributes[$event->name])) {
             $attributes = (array) $this->attributes[$event->name];
             $value = $this->getValue($event);

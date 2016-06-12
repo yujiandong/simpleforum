@@ -224,18 +224,21 @@ class BBCodeParser
      * @param string $name Parser name
      * @param string $pattern Pattern
      * @param string $replace Replace pattern
+     * @param string $content Parsed text pattern 
      * @return void
      */
-    public function setParser($name, $pattern, $replace)
+    public function setParser($name, $pattern, $replace, $content)
     {
         $this->parsers[$name] = array(
             'pattern' => $pattern,
-            'replace' => $replace
+            'replace' => $replace,
+            'content' => $content
         );
 
         $this->enabledParsers[$name] = array(
             'pattern' => $pattern,
-            'replace' => $replace
+            'replace' => $replace,
+            'content' => $content
         );
     }
 }

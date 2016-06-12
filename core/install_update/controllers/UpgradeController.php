@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -34,16 +34,18 @@ class UpgradeController extends \yii\web\Controller
         return $this->render('index');
     }
 
-    public function actionV112to113()
+    public function actionV114to115()
     {
-        if (file_exists(Yii::getAlias('@runtime/upv1.1.2to1.1.3.lock'))) {
+        if (file_exists(Yii::getAlias('@runtime/upv1.1.4to1.1.5.lock'))) {
             echo '您已升级完成';
-            exist;
+            exit;
         }
         $error = false;
         try {
-            $this->excuteSql($this->module->basePath . '/data/v1.1.2to1.1.3.sql');
-            file_put_contents(Yii::getAlias('@runtime/upv1.1.2to1.1.3.lock'), '');
+			@set_time_limit(180);
+            $this->excuteSql($this->module->basePath . '/data/v1.1.4to1.1.5.sql');
+            file_put_contents(Yii::getAlias('@runtime/upv1.1.4to1.1.5.lock'), '');
+        	Yii::$app->getCache()->flush();
             return $this->render('completed');
         } catch (\yii\db\Exception $e) {
             $error = '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();

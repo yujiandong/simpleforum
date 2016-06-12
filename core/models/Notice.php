@@ -17,6 +17,7 @@ class Notice extends ActiveRecord
     const TYPE_MENTION = 2;
     const TYPE_FOLLOW_TOPIC = 3;
     const TYPE_FOLLOW_USER = 4;
+    const TYPE_MSG = 9;
 
     /**
      * @inheritdoc
@@ -34,13 +35,16 @@ class Notice extends ActiveRecord
             ],
         ];
     }
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['target_id', 'source_id', 'type', 'topic_id', 'position', 'notice_count', 'status'], 'integer']
+            [['target_id', 'source_id', 'type', 'topic_id', 'position', 'notice_count', 'status'], 'integer'],
+            ['msg', 'trim'],
+            ['msg', 'string', 'max'=>255],
         ];
     }
 

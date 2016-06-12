@@ -71,6 +71,18 @@ class FixtureController extends Controller
     }
 
     /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'g' => 'globalFixtures',
+            'n' => 'namespace',
+        ]);
+    }
+
+    /**
      * Loads the specified fixture data.
      * For example,
      *
@@ -322,6 +334,9 @@ class FixtureController extends Controller
             $this->outputList($except);
         }
 
+        $this->stdout("\nBe aware that:\n", Console::BOLD);
+        $this->stdout("Applying leads to purging of certain data in the database!\n", Console::FG_RED);
+
         return $this->confirm("\nLoad above fixtures?");
     }
 
@@ -368,7 +383,7 @@ class FixtureController extends Controller
     /**
      * Checks if needed to apply all fixtures.
      * @param string $fixture
-     * @return bool
+     * @return boolean
      */
     public function needToApplyAll($fixture)
     {
@@ -460,7 +475,7 @@ class FixtureController extends Controller
             if (mb_strpos($fixture, '-') !== false) {
                 $filtered['except'][] = str_replace('-', '', $fixture);
             } else {
-                $filtered['apply'][] = $fixture;                
+                $filtered['apply'][] = $fixture;
             }
         }
 
@@ -475,5 +490,4 @@ class FixtureController extends Controller
     {
         return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
     }
-
 }

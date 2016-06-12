@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -42,7 +42,6 @@ class TopicController extends AppController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['new', 'add', 'edit'],
                         'matchCallback' => function ($rule, $action) {
                             $me = Yii::$app->getUser();
                             return ( !$me->getIsGuest() && ($me->getIdentity()->isActive() || $me->getIdentity()->isAdmin()) );
@@ -152,6 +151,14 @@ class TopicController extends AppController
     {
         $request = Yii::$app->getRequest();
         $me = Yii::$app->getUser()->getIdentity();
+        if( !$me->checkActionCost('addTopic') ) {
+            return $this->render('@app/views/common/info', [
+                'title' => '您的积分不足',
+                'status' => 'warning',
+                'msg' => '您的积分不足，不能发表主题贴。每日签到可以获取10-50不等积分。',
+            ]);
+        }
+
         $node = $this->findNodeModel($node);
 
         $topic = new Topic(['scenario' => Topic::SCENARIO_ADD, 'node_id' => $node['id'], 'user_id' => $me->id]);
@@ -180,6 +187,13 @@ class TopicController extends AppController
     {
         $request = Yii::$app->getRequest();
         $me = Yii::$app->getUser()->getIdentity();
+        if( !$me->checkActionCost('addTopic') ) {
+            return $this->render('@app/views/common/info', [
+                'title' => '您的积分不足',
+                'status' => 'warning',
+                'msg' => '您的积分不足，不能发表主题贴。每日签到可以获取10-50不等积分。',
+            ]);
+        }
 
         $topic = new Topic(['scenario' => Topic::SCENARIO_NEW, 'user_id' => $me->id]);
         $content = new TopicContent();

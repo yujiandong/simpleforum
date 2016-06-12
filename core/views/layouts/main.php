@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -15,7 +15,7 @@ use yii\bootstrap\NavBar;
 $settings = Yii::$app->params['settings'];
 $isGuest = Yii::$app->getUser()->getIsGuest();
 if( !$isGuest ) {
-	$me = Yii::$app->getUser()->getIdentity();
+    $me = Yii::$app->getUser()->getIdentity();
 }
 ?>
 <?php $this->beginPage() ?>
@@ -23,8 +23,8 @@ if( !$isGuest ) {
 <html lang="<?php echo Yii::$app->language; ?>">
 <head>
     <meta charset="<?php echo Yii::$app->charset; ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <?php echo Html::csrfMetaTags(); ?>
     <?php echo $settings['head_meta']; ?>
     <title><?php echo Html::encode($this->title), $this->title==$settings['site_name']?'':' - '.Html::encode($settings['site_name']); ?></title>
@@ -43,26 +43,26 @@ if( !$isGuest ) {
                 ],
             ]);
 
-			if ($isGuest) {
-				$items = [
-	                    ['label' => '<i class="fa fa-home"></i>首页', 'url' => ['topic/index']],
-	                    ['label' => '<i class="fa fa-sign-in"></i>登录', 'url' => ['/site/login']],
-	                    ['label' => '<i class="fa fa-user-plus"></i>注册', 'url' => ['/site/signup']],
-				];
-			} else {
-				$items = [
-	                    ['label' => '<i class="fa fa-home"></i>首页', 'url' => ['topic/index']],
-						['label' => '<i class="fa fa-user"></i>'.Html::encode($me->username), 'url' => ['user/view', 'username'=>$me->username]],
-						['label' => '<i class="fa fa-cog"></i>设置', 'url' => ['user/setting']],
+            if ($isGuest) {
+                $items = [
+                        ['label' => '<i class="fa fa-home"></i>首页', 'url' => ['topic/index']],
+                        ['label' => '<i class="fa fa-sign-in"></i>登录', 'url' => ['/site/login']],
+                        ['label' => '<i class="fa fa-user-plus"></i>注册', 'url' => ['/site/signup']],
+                ];
+            } else {
+                $items = [
+                        ['label' => '<i class="fa fa-home"></i>首页', 'url' => ['topic/index']],
+                        ['label' => '<i class="fa fa-user"></i>'.Html::encode($me->username), 'url' => ['user/view', 'username'=>$me->username]],
+                        ['label' => '<i class="fa fa-cog"></i>设置', 'url' => ['my/settings']],
                         ['label' => '<i class="fa fa-sign-out"></i>退出', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
-				];
-				if ($me->isInactive()) {
-					$items[1]['options'] = ['class'=>'red'];
-				}
-			}
+                ];
+                if ($me->isInactive()) {
+                    $items[1]['options'] = ['class'=>'red'];
+                }
+            }
 echo '<form class="navbar-form navbar-left" action="'.Url::to(['topic/search']).'" role="search">
        <div class="form-group input-group">
-			<span class="input-group-addon"><i class="fa fa-search fa-no-mr"></i></span>
+            <span class="input-group-addon"><i class="fa fa-search fa-no-mr"></i></span>
             <input id="q" name="q" type="search" placeholder="搜索" maxlength="40" class="form-control">
         </div>
   </form>';
@@ -82,20 +82,20 @@ echo '<form class="navbar-form navbar-left" action="'.Url::to(['topic/search']).
         <div class="container">
 <p class="footer-links">
 <?php
-	if (!empty($settings['footer_links'])) {
-		foreach($settings['footer_links'] as $link) {
-			if ( strpos($link[1], 'http://') !== 0 && strpos($link[1], 'https://') !== 0 ) {
-				$link[1] = 'http://'.$link[1];
-			}
-			echo Html::a($link[0], $link[1], ['rel' => 'external', 'target'=>'_blank']);
-		}
-	}
-	if (!empty($settings['icp'])) {
-		echo Html::a($settings['icp'], 'http://www.miibeian.gov.cn/', ['rel' => 'external', 'target'=>'_blank']);
-	}
-	if ( !$isGuest && $me->isAdmin() ) {
-		echo Html::a('管理后台', ['admin/setting/all']);
-	}
+    if (!empty($settings['footer_links'])) {
+        foreach($settings['footer_links'] as $link) {
+            if ( strpos($link[1], 'http://') !== 0 && strpos($link[1], 'https://') !== 0 ) {
+                $link[1] = 'http://'.$link[1];
+            }
+            echo Html::a($link[0], $link[1], ['rel' => 'external', 'target'=>'_blank']);
+        }
+    }
+    if (!empty($settings['icp'])) {
+        echo Html::a($settings['icp'], 'http://www.miibeian.gov.cn/', ['rel' => 'external', 'target'=>'_blank']);
+    }
+    if ( !$isGuest && $me->isAdmin() ) {
+        echo Html::a('管理后台', ['admin/setting/all']);
+    }
 ?>
 </p>
 <div>

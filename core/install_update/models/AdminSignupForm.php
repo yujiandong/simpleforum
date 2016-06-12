@@ -10,6 +10,7 @@ namespace app\install_update\models;
 use Yii;
 use yii\base\Model;
 use app\models\User;
+use app\models\History;
 
 /**
  * Admin Signup form
@@ -30,7 +31,7 @@ class AdminSignupForm extends Model
             [['username', 'email'], 'trim'],
             [['username', 'email', 'password', 'password_repeat'], 'required'],
 //            ['username', 'string', 'length' => [4, 20]],
-			['username', 'match', 'pattern' => User::USERNAME_PATTERN, 'message' => '请使用字母(a-z),数字(0-9)或中文'],
+            ['username', 'match', 'pattern' => User::USERNAME_PATTERN, 'message' => '请使用字母(a-z),数字(0-9)或中文'],
             ['username', 'validateMbString'],
             ['email', 'email'],
             ['password', 'string', 'length' => [6, 16]],
@@ -40,12 +41,12 @@ class AdminSignupForm extends Model
         ];
     }
 
-	public function validateMbString($attribute, $params)
+    public function validateMbString($attribute, $params)
     {
-		$len = strlen(preg_replace("/[\x{4e00}-\x{9fa5}]/u", '**', $this->$attribute));
-		if ($len<4 || $len>16) {
+        $len = strlen(preg_replace("/[\x{4e00}-\x{9fa5}]/u", '**', $this->$attribute));
+        if ($len<4 || $len>16) {
             $this->addError($attribute, '用户名长度为4到16位，1个中文等于2位');
-		}
+        }
     }
 
     public function attributeLabels()
@@ -71,9 +72,10 @@ class AdminSignupForm extends Model
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();
-			$user->status = User::STATUS_ACTIVE;
-			$user->role = User::ROLE_ADMIN;
-			$user->avatar = 'avatar/0_{size}.png';
+            $user->status = User::STATUS_ACTIVE;
+            $user->role = User::ROLE_ADMIN;
+            $user->avatar = 'avatar/0_{size}.png';
+            $user->score = User::getCost('reg');
             if ($user->save()) {
                 return $user;
             }

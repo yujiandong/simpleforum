@@ -72,6 +72,12 @@ class Node extends ActiveRecord
         return $this->hasMany(Topic::className(), ['node_id' => 'id']);
     }
 
+    public static function getNodesWithoutNavi()
+    {
+        $query = (new \yii\db\Query)->from(['nn' => NaviNode::tableName()])->select(['nn.id'])->innerJoin(['nv'=>Navi::tableName()], 'nv.type = '.Navi::TYPE_ALLNODES. ' and nv.id = nn.navi_id')->where('nn.node_id=nd.id');
+        return static::find()->from(['nd' => static::tableName()])->where(['not exists', $query])->orderBy(['id'=>SORT_ASC])->asArray()->all();
+    }
+
     public static function findByEname($ename)
     {
         return static::findOne(['ename' => $ename]);

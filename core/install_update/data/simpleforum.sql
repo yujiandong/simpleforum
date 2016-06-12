@@ -5,11 +5,13 @@ CREATE TABLE simple_user (
   `updated_at` int(10) unsigned NOT NULL,
   `status` tinyint(1) unsigned NOT NULL default 8,
   `role` tinyint(1) unsigned NOT NULL default 0,
+  `score` mediumint(8) unsigned NOT NULL default 0,
   `username` char(16) NOT NULL,
   `email` char(50) NOT NULL,
   `password_hash` char(80) NOT NULL,
   `auth_key` char(32) NOT NULL,
   `avatar` char(50) NOT NULL default 'avatar/0_{size}.png',
+  `comment` char(20) NOT NULL default '',
   PRIMARY KEY id(`id`),
   UNIQUE KEY username(`username`),
   UNIQUE KEY email(`email`),
@@ -36,11 +38,13 @@ CREATE TABLE simple_user_info (
 DROP TABLE IF EXISTS simple_token;
 CREATE TABLE simple_token (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `created_at` int(10) unsigned NOT NULL,
+  `updated_at` int(10) unsigned NOT NULL,
   `type` tinyint(1) unsigned NOT NULL,
   `status` tinyint(1) unsigned NOT NULL default 0,
   `user_id` mediumint(8) unsigned NOT NULL,
   `expires` int(10) unsigned NOT NULL,
-  `token` varchar(50) NOT NULL,
+  `token` varchar(50) NOT NULL COLLATE utf8_bin,
   `ext` varchar(200) NOT NULL default '',
   PRIMARY KEY id(`id`),
   UNIQUE KEY token(`token`),
@@ -138,7 +142,7 @@ CREATE TABLE simple_topic (
 DROP TABLE IF EXISTS simple_topic_content;
 CREATE TABLE simple_topic_content (
   `topic_id` mediumint(8) unsigned NOT NULL auto_increment,
-  `content` text NOT NULL default '',
+  `content` text NOT NULL,
   PRIMARY KEY topic_id(`topic_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -151,7 +155,7 @@ CREATE TABLE simple_comment (
   `topic_id` mediumint(8) unsigned NOT NULL,
   `position` mediumint(8) unsigned NOT NULL auto_increment,
   `invisible` tinyint(1) unsigned NOT NULL default 0,
-  `content` text NOT NULL default '',
+  `content` text NOT NULL,
   PRIMARY KEY topic_position(`topic_id`, `position`),
   UNIQUE KEY id(`id`),
   KEY user_id(`user_id`,`id`),
@@ -173,9 +177,10 @@ CREATE TABLE `simple_notice` (
   `status` tinyint(1) unsigned NOT NULL default 0,
   `target_id` mediumint(8) unsigned NOT NULL,
   `source_id` mediumint(8) unsigned NOT NULL,
-  `topic_id` mediumint(8) unsigned NOT NULL,
+  `topic_id` mediumint(8) unsigned NOT NULL default 0,
   `position` mediumint(8) unsigned NOT NULL default 0,
   `notice_count` smallint(6) unsigned NOT NULL default 0,
+  `msg` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY target_status_id(`target_id`,`status`, `id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -224,9 +229,9 @@ CREATE TABLE simple_setting (
   `type` varchar(10) NOT NULL default 'text',
   `key` varchar(50) NOT NULL,
   `value_type` varchar(10) NOT NULL default 'text',
-  `value` text NOT NULL default '',
-  `option` text NOT NULL default '',
-  `description` text NOT NULL default '',
+  `value` text NOT NULL,
+  `option` text NOT NULL,
+  `description` text NOT NULL,
   PRIMARY KEY id(`id`),
   UNIQUE KEY `key`(`key`),
   KEY block_sort_id(`block`,`sortid`,`id`)
@@ -243,13 +248,14 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (3,'manage', '只允许登录访问', 'select','access_auth','integer', '0', '默认0（公开），若规定登录用户才能访问就设为1（适合内部交流）', '["0(公开)","1(登录访问)"]'),
 (4,'manage', '注册需邮箱验证', 'select','email_verify','integer', '0', '建议设为1（需验证），若不需要验证就设为0', '["0(关闭验证)","1(开启验证)"]'),
 (5,'manage', '注册需管理员验证', 'select','admin_verify','integer', '0', '默认0（不用验证），若需要管理员验证就设为1（适合内部交流）', '["0(关闭验证)","1(开启验证)"]'),
-(6,'manage', '关闭用户注册', 'select','close_register', 'integer', '0','默认0，若停止新用户注册就设为1（仍旧可以通过第三方帐号登录方式注册）', '["0(开启注册)","1(关闭注册)"]'),
+(6,'manage', '关闭用户注册', 'select','close_register', 'integer', '0','默认0，若停止新用户注册就设为1（仍旧可以通过第三方帐号登录方式注册）', '["0(开启注册)","1(关闭注册)","2(只开放邀请码注册)"]'),
 (7,'manage', '过滤用户名', 'text','username_filter', 'text', '','指定用户名不能含有某些指定词汇，用半角逗号(,)分割，例：<br />admin,webmaster,admin*', ''),
 (8,'manage', '开启验证码', 'select','captcha_enabled', 'integer', '0','开启后，注册和登录时会要求输入验证码', '["0(关闭)","1(开启)"]'),
 (9,'manage', '开启自动链接', 'select','autolink', 'integer', '0','自动给帖子内容中的网址加上链接', '["0(关闭)","1(开启)"]'),
 (10,'manage', '自动链接排除列表', 'textarea','autolink_filter', 'text', '','不包含http://，可设置主域名或二级域名等，一行一个网址', '["0(关闭","1(开启)"]'),
 (11,'manage', '模板', 'text','theme', 'text', '','模板名请用字母数字横杠下划线命名，模板放在"themes/模板名/"目录下', ''),
-(12,'manage', '移动模板', 'text','theme_mobile', 'text', '','移动设备（手机/平板）专用模板，模板名请用字母数字横杠下划线命名，放在"themes/移动模板名/"目录下', ''),
+(12,'manage', '移动模板', 'text','theme_mobile', 'text', 'sf-mobile','移动设备（手机/平板）专用模板，模板名请用字母数字横杠下划线命名，放在"themes/移动模板名/"目录下', ''),
+(13,'manage', '会员组', 'textarea','groups', 'text', '1500 普通会员\n3000 铜牌会员\n5000 银牌会员\n8000 金牌会员\n15000 铂金会员\n30000 钻石会员','一行一个组，格式为:最大积分 用户组名"', ''),
 (1,'extend', '放在页面头部<br/>head标签里面的<br/>meta或其它信息', 'textarea','head_meta', 'text', '','示例:<br/>&lt;meta property="qc:admins" content="331146677212163161xxxxxxx" /&gt;<br/>&lt;meta name="cpalead-verification" content="ymEun344mP9vt-B2idFRxxxxxxx" /&gt;', ''),
 (2,'extend', '放在页面底部的<br/>统计代码', 'textarea','analytics_code', 'text', '','示例： 直接粘贴google 或 百度统计代码', ''),
 (3,'extend', '底部链接', 'textarea','footer_links','text', '', '一行一个链接，格式： 描述 http://url<br />如：关于本站 http://simpleforum.org/t/1', ''),
@@ -280,7 +286,7 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (2,'mailer', 'SMTP端口', 'text','mailer_port', 'integer', '','', ''),
 (3,'mailer', 'SMTP加密协议', 'text','mailer_encryption', 'text', '','如ssl,tls等，不加密留空', ''),
 (4,'mailer', 'SMTP验证邮箱', 'text','mailer_username', 'text', '','请输入完整邮箱地址', ''),
-(5,'mailer', 'SMTP验证密码', 'text','mailer_password', 'text', '','验证邮箱的密码', ''),
+(5,'mailer', 'SMTP验证密码', 'password','mailer_password', 'text', '','验证邮箱的密码', ''),
 (1,'upload', '头像上传', 'select','upload_avatar','text', 'local', '默认:上传到网站所在空间', '{"local":"上传到网站所在空间","remote":"上传到第三方空间"}'),
 (2,'upload', '附件上传', 'select','upload_file','text', 'disable', '默认:网站空间', '{"disable":"关闭上传","local":"上传到网站所在空间","remote":"上传到第三方空间"}'),
 (3,'upload', '附件上传条件(注册时间)', 'text','upload_file_regday','integer', '30', '默认：30天', ''),
@@ -315,12 +321,13 @@ DROP TABLE IF EXISTS `simple_history`;
 CREATE TABLE `simple_history` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `user_id` mediumint(8) unsigned NOT NULL default 0,
+  `type` tinyint(1) unsigned NOT NULL default 0,
   `action` tinyint(1) unsigned NOT NULL,
   `action_time` int(10) unsigned NOT NULL,
   `target` int(10) unsigned NOT NULL default 0,
-  `ext` text NOT NULL default '',
+  `ext` text NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY user_id(`user_id`, `id`)
+  KEY user_type_id(`user_id`, `type`, `id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS simple_ad;
@@ -332,7 +339,7 @@ CREATE TABLE simple_ad (
   `node_id` smallint(6) unsigned NOT NULL default 0,
   `sortid` tinyint(1) unsigned NOT NULL default 50,
   `name` varchar(20) NOT NULL,
-  `content` text NOT NULL default '',
+  `content` text NOT NULL,
   PRIMARY KEY id(`id`),
   UNIQUE KEY id(`id`),
   KEY adkey(`location`,`node_id`, `expires`, `sortid`, `id`)

@@ -189,4 +189,49 @@ class Util
         }
          return $str;
     }
+    public static function getGroup($score)
+    {
+        $groups = ArrayHelper::getValue(Yii::$app->params, 'settings.groups');
+        if ($groups) {
+            foreach($groups as $key => $group) {
+                if($group[0]>$score) {
+                    break;
+                }
+            }
+            return ' <span class="user-level user-level-'.($key+1).'">V'.($key+1).' [ '.$group[1].' ]</span>';
+        }
+        return '';
+    }
+    public static function getGroupRank($score)
+    {
+        $groups = ArrayHelper::getValue(Yii::$app->params, 'settings.groups');
+        if ($groups) {
+            foreach($groups as $key => $group) {
+                if($group[0]>$score) {
+                    break;
+                }
+            }
+            return ' <span class="user-level user-level-'.($key+1).'">V'.($key+1).'</span>';
+        }
+        return '';
+    }
+    public static function getScore($score) {
+        $result = '';
+        $levels = [];
+        if ($score > 10000) {
+            $levels['gold'] = floor($score / 10000);
+            $score = $score % 10000;
+        }
+        if ($score > 100) {
+            $levels['silver'] = floor($score / 100);
+            $score = $score % 100;
+        }
+        if ($score > 0) {
+            $levels['copper'] = $score;
+        }
+        foreach($levels as $key=>$amount) {
+            $result .= $amount . '<i class="fa fa-trophy ' . $key . '" aria-hidden="true"></i>';
+        }
+        return $result;
+    }
 }

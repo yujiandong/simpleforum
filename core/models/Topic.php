@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -103,7 +103,7 @@ class Topic extends ActiveRecord
     public function getAuthor()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id'])
-            ->select(['id', 'username', 'status', 'avatar']);
+            ->select(['id', 'username', 'status', 'avatar', 'score', 'comment']);
     }
 
     public function getLastReply()

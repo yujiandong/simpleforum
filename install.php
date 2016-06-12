@@ -1,12 +1,14 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 define('SF_DIR', 'core');
 define('SF_PATH', __DIR__.'/' . SF_DIR);
+
+header("Content-Type: text/html; charset=UTF-8");
 
 if (version_compare(PHP_VERSION, '5.4.0', '<')) {
     echo 'php版本过低，请先安装php5.4.0以上版本';
@@ -35,6 +37,11 @@ if ( !is_writeable(SF_PATH . '/runtime') ) {
 
 if ( !is_writeable(__DIR__.'/avatar') ) {
     echo 'avatar目录没有写权限。请加上写权限。';
+    exit;
+}
+
+if ( !is_writeable(__DIR__.'/upload') ) {
+    echo 'upload目录没有写权限。请加上写权限。';
     exit;
 }
 
