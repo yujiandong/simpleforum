@@ -192,7 +192,7 @@ if ( $session->hasFlash('chgPwdNG') ) {
 <?php ActiveForm::end(); ?>
     </li>
 <?php
-if ( intval(Yii::$app->params['settings']['captcha_enabled']) === 1 ) :
+if ( intval(Yii::$app->params['settings']['auth_enabled']) === 1 ) :
 ?>
     <li class="list-group-item list-group-item-info" id="auth"><strong>第三方帐号登录</strong></li>
     <li class="list-group-item sf-box-form">
