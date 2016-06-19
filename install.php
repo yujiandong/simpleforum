@@ -59,6 +59,6 @@ if (!file_exists(SF_PATH . '/config/params.php')) {
     }
 }
 
-header("Location: /install");
+header("Location: install");
 
 ?>
