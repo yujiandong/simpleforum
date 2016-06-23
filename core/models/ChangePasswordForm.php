@@ -17,7 +17,7 @@ class ChangePasswordForm extends \yii\base\Model
     public $old_password;
     public $password;
     public $password_repeat;
-	private $_user;
+    private $_user;
 
     public function rules()
     {
@@ -40,33 +40,34 @@ class ChangePasswordForm extends \yii\base\Model
 
     public function savePassword()
     {
-		$user = $this->_user;
+        $user = $this->_user;
         $user->setPassword($this->password);
 
-		if ( ($rtnCd = $user->save()) ) {
-			(new History([
-				'user_id' => $user->id,
-				'action' => History::ACTION_CHANGE_PWD,
-				'action_time' => $user->updated_at,
-			]))->save(false);
-		}
+        if ( ($rtnCd = $user->save()) ) {
+            (new History([
+                'user_id' => $user->id,
+                'action' => History::ACTION_CHANGE_PWD,
+                'action_time' => $user->updated_at,
+                'ext' => '',
+            ]))->save(false);
+        }
 
         return $rtnCd;
     }
 
-	public function apply()
-	{
-		$this->_user = Yii::$app->getUser()->getIdentity();
+    public function apply()
+    {
+        $this->_user = Yii::$app->getUser()->getIdentity();
 
-		if ( !$this->validate() ) {
+        if ( !$this->validate() ) {
             $result = ['chgPwdNG', implode('<br />', $this->getFirstErrors())];
-		} else if ( !$this->_user->validatePassword($this->old_password) ) {
+        } else if ( !$this->_user->validatePassword($this->old_password) ) {
             $result = ['chgPwdNG', '[当前密码]错误'];
-		} else if ( !$this->savePassword() ) {
+        } else if ( !$this->savePassword() ) {
             $result = ['chgPwdNG', '程序出错，请重试'];
-		} else {
+        } else {
             $result = ['chgPwdOK', '密码修改成功'];
-		}
-		return $result;
-	}
+        }
+        return $result;
+    }
 }

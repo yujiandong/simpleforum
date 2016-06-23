@@ -175,6 +175,7 @@ class Topic extends ActiveRecord
             'user_id' => $this->user_id,
             'action' => History::ACTION_DELETE_TOPIC,
             'target' => $this->id,
+            'ext' => '',
         ]))->save(false);
         return parent::afterDelete();
     }

@@ -76,6 +76,7 @@ class CommentController extends AppController
                 'action' => History::ACTION_EDIT_COMMENT,
                 'action_time' => $model->updated_at,
                 'target' => $model->id,
+                'ext' => '',
             ]))->save(false);
             return $this->redirect(Topic::getRedirectUrl($model->topic_id, $model->position, $request->get('ip', 1), $request->get('np', 1)));
         }

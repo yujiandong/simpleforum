@@ -48,10 +48,10 @@ class LoginForm extends Model
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
-		if(intval(Yii::$app->params['settings']['captcha_enabled']) === 1) {
-			$rules[] = ['captcha', 'captcha'];
-		}
-		return $rules;
+        if(intval(Yii::$app->params['settings']['captcha_enabled']) === 1) {
+            $rules[] = ['captcha', 'captcha'];
+        }
+        return $rules;
     }
 
     public function attributeLabels()
@@ -90,19 +90,20 @@ class LoginForm extends Model
     {
         if ($this->validate()) {
             if ( ($status = Yii::$app->getUser()->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 7 : 0)) ) {
-				$userIP = sprintf("%u", ip2long(Yii::$app->getRequest()->getUserIP()));
-				UserInfo::updateAll([
-					'last_login_at'=>time(),
-					'last_login_ip'=>$userIP,
-				], ['user_id'=> $this->getUser()->id]);
-				(new History([
-					'user_id' => $this->getUser()->id,
-					'action' => History::ACTION_LOGIN,
-					'target' => $userIP,
-				]))->save(false);
-			}
+                $userIP = sprintf("%u", ip2long(Yii::$app->getRequest()->getUserIP()));
+                UserInfo::updateAll([
+                    'last_login_at'=>time(),
+                    'last_login_ip'=>$userIP,
+                ], ['user_id'=> $this->getUser()->id]);
+                (new History([
+                    'user_id' => $this->getUser()->id,
+                    'action' => History::ACTION_LOGIN,
+                    'target' => $userIP,
+                    'ext' => '',
+                ]))->save(false);
+            }
 
-			return $status;
+            return $status;
 
         } else {
             return false;

@@ -246,6 +246,7 @@ class TopicController extends AppController
                 'action' => History::ACTION_EDIT_TOPIC,
                 'action_time' => $model->updated_at,
                 'target' => $model->id,
+                'ext' => '',
             ]))->save(false);
 
            return $this->redirect(Topic::getRedirectUrl($id, 0, $request->get('ip', 1), $request->get('np', 1)));

@@ -114,6 +114,7 @@ class Comment extends ActiveRecord
             'user_id' => $this->user_id,
             'action' => History::ACTION_DELETE_COMMENT,
             'target' => $this->id,
+            'ext' => '',
         ]))->save(false);
         Siteinfo::updateCounterInfo('deleteComment');
         UserInfo::updateCounterInfo('deleteComment', $this->user_id);
