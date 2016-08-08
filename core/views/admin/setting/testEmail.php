@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -17,36 +17,36 @@ $this->title = '邮件发送测试';
 <div class="col-md-8 sf-left">
 
 <div class="panel panel-default sf-box">
-	<div class="panel-heading">
-		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title; ?>
-	</div>
-	<div class="panel-body sf-box-form">
+    <div class="panel-heading">
+        <?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title; ?>
+    </div>
+    <div class="panel-body sf-box-form">
 <?php
 if ( $rtnCd === 9 ) {
-	echo Alert::widget([
-		   'options' => ['class' => 'alert-warning'],
-		   'body' => '测试邮件发送出错，请确认 '. Html::a('SMTP邮箱设置', ['setting/update', '#'=>'mailer']) . ' 是否正确。',
-		]);
+    echo Alert::widget([
+           'options' => ['class' => 'alert-warning'],
+           'body' => '测试邮件发送出错，请确认 '. Html::a('SMTP邮箱设置', ['admin/setting/update', '#'=>'mailer']) . ' 是否正确。',
+        ]);
 } else if ( $rtnCd === 1 ) {
-	echo Alert::widget([
-		   'options' => ['class' => 'alert-success'],
-		   'body' => '测试邮件发送成功，请进测试邮箱查看是否收到。',
-		]);
+    echo Alert::widget([
+           'options' => ['class' => 'alert-success'],
+           'body' => '测试邮件发送成功，请进测试邮箱查看是否收到。',
+        ]);
 }
 ?>
 <?php $form = ActiveForm::begin([
-		'action' => ['admin/setting/test-email'],
-		'layout' => 'horizontal',
-		]); ?>
-		<?php echo $form->field($model, 'email')->textInput(['maxlength'=>50]); ?>
-		<?php echo $form->field($model, 'content')->textArea(['maxlength'=>255]); ?>
+        'action' => ['admin/setting/test-email'],
+        'layout' => 'horizontal',
+        ]); ?>
+        <?php echo $form->field($model, 'email')->textInput(['maxlength'=>50]); ?>
+        <?php echo $form->field($model, 'content')->textArea(['maxlength'=>255]); ?>
         <div class="form-group">
-			<div class="col-sm-offset-3 col-sm-9">
+            <div class="col-sm-offset-3 col-sm-9">
             <?php echo Html::submitButton('测试', ['class' => 'btn btn-primary']); ?>
-			</div>
+            </div>
         </div>
 <?php ActiveForm::end(); ?>
-	</div>
+    </div>
 </div>
 
 </div>
