@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -19,10 +19,12 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/jquery.lazyload.min.js',
+        'assets/jquery-qrcode/jquery.qrcode.min.js',
         'js/simpleforum.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
 }

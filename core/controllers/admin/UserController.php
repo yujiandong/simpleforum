@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -11,6 +11,7 @@ use Yii;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
 use app\models\admin\UserForm;
+use app\models\admin\ChargePointForm;
 use app\models\User;
 
 class UserController extends CommonController
@@ -26,18 +27,29 @@ class UserController extends CommonController
 
     public function actionIndex($status=User::STATUS_INACTIVE)
     {
-		$query = User::find()->where(['status'=>$status]);
-	    $countQuery = clone $query;
-	    $pages = new Pagination(['totalCount' => $countQuery->count('id')]);
-	    $users = $query->select(['id','username'])->orderBy(['id'=>SORT_DESC])
-			->offset($pages->offset)
-	        ->limit($pages->limit)
-			->asArray()
-	        ->all();
-	    return $this->render('index', [
-	         'users' => $users,
-	         'pages' => $pages,
-	    ]);
+        $model = new UserForm(['scenario' => UserForm::SCENARIO_SEARCH]);
+
+        if ($model->load(Yii::$app->getRequest()->post())) {
+			$user = $model->search();
+	        return $this->render('search', [
+	            'model' => $model,
+	            'user' => $user,
+	        ]);
+        } else {
+			$query = User::find()->where(['status'=>$status]);
+		    $countQuery = clone $query;
+		    $pages = new Pagination(['totalCount' => $countQuery->count('id')]);
+		    $users = $query->select(['id','username'])->orderBy(['id'=>SORT_DESC])
+				->offset($pages->offset)
+		        ->limit($pages->limit)
+				->asArray()
+		        ->all();
+		    return $this->render('index', [
+	            'model' => $model,
+		         'users' => $users,
+		         'pages' => $pages,
+		    ]);
+		}
     }
 /*
     public function actionDelete($id)
@@ -77,6 +89,21 @@ class UserController extends CommonController
 			Yii::$app->getSession()->setFlash('adminPwdNG', implode('<br />', $model->getFirstErrors()));
 		}
 		return $this->goBack();
+    }
+
+    public function actionCharge()
+    {
+        $model = new ChargePointForm();
+        if ($model->load(Yii::$app->getRequest()->post()) && $model->validate()) {
+            if ( $model->apply() ) {
+                Yii::$app->getSession()->setFlash('ChargePointOK', '积分充值成功。');
+                $model = new ChargePointForm();
+            }
+        }
+        return $this->render('charge', [
+            'model' => $model,
+        ]);
+
     }
 
     protected function findUserModel($id, $with=null)

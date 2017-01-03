@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -18,6 +18,6 @@ return [
     'member/<username:\w+>' => 'user/view',
     'member/<username:\w+>/topics' => 'user/topics',
     'member/<username:\w+>/comments' => 'user/comments',
-    'site/auth-<authclient:(qq|weibo|weixin|baidu)>' => 'site/auth',
-    'admin/' => 'admin/setting/all',
+    'site/auth-<authclient:\w+>' => 'site/auth',
+    'admin' => 'admin/setting/all',
 ];

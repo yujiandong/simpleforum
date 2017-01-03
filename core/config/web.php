@@ -1,24 +1,27 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
+use yii\helpers\ArrayHelper;
+
 $params = require(__DIR__ . '/params.php');
+$params += require(__DIR__ . '/plugins.php');
 
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'language' => 'zh-CN',
-    'bootstrap' => ['log', 'app\lib\AppBootstrap'],
-    'timeZone' => 'Asia/Shanghai',
+    'bootstrap' => ['log', 'app\components\SfBootstrap'],
+    'timeZone' => ArrayHelper::remove($params, 'settings.timezone', 'Asia/Shanghai'),
     'defaultRoute' => 'topic/index',
     'components' => [
         'request' => [
             'cookieValidationKey' => 'hwdn8-iyIh5LylPLpD1PoplqjUka98Ba',
         ],
-        'cache' => [
+        'cache' =>  [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
@@ -80,8 +83,8 @@ $config = [
     'params' => $params,
 ];
 
-$setting = $params['settings'];
-unset($params);
+$setting = ArrayHelper::remove($params, 'settings', []);
+$plugins = ArrayHelper::remove($params, 'plugins', []);
 
 //cache
 if( intval($setting['cache_enabled']) !== 0 && intval($setting['cache_time'])>0 && !empty($setting['cache_info']) ) {
@@ -113,30 +116,35 @@ if( !empty($setting['mailer_host']) && intval($setting['mailer_port'])>0 && !emp
     ];
 }
 
-if ( intval($setting['auth_enabled']) !== 0 ) {
-    // qq login
-    if( !empty($setting['qq_appid']) && !empty($setting['qq_appkey']) ) {
-        $config['components']['authClientCollection']['clients']['qq'] = [
-            'class' => 'yujiandong\authclient\Qq',
-            'clientId' => $setting['qq_appid'],
-            'clientSecret' => $setting['qq_appkey'],
-            'title' => 'QQ登录',
+if ( intval($setting['auth_enabled']) !== 0 && !empty($setting['auth_setting']) ) {
+    $authClass = [
+        'qq' => 'yujiandong\authclient\Qq',
+        'weibo' => 'yujiandong\authclient\Weibo',
+        'weixin' => 'yujiandong\authclient\Weixin',
+        'weixinmp' => 'yujiandong\authclient\Weixin',
+        'github' => 'yujiandong\authclient\GitHub',
+        'facebook' => 'yii\authclient\clients\Facebook',
+        'twitter' => 'yii\authclient\clients\Twitter',
+    ];
+
+    foreach($setting['auth_setting'] as $type=>$auth) {
+        $client = [
+            'class' => $authClass[$type],
+            'clientId' => $auth['clientId'],
+            'clientSecret' => $auth['clientSecret'],
+            'title' => $auth['title'],
         ];
-    }
-    // weibo login
-    if( !empty($setting['wb_key']) && !empty($setting['wb_secret']) ) {
-        $config['components']['authClientCollection']['clients']['weibo'] = [
-            'class' => 'yujiandong\authclient\Weibo',
-            'clientId' => $setting['wb_key'],
-            'clientSecret' => $setting['wb_secret'],
-            'title' => '微博登录',
-        ];
+        if($type === 'weixinmp') {
+            $client['type'] = 'mp';
+        }
+        $config['components']['authClientCollection']['clients'][$type] = $client;
     }
 }
+
 //timezone
-if( !empty($setting['timezone']) ) {
-    $config['timeZone'] = $setting['timezone'];
-}
+//if( !empty($setting['timezone']) ) {
+//    $config['timeZone'] = $setting['timezone'];
+//}
 
 //alias
 if( !empty($setting['alias_static']) ) {
@@ -144,8 +152,8 @@ if( !empty($setting['alias_static']) ) {
 }
 if( !empty($setting['alias_avatar']) ) {
     $config['aliases']['@web/avatar'] = $setting['alias_avatar'];
-} else if( $setting['upload_avatar'] === 'remote' && !empty($setting['upload_remote_url']) )  {
-    $config['aliases']['@web/avatar'] = $setting['upload_remote_url'].'/avatar';
+} else if( $setting['upload_avatar'] === 'remote' && !empty($plugins[$setting['upload_remote']]) )  {
+    $config['aliases']['@web/avatar'] = $plugins[$setting['upload_remote']]['url'].'/avatar';
 }
 if( !empty($setting['alias_upload']) ) {
     $config['aliases']['@web/upload'] = $setting['alias_upload'];
@@ -154,7 +162,18 @@ if( !empty($setting['alias_runtime']) ) {
     $config['aliases']['@runtime'] = $setting['alias_runtime'];
 }
 
-if (file_exists(dirname(__DIR__). '/install_update')) {
+if( $setting['upload_avatar'] === 'remote' && !empty($setting['upload_remote']) && isset($plugins[$setting['upload_remote']]) ) {
+    \Yii::$container->set('avatarUploader', $plugins[$setting['upload_remote']]);
+} else {
+    \Yii::$container->set('avatarUploader', 'app\components\Upload');
+}
+if( $setting['upload_file'] === 'remote' && !empty($setting['upload_remote']) && isset($plugins[$setting['upload_remote']]) ) {
+    \Yii::$container->set('fileUploader', $plugins[$setting['upload_remote']]);
+} else {
+    \Yii::$container->set('fileUploader', 'app\components\Upload');
+}
+
+if (file_exists(dirname(__DIR__). '/install_update')) { 
     $config['bootstrap'][] = 'install_update';
     $config['modules']['install_update'] = 'app\install_update\Module';
 }
@@ -169,5 +188,4 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = 'yii\gii\Module';
 }
-
 return $config;

@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
 use yii\data\Pagination;
 use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use app\models\UserInfo;
 use app\models\Token;
 use app\models\UploadForm;
@@ -35,11 +36,13 @@ class ServiceController extends AppController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'avatar' => ['post'],
+//                    'cover' => ['post'],
                     'upload' => ['post'],
                     'edit-profile' => ['post'],
                     'change-email' => ['post'],
                     'change-password' => ['post'],
                     'unfavorite' => ['post'],
+                    'good' => ['post'],
                 ],
             ],
             'access' => [
@@ -115,7 +118,7 @@ class ServiceController extends AppController
         $session = Yii::$app->getSession();
         $me = Yii::$app->getUser()->getIdentity();
 
-        $model = new UploadForm(['scenario' => UploadForm::SCENARIO_AVATAR]);
+        $model = new UploadForm(Yii::$container->get('avatarUploader'), ['scenario' => UploadForm::SCENARIO_AVATAR]);
         $model->file = UploadedFile::getInstance($model, 'file');
 
         $result = $model->uploadAvatar($me->id);
@@ -130,18 +133,37 @@ class ServiceController extends AppController
         return $this->redirect(['my/settings', '#'=>'avatar']);
     }
 
+/*    public function actionCover()
+    {
+        $session = Yii::$app->getSession();
+        $me = Yii::$app->getUser()->getIdentity();
+
+        $model = new UploadForm(Yii::$container->get('avatarUploader'), ['scenario' => UploadForm::SCENARIO_AVATAR]);
+        $model->file = UploadedFile::getInstance($model, 'file');
+
+        $result = $model->uploadAvatar($me->id, 'coverSizes');
+        if ( $result ) {
+            $me->userInfo->cover = $result;
+            $me->userInfo->save(false);
+            $session->setFlash('setCoverOK', '用户卡背景图片上传成功，显示可能有延迟，请刷新。');
+        } else {
+            $session->setFlash('setCoverNG', implode('<br />', $model->getFirstErrors()));
+        }
+
+        return $this->redirect(['my/settings', '#'=>'cover']);
+    }
+*/
     public function actionUpload()
     {
-        Yii::$app->getResponse()->format = \yii\web\Response::FORMAT_JSON;
+        Yii::$app->getResponse()->format = Response::FORMAT_JSON;
 
-        $session = Yii::$app->getSession();
         $me = Yii::$app->getUser()->getIdentity();
 
         if( !$me->canUpload($this->settings) ) {
             return ['jquery-upload-file-error'=> '您没有权限上传附件。' ];
         }
 
-        $model = new UploadForm(['scenario' => UploadForm::SCENARIO_UPLOAD]);
+        $model = new UploadForm(Yii::$container->get('fileUploader'), ['scenario' => UploadForm::SCENARIO_UPLOAD]);
         $model->files = UploadedFile::getInstances($model, 'files');
 
         $result = $model->upload($me->id);
@@ -153,45 +175,63 @@ class ServiceController extends AppController
 
     }
 
-    public function actionFavorite($type, $id)
+    public function actionFavorite()
     {
         $types = [
             'node' => Favorite::TYPE_NODE,
             'topic' => Favorite::TYPE_TOPIC,
             'user' => Favorite::TYPE_USER,
         ];
+        $req = Yii::$app->getRequest();
+        if ($req->getIsAjax()) {
+            $data = $req->post();
+            if ( !isset($types[$data['type']]) ) {
+                return ['result'=>0, 'msg'=>'参数不正确'];
+            }
 
-        Favorite::add([
-            'type'=>$types[$type],
-            'source_id'=>Yii::$app->getUser()->id,
-            'target_id'=>$id,
-        ]);
+            Favorite::add([
+                'type'=>$types[$data['type']],
+                'source_id'=>Yii::$app->getUser()->id,
+                'target_id'=>$data['id'],
+            ]);
+            Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+            return ['result'=>1];
+        }
 
-        return $this->goBack();
+//        return $this->goBack();
     }
 
-    public function actionUnfavorite($type, $id)
+    public function actionUnfavorite()
     {
         $types = [
             'node' => Favorite::TYPE_NODE,
             'topic' => Favorite::TYPE_TOPIC,
             'user' => Favorite::TYPE_USER,
         ];
+        $req = Yii::$app->getRequest();
+        if ($req->getIsAjax()) {
+            $data = $req->post();
+            if ( !isset($types[$data['type']]) ) {
+                return ['result'=>0, 'msg'=>'参数不正确'];
+            }
 
-        Favorite::cancel([
-            'type'=>$types[$type],
-            'source_id'=>Yii::$app->getUser()->id,
-            'target_id'=>$id,
-        ]);
+            Favorite::cancel([
+                'type'=>$types[$data['type']],
+                'source_id'=>Yii::$app->getUser()->id,
+                'target_id'=>$data['id'],
+            ]);
+            Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+            return ['result'=>1];
+        }
 
-        return $this->goBack();
+
+//        return $this->goBack();
     }
 
     public function actionSignin()
     {
         if ( Yii::$app->getRequest()->getIsPost() ) {
             Yii::$app->getUser()->getIdentity()->signin();
-            $this->redirect(['my/balance']);
         }
         return $this->render('signin');
 
@@ -244,6 +284,17 @@ class ServiceController extends AppController
             'sms' => $sms,
         ]);
 
+    }
+
+    public function actionGood()
+    {
+        $req = Yii::$app->getRequest();
+        if ($req->getIsAjax()) {
+            $data = $req->post();
+            $me = Yii::$app->getUser()->getIdentity();
+            Yii::$app->getResponse()->format = Response::FORMAT_JSON;
+            return $me->good($data['type'], intval($data['id']), intval($data['thanks']));
+        }
     }
 
 }

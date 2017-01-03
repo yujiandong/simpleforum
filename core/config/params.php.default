@@ -18,21 +18,45 @@ return [
     'autolink_filter' => [
     ],
     'theme' => '',
-    'theme_mobile' => '',
+    'theme_mobile' => 'sf-mobile',
+    'groups' => [
+      [
+        '1500',
+        '普通会员',
+      ],
+      [
+        '3000',
+        '铜牌会员',
+      ],
+      [
+        '5000',
+        '银牌会员',
+      ],
+      [
+        '8000',
+        '金牌会员',
+      ],
+      [
+        '15000',
+        '铂金会员',
+      ],
+      [
+        '30000',
+        '钻石会员',
+      ],
+    ],
     'head_meta' => '',
     'analytics_code' => '',
     'footer_links' => [
     ],
     'timezone' => 'Asia/Shanghai',
-    'editor' => 'wysibb',
+    'editor' => 'WysibbEditor',
+    'avatar_style' => 'img-rounded',
     'cache_enabled' => 0,
     'cache_time' => 10,
     'auth_enabled' => 0,
-    'qq_appid' => '',
-    'qq_appkey' => '',
-    'qq_scope' => 'get_user_info',
-    'wb_key' => '',
-    'wb_secret' => '',
+    'auth_setting' => [
+    ],
     'index_pagesize' => 20,
     'list_pagesize' => 20,
     'comment_pagesize' => 20,
@@ -54,7 +78,5 @@ return [
     'upload_file_regday' => 30,
     'upload_file_topicnum' => 20,
     'upload_remote' => '',
-    'upload_remote_info' => '',
-    'upload_remote_url' => '',
   ]
 ];

@@ -55,9 +55,14 @@ class AppController extends Controller
             'admin/user/reset-password',
             'service/favorite',
             'service/unfavorite',
+            'service/good',
+            'service/avatar',
+//            'service/cover',
+//            'user/ajax-view',
         ];
-        if( !in_array( $action->id, $exceptAllActions) 
-				&& !in_array( $action->controller->id.'/'.$action->id, $exceptActions) ) {
+        if( !Yii::$app->getRequest()->getIsAjax()
+                && !in_array( $action->id, $exceptAllActions) 
+                && !in_array( $action->controller->id.'/'.$action->id, $exceptActions) ) {
             $user->setReturnUrl(Yii::$app->getRequest()->url);
         }
     }

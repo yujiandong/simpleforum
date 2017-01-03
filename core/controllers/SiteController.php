@@ -86,7 +86,6 @@ class SiteController extends AppController
     public function onAuthSuccess($client)
     {
         $sourceName = [
-            'qq'=>'qq',
             'weibo'=>'微博',
             'weixin'=>'微信',
             'baidu'=>'百度',
@@ -108,7 +107,7 @@ class SiteController extends AppController
             } else { // signup
                 $attr['source'] = $source;
 //              $attr['sourceName'] = $client->defaultName();
-                $attr['sourceName'] = $sourceName[$source];
+                $attr['sourceName'] = empty($sourceName[$source])?$source:$sourceName[$source];
                 $session = Yii::$app->getSession();
                 $session->set('authInfo', $attr);
                 return $this->redirect(['auth-bind-account']);

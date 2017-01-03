@@ -8,9 +8,9 @@
 namespace app\controllers;
 
 use Yii;
+use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use yii\data\Pagination;
-use yii\web\NotFoundHttpException;
 use app\models\User;
 use app\models\UserInfo;
 use app\models\Notice;
@@ -18,7 +18,7 @@ use app\models\Topic;
 use app\models\Token;
 use app\models\History;
 use app\models\Favorite;
-use app\lib\Util;
+use app\components\Util;
 
 class MyController extends AppController
 {

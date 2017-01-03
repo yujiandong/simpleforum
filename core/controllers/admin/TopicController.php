@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -9,18 +9,10 @@ namespace app\controllers\admin;
 
 use Yii;
 use yii\web\NotFoundHttpException;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
-use yii\data\Pagination;
-use yii\helpers\ArrayHelper;
-use yii\db\Expression;
 use app\models\admin\ChangeNodeForm;
-use app\models\User;
 use app\models\Topic;
-use app\models\TopicContent;
 use app\models\Node;
 use app\models\History;
-use app\lib\Util;
 
 class TopicController extends CommonController
 {

@@ -15,7 +15,7 @@ use yii\filters\VerbFilter;
 use app\models\Topic;
 use app\models\Comment;
 use app\models\History;
-use app\lib\Util;
+use app\components\Util;
 
 class CommentController extends AppController
 {
