@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\models\Node;
 use app\models\Navi;
-use app\lib\Util;
+use app\components\SfHtml;
 
 $settings = Yii::$app->params['settings'];
 $currentPage = $pages->page+1;
@@ -37,7 +37,7 @@ if($currentPage > 1) {
 <?php
     echo '<span class="fr">' . Html::a('<i class="fa fa-pencil"></i>发表', ['topic/new']) . '</span>';
     echo Html::a('<i class="fa fa-bell'.($me->getNoticeCount()>0?'':'-o').'"></i>'.$me->getNoticeCount().' 条提醒', ['my/notifications']);
-    echo ' ', Html::a(Util::getScore($me->score), ['my/balance'], ['class'=>'btn btn-xs node']);
+    echo ' ', Html::a(SfHtml::uScore($me->score), ['my/balance'], ['class'=>'btn btn-xs node']);
 ?>
     </li>
 <?php endif; ?>
@@ -58,14 +58,14 @@ if($currentPage > 1) {
             $url['ip'] = $currentPage;
 //      }
         echo '<li class="list-group-item media">',
-                Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-circle media-object','alt' => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
+                SfHtml::uImgLink($topic['author']),
                 '<div class="media-body">
                     <div class="small gray">';
                    echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-                    ' • <strong><i class="fa fa-user"></i>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), Util::getGroupRank($topic['author']['score']), '</strong>',
+                    ' • <strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
                     $topic['alltop']==1?' • <i class="fa fa-arrow-up"></i>置顶':'',
                     '</div>
-					<h5 class="media-heading">';
+                    <h5 class="media-heading">';
          if($topic['comment_count'] > 0){
             $gotopage = ceil($topic['comment_count']/intval($settings['comment_pagesize']));
             if($gotopage > 1){
