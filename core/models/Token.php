@@ -11,7 +11,7 @@ use Yii;
 use yii\base\InvalidParamException;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
-use app\lib\Util;
+use app\components\Util;
 
 class Token extends ActiveRecord
 {

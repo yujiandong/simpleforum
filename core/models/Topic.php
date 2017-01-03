@@ -20,6 +20,14 @@ class Topic extends ActiveRecord
     const SCENARIO_AUTHOR_EDIT = 3;
     const SCENARIO_ADMIN_EDIT = 10;
     const SCENARIO_ADMIN_CHGNODE = 11;
+    const TOPIC_ACCESS_NONE = 0;
+    const TOPIC_ACCESS_LOGIN = 1;
+    const TOPIC_ACCESS_REPLY = 2;
+	public static $access = [
+		self::TOPIC_ACCESS_NONE => '无限制',
+		self::TOPIC_ACCESS_LOGIN => '登录查看',
+		self::TOPIC_ACCESS_REPLY => '回复查看',
+	];
 
     public static function tableName()
     {
@@ -29,10 +37,10 @@ class Topic extends ActiveRecord
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios[self::SCENARIO_ADD] = ['title', 'tags'];
-        $scenarios[self::SCENARIO_NEW] = ['title', 'node_id', 'tags'];
-        $scenarios[self::SCENARIO_AUTHOR_EDIT] = ['title', 'tags'];
-        $scenarios[self::SCENARIO_ADMIN_EDIT] = ['invisible', 'comment_closed', 'alltop', 'top', 'title', 'tags'];
+        $scenarios[self::SCENARIO_ADD] = ['title', 'access_auth', 'tags'];
+        $scenarios[self::SCENARIO_NEW] = ['title', 'node_id', 'access_auth', 'tags'];
+        $scenarios[self::SCENARIO_AUTHOR_EDIT] = ['title', 'access_auth', 'tags'];
+        $scenarios[self::SCENARIO_ADMIN_EDIT] = ['invisible', 'access_auth', 'comment_closed', 'alltop', 'top', 'title', 'tags'];
         $scenarios[self::SCENARIO_ADMIN_CHGNODE] = ['node_id'];
         return $scenarios;
     }
@@ -58,7 +66,7 @@ class Topic extends ActiveRecord
         return [
             [['title', 'node_id'], 'required'],
             [['invisible', 'comment_closed', 'alltop', 'top'], 'boolean'],
-            ['node_id', 'integer'],
+            [['node_id', 'access_auth'], 'integer'],
             ['node_id', 'exist', 'targetClass' => '\app\models\Node', 'targetAttribute' => 'id', 'message' => '节点不存在'],
             ['title', 'trim'],
             ['title', 'string', 'length' => [4, 120]],
@@ -78,6 +86,7 @@ class Topic extends ActiveRecord
             'comment_closed' => '关闭评论',
             'alltop' => '全局置顶',
             'top' => '节点置顶',
+            'access_auth' => '查看权限',
             'title' => '标题',
         ];
     }
@@ -91,7 +100,7 @@ class Topic extends ActiveRecord
     public function getTopic()
     {
         return $this->hasOne(self::className(), ['id' => 'id'])
-            ->select(['id', 'node_id', 'user_id', 'reply_id', 'replied_at', 'comment_count', 'alltop', 'top', 'title']);
+            ->select(['id', 'node_id', 'user_id', 'reply_id', 'replied_at', 'comment_count', 'alltop', 'top', 'comment_closed', 'access_auth','title']);
     }
 
     public function getContent()
@@ -197,6 +206,34 @@ class Topic extends ActiveRecord
             'comment_count'=> (new Expression('`comment_count` - 1')),
         ], ['id'=> $id]);
     }
+
+    public static function afterTagDelete($tag)
+    {
+		if( !($topics = $tag->topics) ) {
+			return;
+		}
+		foreach($topics as $topic) {
+			$tags = explode(',', $topic->tags);
+			$tags = array_diff($tags, [$tag->name]);
+			$topic->tags = implode(',', $tags);
+			$topic->save();
+		}
+	}
+
+    public static function afterTagEdit($tag, $oldTag)
+    {
+		if( !($topics = $tag->topics) ) {
+			return;
+		}
+		foreach($topics as $topic) {
+			$tags = explode(',', $topic->tags);
+			$tags = array_diff($tags, [$oldTag]);
+			$tags += [$tag->name];
+			$tags = array_unique($tags);
+			$topic->tags = implode(',', $tags);
+			$topic->save();
+		}
+	}
 
     public static function updateCounterInfo($action, $id)
     {

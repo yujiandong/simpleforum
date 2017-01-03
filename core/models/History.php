@@ -28,6 +28,8 @@ class History extends \yii\db\ActiveRecord
     const ACTION_EDIT_TOPIC = 21;
     const ACTION_ADD_COMMENT = 22;
     const ACTION_EDIT_COMMENT = 23;
+    const ACTION_GOOD_TOPIC = 24;
+    const ACTION_GOOD_COMMENT = 25;
     const ACTION_ORIGINAL_SCORE = 30;
     const ACTION_SIGNIN = 31;
     const ACTION_SIGNIN_10DAYS = 32;
@@ -35,9 +37,12 @@ class History extends \yii\db\ActiveRecord
     const ACTION_INVITE = 34;
     const ACTION_INVITED = 35;
     const ACTION_COMMENTED = 36;
+    const ACTION_TOPIC_THANKED = 37;
+    const ACTION_COMMENT_THANKED = 38;
 
     const ACTION_DELETE_TOPIC = 50;
     const ACTION_DELETE_COMMENT = 51;
+    const ACTION_CHARGE_POINT = 52;
 
     /**
      * @inheritdoc
@@ -53,7 +58,7 @@ class History extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['ext', 'default', ''],
+            ['ext', 'default', 'value'=>''],
         ];
     }
 

@@ -13,7 +13,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\helpers\ArrayHelper;
-use app\lib\Util;
+use app\components\Util;
 
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -118,9 +118,16 @@ class User extends ActiveRecord implements IdentityInterface
     public function getLastAction($action = History::ACTION_ADD_TOPIC)
     {
         return $this->hasOne(History::className(), ['user_id' => 'id'])
-                ->select(['action_time', 'action', 'target'])
+                ->select(['action_time', 'action', 'target', 'ext'])
                 ->where(['action'=>$action])
                 ->orderBy(['action_time'=>SORT_DESC])->limit(1);
+    }
+
+    public function getAction($where)
+    {
+        return $this->hasOne(History::className(), ['user_id' => 'id'])
+                ->select(['action_time', 'action', 'target', 'ext'])
+                ->where($where)->limit(1);
     }
 
     public function isAdmin()
@@ -201,6 +208,11 @@ class User extends ActiveRecord implements IdentityInterface
         );
     }
 
+    public function hasReplied($topicId)
+    {
+        return Comment::find()->where(['topic_id'=>$topicId, 'user_id'=>$this->id])->count();
+    }
+
     public function getStatus()
     {
         return self::$statusOptions[$this->status];
@@ -222,6 +234,7 @@ class User extends ActiveRecord implements IdentityInterface
             'buyInviteCode' => -50, //购买邀请码
             'signin_10days' => 200, //连续签到10天奖励
             'signin' => function() {return rand(10, 50);},  //签到奖励10-50的随机数
+            'thanks' => -20, //感谢：自己扣分，对方加分
         ];
         if ($action === 'signin') {
             return $costs[$action]();
@@ -373,7 +386,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function updateScore($cost) {
         $this->score = ($this->score + $cost)<0?0:($this->score + $cost);
-        $this->save(false);
+        return $this->save(false);
     }
 
     public function afterAddComment($cost, $comment)
@@ -399,7 +412,6 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function signin()
     {
-
         $flgToday = false;
         $flg10Days = false;
         $action = $this->getLastAction(History::ACTION_SIGNIN)->one();
@@ -420,15 +432,14 @@ class User extends ActiveRecord implements IdentityInterface
             $continue = 1;
         }
         $cost = static::getCost('signin');
-        $now = time();
         $this->updateScore($cost);
         (new History([
             'user_id' => $this->id,
             'type' => History::TYPE_POINT,
             'action' => History::ACTION_SIGNIN,
-            'action_time' => $now,
             'ext' => json_encode(['score'=>$this->score, 'cost'=>$cost, 'continue'=>$continue]),
         ]))->save(false);
+        Yii::$app->getSession()->set('mission_signin_'. date('Ymd'), $continue);
 
         if ($flg10Days === true) {
             $cost = static::getCost('signin_10days');
@@ -437,25 +448,121 @@ class User extends ActiveRecord implements IdentityInterface
                 'user_id' => $this->id,
                 'type' => History::TYPE_POINT,
                 'action' => History::ACTION_SIGNIN_10DAYS,
-                'action_time' => $now,
                 'ext' => json_encode(['score'=>$this->score, 'cost'=>$cost, 'continue'=>$continue]),
             ]))->save(false);
         }
 
     }
-
     public function checkTodaySigned()
     {
         $session = Yii::$app->getSession();
-        if($session->get('mission_signin') === date('Y-m-d')) {
-            return true;
+        $continue = $session->get('mission_signin_'. date('Ymd'));
+        if ( $continue > 0 ) {
+            return $continue;
         }
 
-        $action = $this->getLastAction(History::ACTION_SIGNIN)->asArray()->one();
-        if ( !empty($action) && date('Y-m-d') === date('Y-m-d', $action['action_time']) ) {
-            $session->set('mission_signin', date('Y-m-d'));
-            return true;
+        $action = $this->getLastAction(History::ACTION_SIGNIN)->one();
+        if ( $action && date('Y-m-d') === date('Y-m-d', $action->action_time) ) {
+            $ext = json_decode($action->ext, true);
+            $session->set('mission_signin_'. date('Ymd'), $ext['continue']);
+            return $ext['continue'];
         }
         return false;
+    }
+
+    public function good($type, $id, $thanks=0)
+    {
+        $types = [
+            'topic' => Notice::TYPE_GOOD_TOPIC,
+            'comment' => Notice::TYPE_GOOD_COMMENT,
+        ];
+        $actions = [
+            'topic' => History::ACTION_GOOD_TOPIC,
+            'comment' => History::ACTION_GOOD_COMMENT,
+        ];
+        $thanked = [
+            'topic' => History::ACTION_TOPIC_THANKED,
+            'comment' => History::ACTION_COMMENT_THANKED,
+        ];
+
+        if( !isset($types[$type]) || !isset($actions[$type]) ) {
+            return ['result'=>0, 'msg'=>'参数错误'];
+        }
+
+        $action = $this->getAction(['action'=>$actions[$type], 'target'=>$id])->one();
+        if ($action) {
+            return ['result'=>0, 'msg'=>'不能重复点赞'];
+        }
+
+        if ($type == 'topic') {
+            $target = Topic::find()->select(['id', 'user_id', 'good', 'title'])->where(['id'=>$id])->one();
+            $notice = [
+                'type' => $types[$type],
+                'source_id' => $this->id,
+                'target_id' => $target->user_id,
+                'topic_id' => $id,
+            ];
+        } else {
+            $target = Comment::find()->select(['id', 'user_id', 'topic_id', 'position', 'good'])->where(['id'=>$id])->one();
+            $notice = [
+                'type' => $types[$type],
+                'source_id' => $this->id,
+                'target_id' => $target->user_id,
+                'topic_id' => $target->topic_id,
+                'position' => $target->position,
+            ];
+        }
+        if (!$target) {
+            return ['result'=>0, 'msg'=>'参数错误'];
+        } else if ($this->id == $target->user_id) {
+            return ['result'=>0, 'msg'=>'不能给自己的'.($type===Notice::TYPE_GOOD_TOPIC?'主题':'回复').'点赞'];
+        }
+        if ( !$target->updateCounters(['good' => 1]) ) {
+            return ['result'=>0, 'msg'=>'程序出错'];
+        }
+        $result = ['result'=>1, 'count'=>$target->good];
+        $history = [
+                'user_id' => $this->id,
+                'action' => $actions[$type],
+                'target' => $id,
+        ];
+        if ($thanks) {
+            $cost = static::getCost('thanks');
+            if( $this->score+$cost < 0 ) {
+                $result['msg'] = '您的积分不够'.abs($cost);
+            } else if( ($author = static::findOne($target->user_id)) && $this->updateScore($cost) ) {
+                $thanksCost = abs($cost);
+
+                $author->updateCounters(['score' => $thanksCost]);
+                $ext = ['thank_by'=>$this->username, 'score'=>$author->score, 'cost'=>$thanksCost];
+                if ($type == 'topic') {
+                    $ext = $ext+['topic_id'=>$target->id, 'title'=>$target->title];
+                } else {
+                    $ext = $ext+['topic_id'=>$target->topic_id, 'title'=>$target->topic->title];
+                }
+
+                (new History([
+                    'user_id' => $author->id,
+                    'type' => History::TYPE_POINT,
+                    'action' => $thanked[$type],
+                    'ext' => json_encode($ext),
+                ]))->save(false);
+
+                $ext = ['thank_to'=>$author->username, 'score'=>$this->score, 'cost'=>$cost];
+                if ($type == 'topic') {
+                    $ext = $ext+['topic_id'=>$target->id, 'title'=>$target->title];
+                } else {
+                    $ext = $ext+['topic_id'=>$target->topic_id, 'title'=>$target->topic->title];
+                }
+                $history = $history+[
+                    'type' => History::TYPE_POINT,
+                    'ext' => json_encode($ext),
+                ];
+            }
+        }
+
+        (new Notice($notice))->save(false);
+        (new History($history))->save(false);
+        return $result;
     }
 }

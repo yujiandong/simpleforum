@@ -37,6 +37,35 @@ class Tag extends ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'trim'],
+            ['name', 'string', 'length' => [1, 20]],
+            ['name', 'unique'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'name' => '标签',
+        ];
+    }
+
+	public function getTopics()
+    {
+        return $this->hasMany(Topic::className(), ['id' => 'topic_id'])
+			->viaTable(TagTopic::tableName(), ['tag_id' => 'id']);
+    }
+
 	public static function getTags($tags)
 	{
 		$tags = strtolower(trim($tags));
@@ -172,5 +201,12 @@ class Tag extends ActiveRecord
 			], ['and', ['id'=>$tagIds], ['>', 'topic_count', 0]]);
 		}
 	}
+
+    public function afterDelete()
+    {
+        Topic::afterTagDelete($this);
+        TagTopic::deleteAll(['tag_id'=> $this->id]);
+        return parent::afterDelete();
+    }
 
 }
