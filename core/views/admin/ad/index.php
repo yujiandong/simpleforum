@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -16,20 +16,20 @@ $this->title = '广告管理';
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<ul class="list-group sf-box">
+	<li class="list-group-item">
 		<p class='fr'><?php echo Html::a('创建新广告', ['add']); ?></p>
 		<?php
 			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
 		?>
-	</div>
-	<div class="cell bg-info"><strong>广告</strong>
-	</div>
-	<div class="cell">
+	</li>
+	<li class="list-group-item list-group-item-info"><strong>导航</strong></li>
+	<li class="list-group-item">
 		<ul>
 		<?php
+			$locations = json_decode(Ad::LOCATIONS,true);
 			foreach($ads as $ad) {
-				echo '<li>[', Ad::LOCATIONS[$ad['location']], ']&nbsp;', $ad['name'], '&nbsp;|&nbsp;', 
+				echo '<li>[', $locations[$ad['location']], ']&nbsp;', $ad['name'], '&nbsp;|&nbsp;', 
 					Html::a('修改', ['edit', 'id'=>$ad['id']]), '&nbsp;|&nbsp;', 
 					Html::a('删除', ['delete', 'id'=>$ad['id']], [
 					    'data' => [
@@ -39,16 +39,16 @@ $this->title = '广告管理';
 			}
 		?>
 		</ul>
-	</div>
-	<div class="item-pagination">
+	</li>
+	<li class="list-group-item item-pagination">
 	<?php
 	echo LinkPager::widget([
 	    'pagination' => $pages,
 		'maxButtonCount'=>5,
 	]);
 	?>
-	</div>
-</div>
+	</li>
+</ul>
 
 
 </div>
@@ -56,7 +56,7 @@ $this->title = '广告管理';
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?= $this->render('@app/views/common/_admin-right') ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->
 </div>

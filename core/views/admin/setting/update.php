@@ -18,14 +18,6 @@ $blocks = [
     'info'=>['title'=>'论坛信息设置', 'msg'=>'', 'parts'=>null],
     'manage'=>['title'=>'论坛管理设置', 'msg'=>'', 'parts'=>null],
     'mailer'=>['title'=>'SMTP服务器设置', 'msg'=>'修改保存后，请 '. Html::a('测试邮件发送', ['admin/setting/test-email']), 'parts'=>null],
-    'auth' => [
-        'title'=>'第三方帐号登录',
-        'msg'=>'可选，不用则留空，参考 <a href="http://simpleforum.org/t/2" target="_blank">开启第三方帐号登录</a>',
-        'parts'=>[
-            'qq'=>'QQ登录设置',
-            'weibo'=>'微博登录设置',
-        ],
-    ],
     'cache'=>['title'=>'缓存设置', 'msg'=>'', 'parts'=>null],
     'upload'=>['title'=>'上传设置', 'msg'=>'', 'parts'=>null],
     'extend'=>['title'=>'扩展设置', 'msg'=>'', 'parts'=>null],
@@ -50,7 +42,7 @@ function showSettingForm($settings, $form)
             echo $form->field($setting, "[$setting->id]value", ['enableError'=>false,])
                     ->textArea()->label($setting->label)->hint($setting->description);
         } else  {
-            echo $form->field($setting, "[$setting->id]value", ['enableError'=>false,])->input($setting->type)
+            echo $form->field($setting, "[$setting->id]value", ['enableError'=>false,])->input($setting->type, $setting->type==='password'?['autocomplete'=>'new-password']:[])
                     ->label($setting->label)->hint($setting->description);
         }
     endforeach;

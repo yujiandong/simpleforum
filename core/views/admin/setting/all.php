@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -11,13 +11,15 @@ use yii\bootstrap\ActiveForm;
 $this->title = '论坛管理';
 
 $items = [
-	'配置管理'=>['admin/setting'],
-	'节点管理'=>['admin/node'],
-	'导航管理'=>['admin/navi'],
-	'用户管理'=>['admin/user'],
-	'链接管理'=>['admin/link'],
-	'邮件测试'=>['admin/setting/test-email'],
-	'清空缓存'=>['admin/setting/clear-cache'],
+    '配置管理'=>['admin/setting'],
+    '第三方登录管理'=>['admin/setting/auth'],
+    '节点管理'=>['admin/node'],
+    '导航管理'=>['admin/navi'],
+    '用户管理'=>['admin/user'],
+    '链接管理'=>['admin/link'],
+    '插件管理'=>['admin/plugin'],
+    '邮件测试'=>['admin/setting/test-email'],
+    '清空缓存'=>['admin/setting/clear-cache'],
 ];
 
 ?>
@@ -26,12 +28,12 @@ $items = [
 <div class="col-md-8 sf-left">
 
 <div class="panel panel-default sf-box">
-	<div class="panel-heading"><?php echo $this->title;	?></div>
-	<div class="panel-body sf-btn">
+    <div class="panel-heading"><?php echo $this->title; ?></div>
+    <div class="panel-body sf-btn">
 <?php
-	foreach($items as $k=>$v) {
-		echo Html::a($k, $v, ['class'=>'btn btn-default']);
-	}
+    foreach($items as $k=>$v) {
+        echo Html::a($k, $v, ['class'=>'btn btn-default']);
+    }
 ?>
     </div>
 </div>

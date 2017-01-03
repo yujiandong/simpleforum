@@ -6,6 +6,7 @@
  */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
 
@@ -51,13 +52,20 @@ if ( intval(Yii::$app->params['settings']['captcha_enabled']) === 1 ) {
         </div>
         <?php ActiveForm::end(); ?>
 <?php if ( intval(Yii::$app->params['settings']['auth_enabled']) === 1 ) : ?>
-        <h6 class="login-three-home"><strong>第三方账号直接登录</strong></h6>
-        <?php echo
-        \yii\authclient\widgets\AuthChoice::widget([
+        <h6 class="login-three-home"><strong>第三方账号直接登录</strong></h6><div class="auth-client">
+        <?php //echo
+/*        \yii\authclient\widgets\AuthChoice::widget([
             'baseAuthUrl' => ['site/auth'],
             'popupMode' => false,
-        ]);
-        ?>
+        ]);*/
+foreach (Yii::$app->authClientCollection->getClients() as $client){
+    if ($client->getId() == 'weixin' && $client->type == 'mp') {
+        echo Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', 'javascript:void(0);', ['class'=>'auth-link '. $client->getId(), 'id'=>'weixinmp', 'link'=>Url::to(['site/auth', 'authclient'=>$client->getId()], true)]);
+    } else {
+        echo Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId()], ['class'=>'auth-link '. $client->getId(), 'title'=>Html::encode($client->getTitle())]);
+    }
+}
+        ?></div>
 <?php endif; ?>
     </div>
 </div>

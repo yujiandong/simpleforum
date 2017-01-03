@@ -11,6 +11,7 @@ use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Script\CommandEvent;
+use Composer\Script\Event;
 use Composer\Util\Filesystem;
 
 /**
@@ -228,12 +229,40 @@ EOF
             rmdir($yiiDir);
         }
     }
-    
+
+    /**
+     * Special method to run tasks defined in `[extra][yii\composer\Installer::postCreateProject]` key in `composer.json`
+     *
+     * @param Event $event
+     */
     public static function postCreateProject($event)
     {
+        static::runCommands($event, __METHOD__);
+    }
+
+    /**
+     * Special method to run tasks defined in `[extra][yii\composer\Installer::postInstall]` key in `composer.json`
+     *
+     * @param Event $event
+     * @since 2.0.5
+     */
+    public static function postInstall($event)
+    {
+        static::runCommands($event, __METHOD__);
+    }
+
+    /**
+     * Special method to run tasks defined in `[extra][$extraKey]` key in `composer.json`
+     *
+     * @param Event $event
+     * @param string $extraKey
+     * @since 2.0.5
+     */
+    protected static function runCommands($event, $extraKey)
+    {
         $params = $event->getComposer()->getPackage()->getExtra();
-        if (isset($params[__METHOD__]) && is_array($params[__METHOD__])) {
-            foreach ($params[__METHOD__] as $method => $args) {
+        if (isset($params[$extraKey]) && is_array($params[$extraKey])) {
+            foreach ($params[$extraKey] as $method => $args) {
                 call_user_func_array([__CLASS__, $method], (array) $args);
             }
         }
@@ -271,8 +300,10 @@ EOF
         $key = self::generateRandomString();
         foreach ($configs as $config) {
             if (is_file($config)) {
-                $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'", file_get_contents($config));
-                file_put_contents($config, $content);
+                $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'", file_get_contents($config), -1, $count);
+                if ($count > 0) {
+                    file_put_contents($config, $content);
+                }
             }
         }
     }
@@ -285,5 +316,45 @@ EOF
         $length = 32;
         $bytes = openssl_random_pseudo_bytes($length);
         return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
+    }
+
+    /**
+     * Copy files to specified locations.
+     * @param array $paths The source files paths (keys) and the corresponding target locations
+     * for copied files (values). Location can be specified as an array - first element is target
+     * location, second defines whether file can be overwritten (by default method don't overwrite
+     * existing files).
+     * @since 2.0.5
+     */
+    public static function copyFiles(array $paths)
+    {
+        foreach ($paths as $source => $target) {
+            // handle file target as array [path, overwrite]
+            $target = (array) $target;
+            echo "Copying file $source to $target[0] - ";
+
+            if (!is_file($source)) {
+                echo "source file not found.\n";
+                continue;
+            }
+
+            if (is_file($target[0]) && empty($target[1])) {
+                echo "target file exists - skip.\n";
+                continue;
+            } elseif (is_file($target[0]) && !empty($target[1])) {
+                echo "target file exists - overwrite - ";
+            }
+
+            try {
+                if (!is_dir(dirname($target[0]))) {
+                    mkdir(dirname($target[0]), 0777, true);
+                }
+                if (copy($source, $target[0])) {
+                    echo "done.\n";
+                }
+            } catch (\Exception $e) {
+                echo $e->getMessage() . "\n";
+            }
+        }
     }
 }

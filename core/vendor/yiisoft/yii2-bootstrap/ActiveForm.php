@@ -22,10 +22,10 @@ use yii\base\InvalidConfigException;
  * $form = ActiveForm::begin(['layout' => 'horizontal'])
  * ```
  *
- * This will set default values for the [[yii\bootstrap\ActiveField|ActiveField]]
- * to render horizontal form fields. In particular the [[yii\bootstrap\ActiveField::template|template]]
+ * This will set default values for the [[ActiveField]]
+ * to render horizontal form fields. In particular the [[ActiveField::template|template]]
  * is set to `{label} {beginWrapper} {input} {error} {endWrapper} {hint}` and the
- * [[yii\bootstrap\ActiveField::horizontalCssClasses|horizontalCssClasses]] are set to:
+ * [[ActiveField::horizontalCssClasses|horizontalCssClasses]] are set to:
  *
  * ```php
  * [
@@ -56,7 +56,7 @@ use yii\base\InvalidConfigException;
  * ]);
  * ```
  *
- * @see \yii\bootstrap\ActiveField for details on the [[fieldConfig]] options
+ * @see ActiveField for details on the [[fieldConfig]] options
  * @see http://getbootstrap.com/css/#forms
  *
  * @author Michael Härtl <haertl.mike@gmail.com>

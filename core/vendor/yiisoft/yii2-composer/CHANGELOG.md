@@ -1,6 +1,15 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
+2.0.5 December 20, 2016
+-----------------------
+
+- Bug #11: `generateCookieValidationKey()` now saves config file only when `cookieValidationKey` was generated (rob006)
+- Enh #10: Added `yii\composer\Installer::postInstall()` method (rob006)
+- Enh #12: Added `yii\composer\Installer::copyFiles()` method (rob006)
+- Enh #14: A note about yii UPGRADE notes file is shown after upgrading Yii to make user aware of it (cebe)
+
+
 2.0.4 February 06, 2016
 -----------------------
 

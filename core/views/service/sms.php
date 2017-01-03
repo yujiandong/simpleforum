@@ -8,6 +8,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
+use app\components\SfHtml;
 
 $formatter = Yii::$app->getFormatter();
 $session = Yii::$app->getSession();
@@ -32,7 +33,7 @@ if( $sms ) {
   <dt>消息</dt>
   <dd><p><?php echo $sms->msg; ?></p></dd>
   <dt>发件人</dt>
-  <dd><p><?php echo Html::a(Html::encode($sms['source']['username']), ['user/view', 'username'=>Html::encode($sms['source']['username'])]); ?></p></dd>
+  <dd><p><?php echo SfHtml::uLink($sms['source']['username']); ?></p></dd>
   <dt>时间</dt>
   <dd><?php echo $formatter->asRelativeTime($sms['created_at']); ?></dd>
 </dl>

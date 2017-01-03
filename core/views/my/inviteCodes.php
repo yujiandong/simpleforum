@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\models\History;
 use app\models\Token;
-use app\lib\Util;
+use app\components\SfHtml;
 
 $this->title = '我的邀请码';
 $formatter = Yii::$app->getFormatter();
@@ -26,7 +26,7 @@ $me = Yii::$app->getUser()->getIdentity();
     <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
     <li class="list-group-item">
-        <h4>当前账户余额： <?php echo Util::getScore($me->score); ?></h4>
+        <h4>当前账户余额： <?php echo SfHtml::uScore($me->score); ?></h4>
     </li>
     <li class="list-group-item">
     <table class="table table-condensed table-bordered">

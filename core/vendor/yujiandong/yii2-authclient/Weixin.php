@@ -1,11 +1,6 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace yii\authclient\clients;
+namespace yujiandong\authclient;
 
 use yii\authclient\OAuth2;
 use yii\web\HttpException;
@@ -24,7 +19,7 @@ use Yii;
  *         'class' => 'yii\authclient\Collection',
  *         'clients' => [
  *             'weixin' => [
- *                 'class' => 'yii\authclient\clients\Weixin',
+ *                 'class' => 'yujiandong\authclient\Weixin',
  *                 'clientId' => 'weixin_appid',
  *                 'clientSecret' => 'weixin_appkey',
  *             ],
@@ -38,7 +33,6 @@ use Yii;
  * @see https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&lang=zh_CN
  *
  * @author Jiandong Yu <flyyjd@gmail.com>
- * @since 2.0
  */
 class Weixin extends OAuth2
 {
@@ -60,7 +54,7 @@ class Weixin extends OAuth2
      * @inheritdoc
      */
     public function init()
-	{
+    {
         parent::init();
         if ($this->scope === null) {
             $this->scope = implode(' ', [
@@ -84,10 +78,7 @@ class Weixin extends OAuth2
      * @inheritdoc
      */
     public function buildAuthUrl(array $params = [])
-	{
-        $authState = $this->generateAuthState();
-        $this->setState('authState', $authState);
-        $params['state'] = $authState;
+    {
         $params['appid'] = $this->clientId;
         return parent::buildAuthUrl($params);
     }
@@ -96,25 +87,17 @@ class Weixin extends OAuth2
      * @inheritdoc
      */
     public function fetchAccessToken($authCode, array $params = [])
-	{
-        $authState = $this->getState('authState');
-        if (!isset($_REQUEST['state']) || empty($authState) || strcmp($_REQUEST['state'], $authState) !== 0) {
-            throw new HttpException(400, 'Invalid auth state parameter.');
-        } else {
-            $this->removeState('authState');
-        }
-
+    {
         $params['appid'] = $this->clientId;
         $params['secret'] = $this->clientSecret;
-		return parent::fetchAccessToken($authCode, $params);
-
+        return parent::fetchAccessToken($authCode, $params);
     }
 
     /**
      * @inheritdoc
      */
     protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
-	{
+    {
         $params['access_token'] = $accessToken->getToken();
         $params['openid'] = $accessToken->getParam('openid');
         return $this->sendRequest($method, $url, $params, $headers);
@@ -124,7 +107,7 @@ class Weixin extends OAuth2
      * @inheritdoc
      */
     protected function initUserAttributes()
-	{
+    {
         return $this->api('sns/userinfo');
     }
 
@@ -154,7 +137,7 @@ class Weixin extends OAuth2
      * @inheritdoc
      */
     protected function defaultName()
-	{
+    {
         return 'weixin';
     }
 
@@ -162,8 +145,19 @@ class Weixin extends OAuth2
      * @inheritdoc
      */
     protected function defaultTitle()
-	{
-        return 'Weixin';
+    {
+        return '微信';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultViewOptions()
+    {
+        return [
+            'popupWidth' => 800,
+            'popupHeight' => 500,
+        ];
     }
 
 }

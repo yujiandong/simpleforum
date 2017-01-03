@@ -9,13 +9,15 @@ use yii\helpers\Html;
 use yii\bootstrap\Alert;
 use app\models\Favorite;
 use app\models\User;
-use app\lib\Util;
+use app\components\SfHtml;
 
 $this->title = Html::encode($user['username']);
 $settings = Yii::$app->params['settings'];
-$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
+//$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
+$editorClass = '\app\plugins\\'. $settings['editor']. '\\'. $settings['editor'];
+$editor = new $editorClass();
 
-$whiteWrapClass = $settings['editor']=='smd'?'white-wrap':'';
+$whiteWrapClass = $settings['editor']=='SmdEditor'?'white-wrap':'';
 
 $fomatter = Yii::$app->getFormatter();
 $isGuest = Yii::$app->getUser()->getIsGuest();
@@ -23,22 +25,21 @@ if (!$isGuest) {
     $me = Yii::$app->getUser()->getIdentity();
 }
 
+$userOp = [];
+if (!$isGuest && $me->isAdmin() && $me->id != $user['id']) {
+    $userOp['manage'] = Html::a('<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>', ['admin/user/info', 'id'=>$user['id']], ['title'=>'管理']);
+}
+
 if (!$isGuest && $me->isActive() && $me->id != $user['id']) {
-    $follow = Favorite::checkFollow($me->id, Favorite::TYPE_USER, $user['id'])?Html::a('取消特别关注', ['service/unfavorite', 'type'=>'user', 'id'=>$user['id']], [
+/*    $follow = Favorite::checkFollow($me->id, Favorite::TYPE_USER, $user['id'])?Html::a('取消特别关注', ['service/unfavorite', 'type'=>'user', 'id'=>$user['id']], [
         'class'=>'btn btn-sm btn-default',
         'data' => [
             'method' => 'post',
         ]]):Html::a('加入特别关注', ['service/favorite', 'type'=>'user', 'id'=>$user['id']], ['class'=>'btn btn-sm btn-primary']);
-    $sms = Html::a('私信Ta', ['service/sms', 'to'=>Html::encode($user['username'])], ['class'=>'btn btn-sm btn-primary']);
-} else {
-    $follow = '';
-	$sms = '';
-}
-
-if (!$isGuest && $me->isAdmin() && $me->id != $user['id']) {
-    $manage = Html::a('管理', ['admin/user/info', 'id'=>$user['id']], ['class'=>'btn btn-sm btn-primary']);
-} else {
-    $manage = '';
+*/
+//    $sms = Html::a('私信Ta', ['service/sms', 'to'=>Html::encode($user['username'])], ['class'=>'btn btn-sm btn-primary']);
+    $userOp['sms'] = Html::a('<i class="fa fa-envelope fa-lg" aria-hidden="true"></i>', ['service/sms', 'to'=>Html::encode($user['username'])], ['title' => '私信Ta']);
+    $userOp['follow'] = Favorite::checkFollow($me->id, Favorite::TYPE_USER, $user['id'])?Html::a('<i class="fa fa-star fa-lg aria-hidden="true""></i><span class="favorite-num">' . ($user['userInfo']['favorite_count']>0?$user['userInfo']['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>'取消关注', 'href' => 'javascript:void(0);', 'params'=>'unfavorite user '. $user['id']]):Html::a('<i class="fa fa-star-o fa-lg" aria-hidden="true"></i><span class="favorite-num">' . ($user['userInfo']['favorite_count']>0?$user['userInfo']['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>'关注Ta', 'href' => 'javascript:void(0);', 'params'=>'favorite user '. $user['id']]);
 }
 
 ?>
@@ -52,8 +53,8 @@ if (!$isGuest && $me->isAdmin() && $me->id != $user['id']) {
             <?php echo Html::img('@web/'.str_replace('{size}', 'large', $user['avatar']), ['class'=>'img-circle', "alt" => $this->title]); ?>
         </div>
         <div class="media-body">
-            <span class="fr sf-btn"><?php echo $manage, $sms, $follow; ?></span>
-            <h1 class="media-heading"><?php echo $this->title, '<small>', Util::getGroup($user['score']), '</small>'; ?></h1>
+            <span class="fr sf-btn"><?php echo implode(' ', $userOp); ?></span>
+            <h1 class="media-heading"><?php echo $this->title, '<small>', SfHtml::uGroup($user['score']), '</small>'; ?></h1>
             <p class="gray"><?php echo $settings['site_name'],' 第 ',$user['id'],' 号会员，加入于 ',$fomatter->asDateTime($user['created_at'], 'y-MM-dd HH:mm:ss xxx'); ?>
             </p>
         </div>
@@ -86,7 +87,7 @@ foreach($user['topics'] as $topic){
                 echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
                 ' •  ', $fomatter->asRelativeTime($topic['replied_at']);
         if ($topic['comment_count']>0) {
-                echo '<span class="item-lastreply"> •  最后回复者 ', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
+                echo '<span class="item-lastreply"> •  最后回复者 ', SfHtml::uLink($topic['lastReply']['username']), '</span>';
         }
                 echo '</div>';
     echo '</li>';

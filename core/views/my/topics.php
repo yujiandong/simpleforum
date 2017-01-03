@@ -10,9 +10,10 @@ use yii\widgets\DetailView;
 use yii\i18n\Formatter;
 use yii\widgets\LinkPager;
 use yii\bootstrap\ActiveForm;
+use app\components\SfHtml;
 
 $settings = Yii::$app->params['settings'];
-
+$formatter = Yii::$app->getFormatter();
 $this->title = '我收藏的主题';
 ?>
 
@@ -30,10 +31,10 @@ foreach($topics as $topic){
 	$topic = $topic['topic'];
 
 	echo '<li class="list-group-item media">',
-			Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-rounded media-object','alt' => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
+			SfHtml::uImgLink($topic['author']),
 			'<div class="media-body">
 				<h5 class="media-heading">',
-				Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]),
+				Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]), $topic['comment_closed']==1?' <i class="fa fa-lock gray" aria-hidden="true"></i>':'',
 				'</h5>
 				<div class="small gray">';
 	if($topic['comment_count'] > 0){
@@ -45,10 +46,10 @@ foreach($topics as $topic){
 		echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
 	}
 				echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-				'  •  <strong><i class="fa fa-user"></i>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), '</strong>',
-				' • <i class="fa fa-clock-o"></i>', Yii::$app->formatter->asRelativeTime($topic['replied_at']);
+				'  •  <strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username']), '</strong>',
+				' • <i class="fa fa-clock-o"></i>', $formatter->asRelativeTime($topic['replied_at']);
 	if ($topic['comment_count']>0) {
-				echo '<span class="item-lastreply"> • <i class="fa fa-reply"></i>', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
+				echo '<span class="item-lastreply"> • <i class="fa fa-reply"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';
 	}
 				echo '</div>
 			</div>';

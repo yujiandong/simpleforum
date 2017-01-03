@@ -19,11 +19,15 @@ a:link, a:visited, a:active {
 a:hover {color:#428bca; text-decoration: underline;}
 
 blockquote {font-size:14px;}
+
 /* bootstrap reset end */
 
 h5>a {font-weight:400;}
 .fa {margin-right:2px;}
 .fa-no-mr {margin-right:0;}
+.fa-ml10 {margin-left: 10px;}
+.fa-mr10 {margin-right: 10px;}
+
 input#q {width:180px;}
 a.external{
     background: url("img/view_reference.gif") no-repeat scroll right 4px transparent;
@@ -41,7 +45,6 @@ label.avatar-label {padding-top:30px !important;}
 .video-link {width:320px;height:200px;margin-bottom:10px;}
 
 ul.favorite-list {
-    margin-top:10px;
     margin-bottom:0;
 }
 
@@ -97,6 +100,14 @@ a.count-info:link, a.count-info:visited, a.count-info:active {
     word-wrap: break-word; 
     word-break: break-all;
 }
+
+.user-card { width:320px; max-height:180px;}
+.user-card.list-group {margin-bottom:9px;}
+.user-card-heading {background-color:#286090; height:122px; overflow:hidden; }
+.user-card-heading, .user-card-heading a { color:#fff;}
+.user-card-heading .profile { height:16px !important;}
+.user-card-s { background-color:#286090; width:260px; height:100px; overflow:hidden;}
+.user-card-s, .user-card-s a { color:#fff;}
 
 .item-notice {font-size:1em;line-height:1.5;}
 
@@ -271,11 +282,11 @@ ul.auth-clients {
 }
 
 ul.auth-clients li.auth-client a.auth-link, .auth-client a.auth-link {
-  width: 90px;
-  height: 24px;
+  height: 32px;
   float: left;
-  line-height: 24px;
+  line-height: 32px;
   border-radius: 2px;
+  margin-right:10px;
 }
 
 .auth-client {
@@ -287,33 +298,92 @@ ul.auth-clients li.auth-client a.auth-link, .auth-client a.auth-link {
   float: left;
   margin-top: 0;
   padding-left: 5px;
-  height: 24px;
+  height: 32px;
 }
 
 .auth-icon {
   float: left;
-  width: 24px;
+  width: 32px;
   height: 100%;
-  background: url(img/icons_0_24.png) no-repeat;
+  background: url(img/authicons.png) no-repeat;
 }
 
+.auth-icon.google, 
+.auth-icon.google_openid,
+.auth-icon.google_oauth {
+    background-position: 0 -34px;
+}
+.auth-icon.twitter {
+    background-position: 0 -68px;
+}
+.auth-icon.yandex,
+.auth-icon.yandex_openid,
+.auth-icon.yandex_oauth {
+    background-position: 0 -102px;
+}
+.auth-icon.vkontakte {
+    background-position: 0 -136px;
+}
+.auth-icon.facebook {
+    background-position: 0 -170px;
+}
+.auth-icon.mailru {
+    background-position: 0 -204px;
+}
+.auth-icon.moikrug {
+    background-position: 0 -238px;
+}
+.auth-icon.odnoklassniki {
+    background-position: 0 -272px;
+}
+.auth-icon.linkedin {
+    background-position: 0 -306px;
+}
+.auth-icon.github {
+    background-position: 0 -339px;
+}
+.auth-icon.live {
+    background-position: 0 -372px;
+}
 .auth-icon.qq {
-  background-position: 0 -2652px;
+    background-position: 0 -405px
 }
-
 .auth-icon.weibo {
-  background-position: 0 -104px;
+    background-position: 0 -439px
 }
-
 .auth-icon.weixin {
-  background-position: 0 -1612px;
-}
-
-.auth-icon.baidu {
-  background-position: 0 -156px;
+    background-position: 0 -473px
 }
 
 /* auth login end */
+
+.btn-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.btn-circle.btn-lg {
+    width: 48px;
+    height: 48px;
+}
+
+.btn-circle.btn-sm {
+    width: 34px;
+    height: 34px;
+}
+
+.btn-circle.btn-xs {
+    width: 24px;
+    height: 24px;
+}
+
+.btn-circle.btn-sm {padding:5px 0;}
+
+
+.popover{
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+}
 
 @media (min-width: 480px) {
     .item-lastreply {display: inline;}

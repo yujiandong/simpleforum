@@ -1,12 +1,13 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
+use yii\bootstrap\ActiveForm;
 use app\models\User;
 
 $this->title = '用户管理';
@@ -21,6 +22,32 @@ $this->title = '用户管理';
     <li class="list-group-item">
         <?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
+	<li class="list-group-item list-group-item-info"><strong>检索</strong></li>
+	<li class="list-group-item sf-box-form">
+    <?php $form = ActiveForm::begin([
+	    'layout' => 'horizontal',
+		'id' => 'form-setting',
+	    'fieldConfig' => [
+//			        'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+	        'horizontalCssClasses' => [
+	            'label' => 'col-sm-2',
+//			            'offset' => 'col-sm-offset-4',
+	            'wrapper' => 'col-sm-10',
+	            'error' => '',
+	            'hint' => 'col-sm-offset-2 col-sm-10',
+	        ],
+	    ],
+	]); ?>
+		<?php echo $form->field($model, "username"); ?>
+        <div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+            <?php echo Html::submitButton('搜索', ['class' => 'btn btn-primary']); ?>
+			</div>
+        </div>
+	<?php
+		ActiveForm::end();
+	?>
+	</li>
     <li class="list-group-item list-group-item-info"><strong>
         <?php
                 foreach(User::$statusOptions as $status=>$statusName) {

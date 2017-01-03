@@ -16,7 +16,7 @@ use yii\authclient\OAuth2;
  *
  * Example application configuration:
  *
- * ~~~
+ * ```php
  * 'components' => [
  *     'authClientCollection' => [
  *         'class' => 'yii\authclient\Collection',
@@ -30,7 +30,7 @@ use yii\authclient\OAuth2;
  *     ]
  *     ...
  * ]
- * ~~~
+ * ```
  *
  * @see http://vk.com/editapp?act=create
  * @see http://vk.com/developers.php?oid=-1&p=users.get
@@ -43,11 +43,11 @@ class VKontakte extends OAuth2
     /**
      * @inheritdoc
      */
-    public $authUrl = 'http://api.vk.com/oauth/authorize';
+    public $authUrl = 'https://oauth.vk.com/authorize';
     /**
      * @inheritdoc
      */
-    public $tokenUrl = 'https://api.vk.com/oauth/access_token';
+    public $tokenUrl = 'https://oauth.vk.com/access_token';
     /**
      * @inheritdoc
      */
@@ -95,11 +95,12 @@ class VKontakte extends OAuth2
     /**
      * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
+    public function applyAccessTokenToRequest($request, $accessToken)
     {
-        $params['uids'] = $accessToken->getParam('user_id');
-        $params['access_token'] = $accessToken->getToken();
-        return $this->sendRequest($method, $url, $params, $headers);
+        $data = $request->getData();
+        $data['uids'] = $accessToken->getParam('user_id');
+        $data['access_token'] = $accessToken->getToken();
+        $request->setData($data);
     }
 
     /**

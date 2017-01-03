@@ -11,6 +11,8 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 
 \app\assets\AppAsset::register($this);
+$baseUrl = \Yii::$app->getRequest()->getBaseUrl();
+$this->registerJs('var baseUrl = \''.$baseUrl.'\';', \yii\web\View::POS_HEAD);
 
 $settings = Yii::$app->params['settings'];
 $isGuest = Yii::$app->getUser()->getIsGuest();
@@ -28,7 +30,11 @@ if( !$isGuest ) {
     <?php echo Html::csrfMetaTags(); ?>
     <?php echo $settings['head_meta']; ?>
     <title><?php echo Html::encode($this->title), $this->title==$settings['site_name']?'':' - '.Html::encode($settings['site_name']); ?></title>
-    <?php $this->head() ?>
+    <?php $this->head(); ?>
+    <!--[if lt IE 9]>
+      <script src="<?php echo $baseUrl; ?>/static/assets/bootstrap/html5shiv.min.js"></script>
+      <script src="<?php echo $baseUrl; ?>/static/assets/bootstrap/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
 

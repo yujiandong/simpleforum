@@ -7,9 +7,11 @@
 
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
+use app\components\SfHtml;
 
 $this->title = Html::encode($user['username']).'的全部主题';
 $settings = Yii::$app->params['settings'];
+$formatter = Yii::$app->getFormatter();
 
 ?>
 
@@ -18,16 +20,14 @@ $settings = Yii::$app->params['settings'];
 
 <ul class="list-group sf-box">
 	<li class="list-group-item">
-		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', 
-			Html::a(Html::encode($user['username']), ['user/view', 'username'=>$user['username']]), 
-			'&nbsp;›&nbsp;全部主题'; ?>
+		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', SfHtml::uLink($user['username']), '&nbsp;›&nbsp;全部主题'; ?>
 	</li>
 <?php
 foreach($topics as $topic){
 	$topic = $topic['topic'];
 	echo '<li class="list-group-item">
 				<h5 class="media-heading">',
-				Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]),
+				Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]), $topic['comment_closed']==1?' <i class="fa fa-lock gray" aria-hidden="true"></i>':'',
 				'</h5>
 				<div class="small gray">';
 	if($topic['comment_count'] > 0){
@@ -40,9 +40,9 @@ foreach($topics as $topic){
 		echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
 	}
 				echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-				' •  ', Yii::$app->getFormatter()->asRelativeTime($topic['replied_at']);
+				' •  ', $formatter->asRelativeTime($topic['replied_at']);
 	if ($topic['comment_count']>0) {
-				echo '<span class="item-lastreply"> •  最后回复者 ', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
+				echo '<span class="item-lastreply"> •  最后回复者 ', SfHtml::uLink($topic['lastReply']['username']), '</span>';
 	}
 				echo '</div>';
 

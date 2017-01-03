@@ -8,7 +8,7 @@
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\models\History;
-use app\lib\Util;
+use app\components\SfHtml;
 
 $this->title = '账户余额';
 $formatter = Yii::$app->getFormatter();
@@ -24,6 +24,11 @@ $types = [
     History::ACTION_SIGNIN_10DAYS => '连续登录奖励',
     History::ACTION_INVITE_CODE => '购买邀请码',
     History::ACTION_MSG => '发送私信',
+    History::ACTION_GOOD_TOPIC => '感谢主题',
+    History::ACTION_GOOD_COMMENT => '感谢回复',
+    History::ACTION_TOPIC_THANKED => '主题收到谢意',
+    History::ACTION_COMMENT_THANKED => '回复收到谢意',
+    History::ACTION_CHARGE_POINT => '积分充值',
 ];
 
 function getComment($action, $ext) {
@@ -46,6 +51,16 @@ function getComment($action, $ext) {
         $str = '注册帐号奖励 ' . $ext['cost'] . ' 积分';
     } else if( $action == History::ACTION_MSG ) {
         $str = '给 ' . Html::a(Html::encode($ext['target']), ['user/view', 'username'=>$ext['target']]) . ' 发送私信';
+    } else if( $action == History::ACTION_GOOD_TOPIC ) {
+        $str = '感谢了'.SfHtml::uLink($ext['thank_to']).'的主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]);
+    } else if( $action == History::ACTION_GOOD_COMMENT ) {
+        $str = '感谢了'.SfHtml::uLink($ext['thank_to']).'在主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]) . ' 中的回复';
+    } else if( $action == History::ACTION_TOPIC_THANKED ) {
+        $str = SfHtml::uLink($ext['thank_by']).' 感谢了您的主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]);
+    } else if( $action == History::ACTION_COMMENT_THANKED ) {
+        $str = SfHtml::uLink($ext['thank_by']).' 感谢了您在主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]) . ' 中的回复';
+    } else if( $action == History::ACTION_CHARGE_POINT ) {
+        $str = '积分充值 ' . $ext['cost'] . ' 积分。附言：'. Html::encode($ext['msg']);
     }
     return $str;
 }
@@ -65,7 +80,7 @@ function getCostName($cost) {
     <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
     <li class="list-group-item">
-        <h4>当前账户余额： <?php echo Util::getScore($me->score); ?></h4>
+        <h4>当前账户余额： <?php echo SfHtml::uScore($me->score); ?></h4>
     </li>
     <li class="list-group-item">
     <table class="table table-condensed table-bordered small">
@@ -96,6 +111,7 @@ foreach($records as $record) {
     <?php
     echo LinkPager::widget([
         'pagination' => $pages,
+        'maxButtonCount'=>5,
     ]);
     ?>
     </li>

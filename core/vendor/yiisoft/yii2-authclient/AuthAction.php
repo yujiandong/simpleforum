@@ -23,7 +23,7 @@ use Yii;
  *
  * Usage:
  *
- * ~~~
+ * ```php
  * class SiteController extends Controller
  * {
  *     public function actions()
@@ -42,7 +42,7 @@ use Yii;
  *         // user login or signup comes here
  *     }
  * }
- * ~~~
+ * ```
  *
  * Usually authentication via external services is performed inside the popup window.
  * This action handles the redirection and closing of popup window correctly.
@@ -73,13 +73,13 @@ class AuthAction extends Action
      * This callback should accept [[ClientInterface]] instance as an argument.
      * For example:
      *
-     * ~~~
+     * ```php
      * public function onAuthSuccess($client)
      * {
      *     $attributes = $client->getUserAttributes();
      *     // user login or signup comes here
      * }
-     * ~~~
+     * ```
      *
      * If this callback returns [[Response]] instance, it will be used as action response,
      * otherwise redirection to [[successUrl]] will be performed.
@@ -88,7 +88,7 @@ class AuthAction extends Action
     public $successCallback;
     /**
      * @var string name or alias of the view file, which should be rendered in order to perform redirection.
-     * If not set default one will be used.
+     * If not set - default one will be used.
      */
     public $redirectView;
 
@@ -175,27 +175,28 @@ class AuthAction extends Action
             $client = $collection->getClient($clientId);
 
             return $this->auth($client);
-        } else {
-            throw new NotFoundHttpException();
         }
+
+        throw new NotFoundHttpException();
     }
 
     /**
+     * Perform authentication for the given client.
      * @param mixed $client auth client instance.
      * @return Response response instance.
      * @throws \yii\base\NotSupportedException on invalid client.
      */
     protected function auth($client)
     {
-        if ($client instanceof OpenId) {
-            return $this->authOpenId($client);
-        } elseif ($client instanceof OAuth2) {
+        if ($client instanceof OAuth2) {
             return $this->authOAuth2($client);
         } elseif ($client instanceof OAuth1) {
             return $this->authOAuth1($client);
-        } else {
-            throw new NotSupportedException('Provider "' . get_class($client) . '" is not supported.');
+        } elseif ($client instanceof OpenId) {
+            return $this->authOpenId($client);
         }
+
+        throw new NotSupportedException('Provider "' . get_class($client) . '" is not supported.');
     }
 
     /**
@@ -311,21 +312,17 @@ class AuthAction extends Action
         }
 
         if (isset($_REQUEST['oauth_token'])) {
-            $oauthToken = $_REQUEST['oauth_token'];
-        }
-
-        if (!isset($oauthToken)) {
-            // Get request token.
-            $requestToken = $client->fetchRequestToken();
-            // Get authorization URL.
-            $url = $client->buildAuthUrl($requestToken);
-            // Redirect to authorization URL.
-            return Yii::$app->getResponse()->redirect($url);
-        } else {
             // Upgrade to access token.
-            $client->fetchAccessToken();
+            $client->fetchAccessToken($_REQUEST['oauth_token']);
             return $this->authSuccess($client);
         }
+
+        // Get request token.
+        $requestToken = $client->fetchRequestToken();
+        // Get authorization URL.
+        $url = $client->buildAuthUrl($requestToken);
+        // Redirect to authorization URL.
+        return Yii::$app->getResponse()->redirect($url);
     }
 
     /**

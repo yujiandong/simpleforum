@@ -7,11 +7,11 @@
 
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
-use app\models\Node;
 use app\models\Navi;
-use app\lib\Util;
+use app\components\SfHtml;
 
 $settings = Yii::$app->params['settings'];
+$formatter = Yii::$app->getFormatter();
 $currentPage = $pages->page+1;
 
 if( empty($title) ) {
@@ -32,7 +32,7 @@ if($currentPage > 1) {
 <ul class="list-group sf-box">
     <li class="list-group-item navi-top-list">
 <?php
-    echo Yii::$app->getUser()->getIsGuest()?'':'<span class="fr">' . Html::a('<i class="fa fa-pencil"></i>发表', ['topic/new']) . '</span>';
+    echo Yii::$app->getUser()->getIsGuest()?'':'<span class="fr">' . Html::a('<i class="fa fa-pencil" aria-hidden="true"></i>发表', ['topic/new']) . '</span>';
     echo Html::a('全部', ['topic/index'], ['class'=>'btn btn-sm btn-primary current']);
     $navis = Navi::getHeadNaviNodes();
     foreach($navis as $current) {
@@ -48,10 +48,10 @@ if($currentPage > 1) {
             $url['ip'] = $currentPage;
 //      }
         echo '<li class="list-group-item media">',
-                Html::a(Html::img('@web/'.str_replace('{size}', 'normal', $topic['author']['avatar']), ['class'=>'img-circle media-object','alt' => Html::encode($topic['author']['username'])]), ['user/view', 'username'=>Html::encode($topic['author']['username'])], ['class'=>'media-left item-avatar']),
+                SfHtml::uImgLink($topic['author']),
                 '<div class="media-body">
                     <h5 class="media-heading">',
-                    Html::a(Html::encode($topic['title']), $url),
+                    Html::a(Html::encode($topic['title']), $url), $topic['comment_closed']==1?' <i class="fa fa-lock gray" aria-hidden="true"></i>':'',
                     '</h5>
                     <div class="small gray">';
         if($topic['comment_count'] > 0){
@@ -62,14 +62,13 @@ if($currentPage > 1) {
             echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
         }
                     echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-                    ' • <strong><i class="fa fa-user"></i>', Html::a(Html::encode($topic['author']['username']),['user/view', 'username'=>Html::encode($topic['author']['username'])]), Util::getGroupRank($topic['author']['score']), '</strong>',
-                    ' • ', $topic['alltop']==1?'<i class="fa fa-arrow-up"></i>置顶':'<i class="fa fa-clock-o"></i>'.Yii::$app->formatter->asRelativeTime($topic['replied_at']);
+                    ' • <strong><i class="fa fa-user" aria-hidden="true"></i>', SfHtml::uLink($topic['author']['username']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
+                    ' • ', $topic['alltop']==1?'<i class="fa fa-arrow-up" aria-hidden="true"></i>置顶':'<i class="fa fa-clock-o" aria-hidden="true"></i>' . $formatter->asRelativeTime($topic['replied_at']);
         if ($topic['comment_count']>0) {
-                    echo '<span class="item-lastreply"> • <i class="fa fa-reply"></i>', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
+                    echo '<span class="item-lastreply"> • <i class="fa fa-reply" aria-hidden="true"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';
         }
                     echo '</div>
                 </div>';
-
         echo '</li>';
     }
     ?>

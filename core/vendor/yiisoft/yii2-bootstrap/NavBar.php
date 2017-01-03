@@ -19,7 +19,7 @@ use yii\helpers\ArrayHelper;
  *
  * ```php
  * use yii\bootstrap\NavBar;
- * use yii\widgets\Menu;
+ * use yii\bootstrap\Nav;
  *
  * NavBar::begin(['brandLabel' => 'NavBar Test']);
  * echo Nav::widget([
@@ -61,9 +61,10 @@ class NavBar extends Widget
      */
     public $brandLabel = false;
     /**
-     * @var array|string|boolean $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Url::to()]]
+     * @var array|string|boolean $url the URL for the brand's hyperlink tag. This parameter will be processed by [[\yii\helpers\Url::to()]]
      * and will be used for the "href" attribute of the brand link. Default value is false that means
      * [[\yii\web\Application::homeUrl]] will be used.
+     * You may set it to `null` if you want to have no link at all.
      */
     public $brandUrl = false;
     /**
@@ -138,7 +139,7 @@ class NavBar extends Widget
             echo Html::endTag('div');
         }
         $tag = ArrayHelper::remove($this->options, 'tag', 'nav');
-        echo Html::endTag($tag, $this->options);
+        echo Html::endTag($tag);
         BootstrapPluginAsset::register($this->getView());
     }
 

@@ -7,15 +7,17 @@
 
 namespace yii\authclient;
 
-use yii\base\Exception;
 use Yii;
+use yii\base\InvalidParamException;
+use yii\httpclient\Request;
+use yii\web\HttpException;
 
 /**
  * OAuth1 serves as a client for the OAuth 1/1.0a flow.
  *
  * In order to acquire access token perform following sequence:
  *
- * ~~~
+ * ```php
  * use yii\authclient\OAuth1;
  *
  * $oauthClient = new OAuth1();
@@ -24,14 +26,14 @@ use Yii;
  * return Yii::$app->getResponse()->redirect($url); // Redirect to authorization URL
  * // After user returns at our site:
  * $accessToken = $oauthClient->fetchAccessToken($requestToken); // Upgrade to access token
- * ~~~
+ * ```
  *
  * @see http://oauth.net/
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class OAuth1 extends BaseOAuth
+abstract class OAuth1 extends BaseOAuth
 {
     /**
      * @var string protocol version.
@@ -61,6 +63,13 @@ class OAuth1 extends BaseOAuth
      * @var string access token HTTP method.
      */
     public $accessTokenMethod = 'GET';
+    /**
+     * @var array|null list of the request methods, which require adding 'Authorization' header.
+     * By default only POST requests will have 'Authorization' header.
+     * You may set this option to `null` in order to make all requests to use 'Authorization' header.
+     * @since 2.1.1
+     */
+    public $authorizationHeaderMethods = ['POST'];
 
 
     /**
@@ -70,7 +79,7 @@ class OAuth1 extends BaseOAuth
      */
     public function fetchRequestToken(array $params = [])
     {
-        $this->removeState('token');
+        $this->setAccessToken(null);
         $defaultParams = [
             'oauth_consumer_key' => $this->consumerKey,
             'oauth_callback' => $this->getReturnUrl(),
@@ -79,7 +88,14 @@ class OAuth1 extends BaseOAuth
         if (!empty($this->scope)) {
             $defaultParams['scope'] = $this->scope;
         }
-        $response = $this->sendSignedRequest($this->requestTokenMethod, $this->requestTokenUrl, array_merge($defaultParams, $params));
+
+        $request = $this->createRequest()
+            ->setMethod($this->requestTokenMethod)
+            ->setUrl($this->requestTokenUrl)
+            ->setData(array_merge($defaultParams, $params));
+
+        $response = $this->sendRequest($request);
+
         $token = $this->createToken([
             'params' => $response
         ]);
@@ -93,14 +109,14 @@ class OAuth1 extends BaseOAuth
      * @param OAuthToken $requestToken OAuth request token.
      * @param array $params additional request params.
      * @return string authorize URL
-     * @throws Exception on failure.
+     * @throws InvalidParamException on failure.
      */
     public function buildAuthUrl(OAuthToken $requestToken = null, array $params = [])
     {
         if (!is_object($requestToken)) {
             $requestToken = $this->getState('requestToken');
             if (!is_object($requestToken)) {
-                throw new Exception('Request token is required to build authorize URL!');
+                throw new InvalidParamException('Request token is required to build authorize URL!');
             }
         }
         $params['oauth_token'] = $requestToken->getToken();
@@ -110,21 +126,35 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Fetches OAuth access token.
+     * @param string $oauthToken OAuth token returned with redirection back to client.
      * @param OAuthToken $requestToken OAuth request token.
      * @param string $oauthVerifier OAuth verifier.
      * @param array $params additional request params.
      * @return OAuthToken OAuth access token.
-     * @throws Exception on failure.
+     * @throws InvalidParamException on failure.
+     * @throws HttpException in case oauth token miss-matches request token.
      */
-    public function fetchAccessToken(OAuthToken $requestToken = null, $oauthVerifier = null, array $params = [])
+    public function fetchAccessToken($oauthToken = null, OAuthToken $requestToken = null, $oauthVerifier = null, array $params = [])
     {
+        if ($oauthToken === null) {
+            if (isset($_REQUEST['oauth_token'])) {
+                $oauthToken = $_REQUEST['oauth_token'];
+            }
+        }
+
         if (!is_object($requestToken)) {
             $requestToken = $this->getState('requestToken');
             if (!is_object($requestToken)) {
-                throw new Exception('Request token is required to fetch access token!');
+                throw new InvalidParamException('Request token is required to fetch access token!');
             }
         }
+
+        if (strcmp($requestToken->getToken(), $oauthToken) !== 0) {
+            throw new HttpException(400, 'Invalid auth state parameter.');
+        }
+
         $this->removeState('requestToken');
+
         $defaultParams = [
             'oauth_consumer_key' => $this->consumerKey,
             'oauth_token' => $requestToken->getToken()
@@ -137,7 +167,15 @@ class OAuth1 extends BaseOAuth
         if (!empty($oauthVerifier)) {
             $defaultParams['oauth_verifier'] = $oauthVerifier;
         }
-        $response = $this->sendSignedRequest($this->accessTokenMethod, $this->accessTokenUrl, array_merge($defaultParams, $params));
+
+        $request = $this->createRequest()
+            ->setMethod($this->accessTokenMethod)
+            ->setUrl($this->accessTokenUrl)
+            ->setData(array_merge($defaultParams, $params));
+
+        $this->signRequest($request, $requestToken);
+
+        $response = $this->sendRequest($request);
 
         $token = $this->createToken([
             'params' => $response
@@ -148,77 +186,49 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Sends HTTP request, signed by [[signatureMethod]].
-     * @param string $method request type.
-     * @param string $url request URL.
-     * @param array $params request params.
-     * @param array $headers additional request headers.
-     * @return array response.
+     * @inheritdoc
      */
-    protected function sendSignedRequest($method, $url, array $params = [], array $headers = [])
+    public function createRequest()
     {
-        $params = array_merge($params, $this->generateCommonRequestParams());
-        $params = $this->signRequest($method, $url, $params);
-
-        return $this->sendRequest($method, $url, $params, $headers);
-    }
-
-    /**
-     * Composes HTTP request CUrl options, which will be merged with the default ones.
-     * @param string $method request type.
-     * @param string $url request URL.
-     * @param array $params request params.
-     * @return array CUrl options.
-     * @throws Exception on failure.
-     */
-    protected function composeRequestCurlOptions($method, $url, array $params)
-    {
-        $curlOptions = [];
-        switch ($method) {
-            case 'GET': {
-                $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
-                break;
-            }
-            case 'POST': {
-                $curlOptions[CURLOPT_POST] = true;
-                $curlOptions[CURLOPT_HTTPHEADER] = ['Content-type: application/x-www-form-urlencoded'];
-                if (!empty($params)) {
-                    $curlOptions[CURLOPT_POSTFIELDS] = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
-                }
-                $authorizationHeader = $this->composeAuthorizationHeader($params);
-                if (!empty($authorizationHeader)) {
-                    $curlOptions[CURLOPT_HTTPHEADER][] = $authorizationHeader;
-                }
-                break;
-            }
-            case 'HEAD': {
-                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
-                if (!empty($params)) {
-                    $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
-                }
-                break;
-            }
-            default: {
-                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
-                if (!empty($params)) {
-                    $curlOptions[CURLOPT_POSTFIELDS] = $params;
-                }
-            }
-        }
-
-        return $curlOptions;
+        $request = parent::createRequest();
+        $request->on(Request::EVENT_BEFORE_SEND, [$this, 'beforeRequestSend']);
+        return $request;
     }
 
     /**
      * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
+    public function createApiRequest()
     {
-        $params['oauth_consumer_key'] = $this->consumerKey;
-        $params['oauth_token'] = $accessToken->getToken();
-        $response = $this->sendSignedRequest($method, $url, $params, $headers);
+        $request = parent::createApiRequest();
 
-        return $response;
+        // ensure correct event handlers order :
+        $request->off(Request::EVENT_BEFORE_SEND, [$this, 'beforeRequestSend']);
+        $request->on(Request::EVENT_BEFORE_SEND, [$this, 'beforeRequestSend']);
+
+        return $request;
+    }
+
+    /**
+     * Handles [[Request::EVENT_BEFORE_SEND]] event.
+     * Ensures every request has been signed up before sending.
+     * @param \yii\httpclient\RequestEvent $event event instance.
+     * @since 2.1
+     */
+    public function beforeRequestSend($event)
+    {
+        $this->signRequest($event->request);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function applyAccessTokenToRequest($request, $accessToken)
+    {
+        $data = $request->getData();
+        $data['oauth_consumer_key'] = $this->consumerKey;
+        $data['oauth_token'] = $accessToken->getToken();
+        $request->setData($data);
     }
 
     /**
@@ -279,21 +289,43 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Sign request with [[signatureMethod]].
-     * @param string $method request method.
-     * @param string $url request URL.
-     * @param array $params request params.
-     * @return array signed request params.
+     * Sign given request with [[signatureMethod]].
+     * @param \yii\httpclient\Request $request request instance.
+     * @param OAuthToken|null $token OAuth token to be used for signature, if not set [[accessToken]] will be used.
+     * @since 2.1 this method is public.
      */
-    protected function signRequest($method, $url, array $params)
+    public function signRequest($request, $token = null)
     {
+        $params = $request->getData();
+
+        if (isset($params['oauth_signature_method'])) {
+            // avoid double sign of request
+            return;
+        }
+
+        if (empty($params)) {
+            $params = $this->generateCommonRequestParams();
+        } else {
+            $params = array_merge($this->generateCommonRequestParams(), $params);
+        }
+
+        $url = $request->getFullUrl();
+
         $signatureMethod = $this->getSignatureMethod();
+
         $params['oauth_signature_method'] = $signatureMethod->getName();
-        $signatureBaseString = $this->composeSignatureBaseString($method, $url, $params);
-        $signatureKey = $this->composeSignatureKey();
+        $signatureBaseString = $this->composeSignatureBaseString($request->getMethod(), $url, $params);
+        $signatureKey = $this->composeSignatureKey($token);
         $params['oauth_signature'] = $signatureMethod->generateSignature($signatureBaseString, $signatureKey);
 
-        return $params;
+        $request->setData($params);
+
+        if ($this->authorizationHeaderMethods === null || in_array(strtoupper($request->getMethod()), array_map('strtoupper', $this->authorizationHeaderMethods), true)) {
+            $authorizationHeader = $this->composeAuthorizationHeader($params);
+            if (!empty($authorizationHeader)) {
+                $request->addHeaders($authorizationHeader);
+            }
+        }
     }
 
     /**
@@ -319,33 +351,38 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Composes request signature key.
+     * @param OAuthToken|null $token OAuth token to be used for signature key.
      * @return string signature key.
      */
-    protected function composeSignatureKey()
+    protected function composeSignatureKey($token = null)
     {
         $signatureKeyParts = [
             $this->consumerSecret
         ];
-        $accessToken = $this->getAccessToken();
-        if (is_object($accessToken)) {
-            $signatureKeyParts[] = $accessToken->getTokenSecret();
+
+        if ($token === null) {
+            $token = $this->getAccessToken();
+        }
+        if (is_object($token)) {
+            $signatureKeyParts[] = $token->getTokenSecret();
         } else {
             $signatureKeyParts[] = '';
         }
+
         $signatureKeyParts = array_map('rawurlencode', $signatureKeyParts);
 
         return implode('&', $signatureKeyParts);
     }
 
     /**
-     * Composes authorization header content.
+     * Composes authorization header.
      * @param array $params request params.
      * @param string $realm authorization realm.
-     * @return string authorization header content.
+     * @return array authorization header in format: [name => content].
      */
     protected function composeAuthorizationHeader(array $params, $realm = '')
     {
-        $header = 'Authorization: OAuth';
+        $header = 'OAuth';
         $headerParams = [];
         if (!empty($realm)) {
             $headerParams[] = 'realm="' . rawurlencode($realm) . '"';
@@ -360,6 +397,6 @@ class OAuth1 extends BaseOAuth
             $header .= ' ' . implode(', ', $headerParams);
         }
 
-        return $header;
+        return ['Authorization' => $header];
     }
 }

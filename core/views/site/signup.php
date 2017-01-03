@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -57,7 +57,7 @@ if ($model->action === SignupForm::ACTION_AUTH_SIGNUP) {
             <?php echo $form->field($model, 'password_repeat')->passwordInput(['maxlength'=>20]); ?>
 <?php
 if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
-    echo $form->field($model, 'invite_code')->textInput(['maxlength'=>10]);
+    echo $form->field($model, 'invite_code')->textInput(['maxlength'=>6]);
 }
 if ( $model->action !== SignupForm::ACTION_AUTH_SIGNUP && intval(Yii::$app->params['settings']['captcha_enabled']) === 1 ) {
     echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname());

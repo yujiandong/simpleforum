@@ -5,11 +5,11 @@
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
+        "issues": "https://github.com/yiisoft/yii2-imagine/issues",
         "forum": "http://www.yiiframework.com/forum/",
         "wiki": "http://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
+        "source": "https://github.com/yiisoft/yii2-imagine"
     },
     "authors": [
         {
@@ -18,8 +18,8 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "*",
-        "imagine/imagine": "0.5.*"
+        "yiisoft/yii2": "~2.0.0",
+        "imagine/imagine": "~0.6.0"
     },
     "autoload": {
         "psr-4": {

@@ -16,13 +16,16 @@ use yii\authclient\OAuth1;
  *
  * Example application configuration:
  *
- * ~~~
+ * ```php
  * 'components' => [
  *     'authClientCollection' => [
  *         'class' => 'yii\authclient\Collection',
  *         'clients' => [
  *             'twitter' => [
  *                 'class' => 'yii\authclient\clients\Twitter',
+ *                 'attributeParams' => [
+ *                     'include_email' => 'true'
+ *                 ],
  *                 'consumerKey' => 'twitter_consumer_key',
  *                 'consumerSecret' => 'twitter_consumer_secret',
  *             ],
@@ -30,7 +33,7 @@ use yii\authclient\OAuth1;
  *     ]
  *     ...
  * ]
- * ~~~
+ * ```
  *
  * @see https://dev.twitter.com/apps/new
  * @see https://dev.twitter.com/docs/api
@@ -64,6 +67,20 @@ class Twitter extends OAuth1
      * @inheritdoc
      */
     public $apiBaseUrl = 'https://api.twitter.com/1.1';
+    /**
+     * @var array list of extra parameters, which should be used, while requesting user attributes from Twitter API.
+     * For example:
+     *
+     * ```php
+     * [
+     *     'include_email' => 'true'
+     * ]
+     * ```
+     *
+     * @see https://dev.twitter.com/rest/reference/get/account/verify_credentials
+     * @since 2.0.6
+     */
+    public $attributeParams = [];
 
 
     /**
@@ -71,7 +88,7 @@ class Twitter extends OAuth1
      */
     protected function initUserAttributes()
     {
-        return $this->api('account/verify_credentials.json', 'GET');
+        return $this->api('account/verify_credentials.json', 'GET', $this->attributeParams);
     }
 
     /**

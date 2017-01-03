@@ -16,7 +16,7 @@ use Yii;
  *
  * Usage:
  *
- * ~~~
+ * ```php
  * use yii\authclient\OpenId;
  *
  * $client = new OpenId();
@@ -28,7 +28,7 @@ use Yii;
  *     $userAttributes = $client->getUserAttributes(); // get account info
  *     ...
  * }
- * ~~~
+ * ```
  *
  * AX and SREG extensions are supported.
  * To use them, specify [[requiredAttributes]] and/or [[optionalAttributes]].
@@ -42,7 +42,7 @@ use Yii;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class OpenId extends BaseClient implements ClientInterface
+class OpenId extends BaseClient
 {
     /**
      * @var string authentication base URL, which should be used to compose actual authentication URL
@@ -53,18 +53,20 @@ class OpenId extends BaseClient implements ClientInterface
      * @var array list of attributes, which always should be returned from server.
      * Attribute names should be always specified in AX format.
      * For example:
-     * ~~~
+     *
+     * ```php
      * ['namePerson/friendly', 'contact/email']
-     * ~~~
+     * ```
      */
     public $requiredAttributes = [];
     /**
      * @var array list of attributes, which could be returned from server.
      * Attribute names should be always specified in AX format.
      * For example:
-     * ~~~
+     *
+     * ```php
      * ['namePerson/first', 'namePerson/last']
-     * ~~~
+     * ```
      */
     public $optionalAttributes = [];
     /**
@@ -237,51 +239,48 @@ class OpenId extends BaseClient implements ClientInterface
      */
     protected function sendRequest($url, $method = 'GET', $params = [])
     {
-        $params = http_build_query($params, '', '&');
-        $curl = curl_init($url . ($method == 'GET' && $params ? '?' . $params : ''));
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Accept: application/xrds+xml, */*']);
+        $request = $this->createRequest()
+            ->setMethod($method)
+            ->setUrl($url)
+            ->setData($params);
 
         if ($this->verifyPeer !== null) {
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verifyPeer);
+            $options = [
+                'sslVerifyPeer' => $this->verifyPeer
+            ];
             if ($this->capath) {
-                curl_setopt($curl, CURLOPT_CAPATH, $this->capath);
+                $options['sslCapath'] = $this->capath;
             }
             if ($this->cainfo) {
-                curl_setopt($curl, CURLOPT_CAINFO, $this->cainfo);
+                $options['sslCafile'] = $this->cainfo;
             }
+            $request->addOptions($options);
         }
 
-        if ($method == 'POST') {
-            curl_setopt($curl, CURLOPT_POST, true);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-        } elseif ($method == 'HEAD') {
-            curl_setopt($curl, CURLOPT_HEADER, true);
-            curl_setopt($curl, CURLOPT_NOBODY, true);
-        } else {
-            curl_setopt($curl, CURLOPT_HTTPGET, true);
-        }
-        $response = curl_exec($curl);
+        $response = $request->send();
 
         if ($method == 'HEAD') {
             $headers = [];
-            foreach (explode("\n", $response) as $header) {
-                $pos = strpos($header, ':');
-                $name = strtolower(trim(substr($header, 0, $pos)));
-                $headers[$name] = trim(substr($header, $pos+1));
+            foreach ($response->getHeaders()->toArray() as $name => $values) {
+                $headers[strtolower($name)] = array_pop($values);
             }
-
             return $headers;
         }
 
-        if (curl_errno($curl)) {
-            throw new Exception(curl_error($curl), curl_errno($curl));
-        }
+        return $response->getContent();
+    }
 
-        return $response;
+    /**
+     * @inheritdoc
+     */
+    protected function defaultRequestOptions()
+    {
+        return [
+            'userAgent' => Yii::$app->name . ' OpenID Client',
+            'timeout' => 30,
+            'followLocation' => true,
+            'sslVerifyPeer' => false,
+        ];
     }
 
     /**

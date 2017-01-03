@@ -19,4 +19,4 @@ namespace yii\bootstrap;
  */
 class Html extends BaseHtml
 {
-} 
+}

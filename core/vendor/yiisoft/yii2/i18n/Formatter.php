@@ -672,9 +672,7 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                $timestamp = new DateTime();
-                $timestamp->setTimezone(new DateTimeZone('UTC'));
-                $timestamp->setTimestamp($value);
+                $timestamp = new DateTime('@' . $value, new DateTimeZone('UTC'));
                 return $checkTimeInfo ? [$timestamp, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkTimeInfo ? [$timestamp, false] : $timestamp;
@@ -1352,6 +1350,7 @@ class Formatter extends Component
         }
         if ($this->thousandSeparator !== null) {
             $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
+            $formatter->setSymbol(NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
         }
         foreach ($this->numberFormatterSymbols as $name => $symbol) {
             $formatter->setSymbol($name, $symbol);

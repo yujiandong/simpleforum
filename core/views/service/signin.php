@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,6 +9,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Alert;
 
 $this->title = '每日签到';
+$me = Yii::$app->getUser()->getIdentity();
 ?>
 
 <div class="row">
@@ -20,13 +21,19 @@ $this->title = '每日签到';
         <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
     <div class="panel-body">
-        <?php echo Html::a('<i class="fa fa-gift" aria-hidden="true"></i>请点击签到', Yii::$app->getRequest()->url, [
+<?php
+    $continue = $me->checkTodaySigned();
+    if ($continue === false) {
+        echo Html::a('<i class="fa fa-gift" aria-hidden="true"></i>请点击签到', Yii::$app->getRequest()->url, [
             'title' => '签到',
             'class' => 'btn btn-primary',
             'data' => [
                 'method' => 'post',
             ]]);
-        ?>
+    } else {
+        echo '<p class="gray">今日登录奖励已领取，已连续登录 <strong>'.$continue.'</strong> 天</p>', Html::a('查看我的账户余额', ['my/balance'], ['class' => 'btn btn-primary']);
+    }
+?>
     </div>
 </div>
 

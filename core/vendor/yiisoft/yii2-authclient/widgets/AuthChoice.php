@@ -10,6 +10,7 @@ namespace yii\authclient\widgets;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use Yii;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\authclient\ClientInterface;
@@ -22,17 +23,17 @@ use yii\authclient\ClientInterface;
  *
  * Example:
  *
- * ~~~php
+ * ```php
  * <?= yii\authclient\widgets\AuthChoice::widget([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
- * ~~~
+ * ```
  *
  * You can customize the widget appearance by using [[begin()]] and [[end()]] syntax
  * along with using method [[clientLink()]] or [[createClientUrl()]].
  * For example:
  *
- * ~~~php
+ * ```php
  * <?php
  * use yii\authclient\widgets\AuthChoice;
  * ?>
@@ -41,11 +42,11 @@ use yii\authclient\ClientInterface;
  * ]); ?>
  * <ul>
  * <?php foreach ($authAuthChoice->getClients() as $client): ?>
- *     <li><?php $authAuthChoice->clientLink($client) ?></li>
+ *     <li><?= $authAuthChoice->clientLink($client) ?></li>
  * <?php endforeach; ?>
  * </ul>
  * <?php AuthChoice::end(); ?>
- * ~~~
+ * ```
  *
  * This widget supports following keys for [[ClientInterface::getViewOptions()]] result:
  *  - popupWidth - integer width of the popup window in pixels.
@@ -77,9 +78,11 @@ class AuthChoice extends Widget
      * @var array the HTML attributes that should be rendered in the div HTML tag representing the container element.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = [
-        'class' => 'auth-clients'
-    ];
+    public $options = [];
+    /**
+     * @var array additional options to be passed to the underlying JS plugin.
+     */
+    public $clientOptions = [];
     /**
      * @var boolean indicates if popup window should be used instead of direct links.
      */
@@ -173,20 +176,25 @@ class AuthChoice extends Widget
      * @param ClientInterface $client external auth client instance.
      * @param string $text link text, if not set - default value will be generated.
      * @param array $htmlOptions link HTML options.
+     * @return string generated HTML.
      * @throws InvalidConfigException on wrong configuration.
      */
     public function clientLink($client, $text = null, array $htmlOptions = [])
     {
-        if ($text === null) {
-            $text = Html::tag('span', '', ['class' => 'auth-icon ' . $client->getName()]);
-            $text .= Html::tag('span', $client->getTitle(), ['class' => 'auth-title']);
-        }
-        if (!array_key_exists('class', $htmlOptions)) {
-            $htmlOptions['class'] = 'auth-link ' . $client->getName();
-        }
-
         $viewOptions = $client->getViewOptions();
+
         if (empty($viewOptions['widget'])) {
+            if ($text === null) {
+                $text = Html::tag('span', '', ['class' => 'auth-icon ' . $client->getName()]);
+            }
+            if (!isset($htmlOptions['class'])) {
+                $htmlOptions['class'] = $client->getName();
+            }
+            if (!isset($htmlOptions['title'])) {
+                $htmlOptions['title'] = $client->getTitle();
+            }
+            Html::addCssClass($htmlOptions, ['widget' => 'auth-link']);
+
             if ($this->popupMode) {
                 if (isset($viewOptions['popupWidth'])) {
                     $htmlOptions['data-popup-width'] = $viewOptions['popupWidth'];
@@ -195,50 +203,49 @@ class AuthChoice extends Widget
                     $htmlOptions['data-popup-height'] = $viewOptions['popupHeight'];
                 }
             }
-            echo Html::a($text, $this->createClientUrl($client), $htmlOptions);
-        } else {
-            $widgetConfig = $viewOptions['widget'];
-            if (!isset($widgetConfig['class'])) {
-                throw new InvalidConfigException('Widget config "class" parameter is missing');
-            }
-            /* @var $widgetClass Widget */
-            $widgetClass = $widgetConfig['class'];
-            if (!(is_subclass_of($widgetClass, AuthChoiceItem::className()))) {
-                throw new InvalidConfigException('Item widget class must be subclass of "' . AuthChoiceItem::className() . '"');
-            }
-            unset($widgetConfig['class']);
-            $widgetConfig['client'] = $client;
-            $widgetConfig['authChoice'] = $this;
-            echo $widgetClass::widget($widgetConfig);
+            return Html::a($text, $this->createClientUrl($client), $htmlOptions);
         }
+
+        $widgetConfig = $viewOptions['widget'];
+        if (!isset($widgetConfig['class'])) {
+            throw new InvalidConfigException('Widget config "class" parameter is missing');
+        }
+        /* @var $widgetClass Widget */
+        $widgetClass = $widgetConfig['class'];
+        if (!(is_subclass_of($widgetClass, AuthChoiceItem::className()))) {
+            throw new InvalidConfigException('Item widget class must be subclass of "' . AuthChoiceItem::className() . '"');
+        }
+        unset($widgetConfig['class']);
+        $widgetConfig['client'] = $client;
+        $widgetConfig['authChoice'] = $this;
+        return $widgetClass::widget($widgetConfig);
     }
 
     /**
      * Composes client auth URL.
-     * @param ClientInterface $provider external auth client instance.
+     * @param ClientInterface $client external auth client instance.
      * @return string auth URL.
      */
-    public function createClientUrl($provider)
+    public function createClientUrl($client)
     {
         $this->autoRender = false;
         $url = $this->getBaseAuthUrl();
-        $url[$this->clientIdGetParamName] = $provider->getId();
+        $url[$this->clientIdGetParamName] = $client->getId();
 
         return Url::to($url);
     }
 
     /**
      * Renders the main content, which includes all external services links.
+     * @return string generated HTML.
      */
     protected function renderMainContent()
     {
-        echo Html::beginTag('ul', ['class' => 'auth-clients clear']);
+        $items = [];
         foreach ($this->getClients() as $externalService) {
-            echo Html::beginTag('li', ['class' => 'auth-client']);
-            $this->clientLink($externalService);
-            echo Html::endTag('li');
+            $items[] = Html::tag('li', $this->clientLink($externalService));
         }
-        echo Html::endTag('ul');
+        return Html::tag('ul', implode('', $items), ['class' => 'auth-clients']);
     }
 
     /**
@@ -249,7 +256,12 @@ class AuthChoice extends Widget
         $view = Yii::$app->getView();
         if ($this->popupMode) {
             AuthChoiceAsset::register($view);
-            $view->registerJs("\$('#" . $this->getId() . "').authchoice();");
+            if (empty($this->clientOptions)) {
+                $options = '';
+            } else {
+                $options = Json::htmlEncode($this->clientOptions);
+            }
+            $view->registerJs("\$('#" . $this->getId() . "').authchoice({$options});");
         } else {
             AuthChoiceStyleAsset::register($view);
         }
@@ -259,12 +271,15 @@ class AuthChoice extends Widget
 
     /**
      * Runs the widget.
+     * @return string rendered HTML.
      */
     public function run()
     {
+        $content = '';
         if ($this->autoRender) {
-            $this->renderMainContent();
+            $content .= $this->renderMainContent();
         }
-        echo Html::endTag('div');
+        $content .= Html::endTag('div');
+        return $content;
     }
 }

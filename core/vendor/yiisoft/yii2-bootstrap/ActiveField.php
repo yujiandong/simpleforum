@@ -255,8 +255,10 @@ class ActiveField extends \yii\widgets\ActiveField
                 ];
             }
         }  elseif (!isset($options['item'])) {
-            $options['item'] = function ($index, $label, $name, $checked, $value) {
-                return '<div class="checkbox">' . Html::checkbox($name, $checked, ['label' => $label, 'value' => $value]) . '</div>';
+            $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
+            $options['item'] = function ($index, $label, $name, $checked, $value) use ($itemOptions) {
+                $options = array_merge(['label' => $label, 'value' => $value], $itemOptions);
+                return '<div class="checkbox">' . Html::checkbox($name, $checked, $options) . '</div>';
             };
         }
         parent::checkboxList($items, $options);
@@ -281,8 +283,10 @@ class ActiveField extends \yii\widgets\ActiveField
                 ];
             }
         }  elseif (!isset($options['item'])) {
-            $options['item'] = function ($index, $label, $name, $checked, $value) {
-                return '<div class="radio">' . Html::radio($name, $checked, ['label' => $label, 'value' => $value]) . '</div>';
+            $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
+            $options['item'] = function ($index, $label, $name, $checked, $value) use ($itemOptions) {
+                $options = array_merge(['label' => $label, 'value' => $value], $itemOptions);
+                return '<div class="radio">' . Html::radio($name, $checked, $options) . '</div>';
             };
         }
         parent::radioList($items, $options);

@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -14,13 +14,13 @@ $this->title = '创建新广告';
 <!-- sf-left start -->
 <div class="col-md-8 sf-left">
 
-<div class="box">
-	<div class="inner">
+<div class="panel panel-default sf-box">
+	<div class="panel-heading">
 		<?php
 			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('广告管理', ['index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
-	<div class="cell">
+	<div class="panel-body">
 	    <?php echo $this->render('_form', ['model' => $model]); ?>
 	</div>
 </div>

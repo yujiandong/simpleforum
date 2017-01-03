@@ -8,14 +8,14 @@
 namespace yii\authclient;
 
 use Yii;
-use yii\base\Exception;
+use yii\web\HttpException;
 
 /**
  * OAuth2 serves as a client for the OAuth 2 flow.
  *
  * In oder to acquire access token perform following sequence:
  *
- * ~~~
+ * ```php
  * use yii\authclient\OAuth2;
  *
  * $oauthClient = new OAuth2();
@@ -24,14 +24,15 @@ use yii\base\Exception;
  * // After user returns at our site:
  * $code = $_GET['code'];
  * $accessToken = $oauthClient->fetchAccessToken($code); // Get access token
- * ~~~
+ * ```
  *
  * @see http://oauth.net/2/
+ * @see https://tools.ietf.org/html/rfc6749
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class OAuth2 extends BaseOAuth
+abstract class OAuth2 extends BaseOAuth
 {
     /**
      * @var string protocol version.
@@ -49,6 +50,15 @@ class OAuth2 extends BaseOAuth
      * @var string token request URL endpoint.
      */
     public $tokenUrl;
+    /**
+     * @var boolean whether to use and validate auth 'state' parameter in authentication flow.
+     * If enabled - the opaque value will be generated and applied to auth URL to maintain
+     * state between the request and callback. The authorization server includes this value,
+     * when redirecting the user-agent back to the client.
+     * The option is used for preventing cross-site request forgery.
+     * @since 2.1
+     */
+    public $validateAuthState = true;
 
 
     /**
@@ -68,6 +78,12 @@ class OAuth2 extends BaseOAuth
             $defaultParams['scope'] = $this->scope;
         }
 
+        if ($this->validateAuthState) {
+            $authState = $this->generateAuthState();
+            $this->setState('authState', $authState);
+            $defaultParams['state'] = $authState;
+        }
+
         return $this->composeUrl($this->authUrl, array_merge($defaultParams, $params));
     }
 
@@ -76,9 +92,19 @@ class OAuth2 extends BaseOAuth
      * @param string $authCode authorization code, usually comes at $_GET['code'].
      * @param array $params additional request params.
      * @return OAuthToken access token.
+     * @throws HttpException on invalid auth state in case [[enableStateValidation]] is enabled.
      */
     public function fetchAccessToken($authCode, array $params = [])
     {
+        if ($this->validateAuthState) {
+            $authState = $this->getState('authState');
+            if (!isset($_REQUEST['state']) || empty($authState) || strcmp($_REQUEST['state'], $authState) !== 0) {
+                throw new HttpException(400, 'Invalid auth state parameter.');
+            } else {
+                $this->removeState('authState');
+            }
+        }
+
         $defaultParams = [
             'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
@@ -86,7 +112,14 @@ class OAuth2 extends BaseOAuth
             'grant_type' => 'authorization_code',
             'redirect_uri' => $this->getReturnUrl(),
         ];
-        $response = $this->sendRequest('POST', $this->tokenUrl, array_merge($defaultParams, $params));
+
+        $request = $this->createRequest()
+            ->setMethod('POST')
+            ->setUrl($this->tokenUrl)
+            ->setData(array_merge($defaultParams, $params));
+
+        $response = $this->sendRequest($request);
+
         $token = $this->createToken(['params' => $response]);
         $this->setAccessToken($token);
 
@@ -94,53 +127,13 @@ class OAuth2 extends BaseOAuth
     }
 
     /**
-     * Composes HTTP request CUrl options, which will be merged with the default ones.
-     * @param string $method request type.
-     * @param string $url request URL.
-     * @param array $params request params.
-     * @return array CUrl options.
-     * @throws Exception on failure.
-     */
-    protected function composeRequestCurlOptions($method, $url, array $params)
-    {
-        $curlOptions = [];
-        switch ($method) {
-            case 'GET': {
-                $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
-                break;
-            }
-            case 'POST': {
-                $curlOptions[CURLOPT_POST] = true;
-                $curlOptions[CURLOPT_HTTPHEADER] = ['Content-type: application/x-www-form-urlencoded'];
-                $curlOptions[CURLOPT_POSTFIELDS] = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
-                break;
-            }
-            case 'HEAD': {
-                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
-                if (!empty($params)) {
-                    $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
-                }
-                break;
-            }
-            default: {
-                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
-                if (!empty($params)) {
-                    $curlOptions[CURLOPT_POSTFIELDS] = $params;
-                }
-            }
-        }
-
-        return $curlOptions;
-    }
-
-    /**
      * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
+    public function applyAccessTokenToRequest($request, $accessToken)
     {
-        $params['access_token'] = $accessToken->getToken();
-
-        return $this->sendRequest($method, $url, $params, $headers);
+        $data = $request->getData();
+        $data['access_token'] = $accessToken->getToken();
+        $request->setData($data);
     }
 
     /**
@@ -156,7 +149,13 @@ class OAuth2 extends BaseOAuth
             'grant_type' => 'refresh_token'
         ];
         $params = array_merge($token->getParams(), $params);
-        $response = $this->sendRequest('POST', $this->tokenUrl, $params);
+
+        $request = $this->createRequest()
+            ->setMethod('POST')
+            ->setUrl($this->tokenUrl)
+            ->setData($params);
+
+        $response = $this->sendRequest($request);
 
         $token = $this->createToken(['params' => $response]);
         $this->setAccessToken($token);
@@ -172,9 +171,24 @@ class OAuth2 extends BaseOAuth
     {
         $params = $_GET;
         unset($params['code']);
+        unset($params['state']);
         $params[0] = Yii::$app->controller->getRoute();
 
         return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
+    }
+
+    /**
+     * Generates the auth state value.
+     * @return string auth state value.
+     * @since 2.1
+     */
+    protected function generateAuthState()
+    {
+        $baseString = get_class($this) . '-' . time();
+        if (Yii::$app->has('session')) {
+            $baseString .= '-' . Yii::$app->session->getId();
+        }
+        return hash('sha256', uniqid($baseString, true));
     }
 
     /**
@@ -187,5 +201,72 @@ class OAuth2 extends BaseOAuth
         $tokenConfig['tokenParamKey'] = 'access_token';
 
         return parent::createToken($tokenConfig);
+    }
+
+    /**
+     * Authenticate OAuth client directly at the provider without third party (user) involved,
+     * using 'client_credentials' grant type.
+     * @see http://tools.ietf.org/html/rfc6749#section-4.4
+     * @param array $params additional request params.
+     * @return OAuthToken access token.
+     */
+    public function authenticateClient($params = [])
+    {
+        $defaultParams = [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'grant_type' => 'client_credentials',
+        ];
+
+        if (!empty($this->scope)) {
+            $defaultParams['scope'] = $this->scope;
+        }
+
+        $request = $this->createRequest()
+            ->setMethod('POST')
+            ->setUrl($this->tokenUrl)
+            ->setData(array_merge($defaultParams, $params));
+
+        $response = $this->sendRequest($request);
+
+        $token = $this->createToken(['params' => $response]);
+        $this->setAccessToken($token);
+
+        return $token;
+    }
+
+    /**
+     * Authenticates user directly by 'username/password' pair, using 'password' grant type.
+     * @see https://tools.ietf.org/html/rfc6749#section-4.3
+     * @param string $username user name.
+     * @param string $password user password.
+     * @param array $params additional request params.
+     * @return OAuthToken access token.
+     */
+    public function authenticateUser($username, $password, $params = [])
+    {
+        $defaultParams = [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'grant_type' => 'password',
+            'username' => $username,
+            'password' => $password,
+        ];
+
+        if (!empty($this->scope)) {
+            $defaultParams['scope'] = $this->scope;
+        }
+
+        $request = $this->createRequest()
+            ->setMethod('POST')
+            ->setUrl($this->tokenUrl)
+            ->setData(array_merge($defaultParams, $params));
+
+        $response = $this->sendRequest($request);
+
+        $token = $this->createToken(['params' => $response]);
+        $this->setAccessToken($token);
+
+        return $token;
     }
 }

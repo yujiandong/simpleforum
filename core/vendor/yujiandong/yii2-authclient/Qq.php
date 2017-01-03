@@ -54,40 +54,13 @@ class Qq extends OAuth2
      * @inheritdoc
      */
     public function init()
-	{
+    {
         parent::init();
         if ($this->scope === null) {
             $this->scope = implode(' ', [
                 'get_user_info',
             ]);
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildAuthUrl(array $params = [])
-	{
-        $authState = $this->generateAuthState();
-        $this->setState('authState', $authState);
-        $params['state'] = $authState;
-        return parent::buildAuthUrl($params);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function fetchAccessToken($authCode, array $params = [])
-	{
-        $authState = $this->getState('authState');
-        if (!isset($_REQUEST['state']) || empty($authState) || strcmp($_REQUEST['state'], $authState) !== 0) {
-            throw new HttpException(400, 'Invalid auth state parameter.');
-        } else {
-            $this->removeState('authState');
-        }
-
-		return parent::fetchAccessToken($authCode, $params);
-
     }
 
     /**
@@ -104,37 +77,46 @@ class Qq extends OAuth2
      * @inheritdoc
      */
     protected function initUserAttributes()
-	{
+    {
         $user = $this->api('oauth2.0/me', 'GET');
-		if ( isset($user['error']) ) {
+        if ( isset($user['error']) ) {
             throw new HttpException(400, $user['error']. ':'. $user['error_description']);
-		}
+        }
         $userAttributes = $this->api(
-			"user/get_user_info",
-			'GET',
-			[
-				'oauth_consumer_key' => $user['client_id'],
-            	'openid' => $user['openid'],
-			]
-		);
-		$userAttributes['id'] = $user['openid'];
-		return $userAttributes;
+            "user/get_user_info",
+            'GET',
+            [
+                'oauth_consumer_key' => $user['client_id'],
+                'openid' => $user['openid'],
+            ]
+        );
+        $userAttributes['id'] = $user['openid'];
+        return $userAttributes;
     }
 
     /**
      * @inheritdoc
      */
-    protected function processResponse($rawResponse, $contentType = self::CONTENT_TYPE_AUTO)
-	{
-        if ($contentType === self::CONTENT_TYPE_AUTO && strpos($rawResponse, "callback(") === 0) {
-			$count = 0;
-            $jsonData = preg_replace('/^callback\(\s*(\\{.*\\})\s*\);$/is', '\1', $rawResponse, 1, $count);
-			if ($count === 1) {
-				$rawResponse = $jsonData;
-				$contentType = self::CONTENT_TYPE_JSON;
-			}
+    protected function sendRequest($request)
+    {
+        $response = $request->send();
+
+        if (!$response->getIsOk()) {
+            throw new InvalidResponseException($response, 'Request failed with code: ' . $response->getStatusCode() . ', message: ' . $response->getContent());
         }
-        return parent::processResponse($rawResponse, $contentType);
+
+        $content = $response->getContent();
+        if (!empty($content)) {
+            if (strpos($content, "callback(") === 0) {
+                $count = 0;
+                $jsonData = preg_replace('/^callback\(\s*(\\{.*\\})\s*\);$/is', '\1', $content, 1, $count);
+                if ($count === 1) {
+                    $response->setContent($jsonData);
+                }
+            }
+        }
+
+        return  $response->getData();
     }
 
     /**
@@ -163,7 +145,7 @@ class Qq extends OAuth2
      * @inheritdoc
      */
     protected function defaultName()
-	{
+    {
         return 'qq';
     }
 
@@ -171,7 +153,7 @@ class Qq extends OAuth2
      * @inheritdoc
      */
     protected function defaultTitle()
-	{
+    {
         return 'QQ';
     }
 
@@ -179,7 +161,7 @@ class Qq extends OAuth2
      * @inheritdoc
      */
     protected function defaultViewOptions()
-	{
+    {
         return [
             'popupWidth' => 800,
             'popupHeight' => 500,

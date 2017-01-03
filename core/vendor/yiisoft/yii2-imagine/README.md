@@ -2,11 +2,14 @@ Imagine Extension for Yii 2
 ===========================
 
 This extension adds most common image functions and also acts as a wrapper to [Imagine](http://imagine.readthedocs.org/)
-image manipulation library.
+image manipulation library for [Yii framework 2.0](http://www.yiiframework.com).
 
-This repository is a git submodule of <https://github.com/yiisoft/yii2>.
-Please submit issue reports and pull requests to the main repository.
 For license information check the [LICENSE](LICENSE.md)-file.
+
+[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-imagine/v/stable.png)](https://packagist.org/packages/yiisoft/yii2-imagine)
+[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-imagine/downloads.png)](https://packagist.org/packages/yiisoft/yii2-imagine)
+[![Build Status](https://travis-ci.org/yiisoft/yii2-imagine.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-imagine)
+
 
 Installation
 ------------

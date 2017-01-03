@@ -10,7 +10,7 @@ namespace yii\authclient;
 use yii\base\Exception;
 use yii\base\InvalidParamException;
 use Yii;
-use yii\helpers\Json;
+use yii\httpclient\Request;
 
 /**
  * BaseOAuth is a base class for the OAuth clients.
@@ -19,7 +19,6 @@ use yii\helpers\Json;
  *
  * @property OAuthToken $accessToken Auth token instance. Note that the type of this property differs in
  * getter and setter. See [[getAccessToken()]] and [[setAccessToken()]] for details.
- * @property array $curlOptions CURL options. This property is read-only.
  * @property string $returnUrl Return URL.
  * @property signature\BaseMethod $signatureMethod Signature method instance. Note that the type of this
  * property differs in getter and setter. See [[getSignatureMethod()]] and [[setSignatureMethod()]] for details.
@@ -27,19 +26,16 @@ use yii\helpers\Json;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-abstract class BaseOAuth extends BaseClient implements ClientInterface
+abstract class BaseOAuth extends BaseClient
 {
-    const CONTENT_TYPE_JSON = 'json'; // JSON format
-    const CONTENT_TYPE_URLENCODED = 'urlencoded'; // urlencoded query string, like name1=value1&name2=value2
-    const CONTENT_TYPE_XML = 'xml'; // XML format
-    const CONTENT_TYPE_AUTO = 'auto'; // attempts to determine format automatically
-
     /**
      * @var string protocol version.
      */
     public $version = '1.0';
     /**
      * @var string API base URL.
+     * This field will be used as [[\yii\httpclient\Client::baseUrl]] value of [[httpClient]].
+     * Note: changing this property will take no effect after [[httpClient]] is instantiated.
      */
     public $apiBaseUrl;
     /**
@@ -50,6 +46,11 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @var string auth request scope.
      */
     public $scope;
+    /**
+     * @var boolean whether to automatically perform 'refresh access token' request on expired access token.
+     * @since 2.0.6
+     */
+    public $autoRefreshAccessToken = true;
 
     /**
      * @var string URL, which user will be redirected after authentication at the OAuth provider web site.
@@ -57,11 +58,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * By default current URL will be used.
      */
     private $_returnUrl;
-    /**
-     * @var array cURL request options. Option values from this field will overwrite corresponding
-     * values from [[defaultCurlOptions()]].
-     */
-    private $_curlOptions = [];
     /**
      * @var OAuthToken|array access token instance or its array configuration.
      */
@@ -92,27 +88,12 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
-     * @param array $curlOptions cURL options.
-     */
-    public function setCurlOptions(array $curlOptions)
-    {
-        $this->_curlOptions = $curlOptions;
-    }
-
-    /**
-     * @return array cURL options.
-     */
-    public function getCurlOptions()
-    {
-        return $this->_curlOptions;
-    }
-
-    /**
-     * @param array|OAuthToken $token
+     * Sets access token to be used.
+     * @param array|OAuthToken $token access token or its configuration.
      */
     public function setAccessToken($token)
     {
-        if (!is_object($token)) {
+        if (!is_object($token) && $token !== null) {
             $token = $this->createToken($token);
         }
         $this->_accessToken = $token;
@@ -132,6 +113,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
+     * Set signature method to be used.
      * @param array|signature\BaseMethod $signatureMethod signature method instance or its array configuration.
      * @throws InvalidParamException on wrong argument.
      */
@@ -156,6 +138,28 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function setHttpClient($httpClient)
+    {
+        if (is_object($httpClient)) {
+            $httpClient = clone $httpClient;
+            $httpClient->baseUrl = $this->apiBaseUrl;
+        }
+        parent::setHttpClient($httpClient);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function createHttpClient($reference)
+    {
+        $httpClient = parent::createHttpClient($reference);
+        $httpClient->baseUrl = $this->apiBaseUrl;
+        return $httpClient;
+    }
+
+    /**
      * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
@@ -165,187 +169,15 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
-     * Sends HTTP request.
-     * @param string $method request type.
-     * @param string $url request URL.
-     * @param array $params request params.
-     * @param array $headers additional request headers.
-     * @return array response.
-     * @throws Exception on failure.
+     * @inheritdoc
      */
-    protected function sendRequest($method, $url, array $params = [], array $headers = [])
-    {
-        $curlOptions = $this->mergeCurlOptions(
-            $this->defaultCurlOptions(),
-            $this->getCurlOptions(),
-            [
-                CURLOPT_HTTPHEADER => $headers,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_URL => $url,
-            ],
-            $this->composeRequestCurlOptions(strtoupper($method), $url, $params)
-        );
-        $curlResource = curl_init();
-        foreach ($curlOptions as $option => $value) {
-            curl_setopt($curlResource, $option, $value);
-        }
-        $response = curl_exec($curlResource);
-        $responseHeaders = curl_getinfo($curlResource);
-
-        // check cURL error
-        $errorNumber = curl_errno($curlResource);
-        $errorMessage = curl_error($curlResource);
-
-        curl_close($curlResource);
-
-        if ($errorNumber > 0) {
-            throw new Exception('Curl error requesting "' .  $url . '": #' . $errorNumber . ' - ' . $errorMessage);
-        }
-        if (strncmp($responseHeaders['http_code'], '20', 2) !== 0) {
-            throw new InvalidResponseException($responseHeaders, $response, 'Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
-        }
-
-        return $this->processResponse($response, $this->determineContentTypeByHeaders($responseHeaders));
-    }
-
-    /**
-     * Merge CUrl options.
-     * If each options array has an element with the same key value, the latter
-     * will overwrite the former.
-     * @param array $options1 options to be merged to.
-     * @param array $options2 options to be merged from. You can specify additional
-     * arrays via third argument, fourth argument etc.
-     * @return array merged options (the original options are not changed.)
-     */
-    protected function mergeCurlOptions($options1, $options2)
-    {
-        $args = func_get_args();
-        $res = array_shift($args);
-        while (!empty($args)) {
-            $next = array_shift($args);
-            foreach ($next as $k => $v) {
-                if (is_array($v) && !empty($res[$k]) && is_array($res[$k])) {
-                    $res[$k] = array_merge($res[$k], $v);
-                } else {
-                    $res[$k] = $v;
-                }
-            }
-        }
-        return $res;
-    }
-
-    /**
-     * Returns default cURL options.
-     * @return array cURL options.
-     */
-    protected function defaultCurlOptions()
+    protected function defaultRequestOptions()
     {
         return [
-            CURLOPT_USERAGENT => Yii::$app->name . ' OAuth ' . $this->version . ' Client',
-            CURLOPT_CONNECTTIMEOUT => 30,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_SSL_VERIFYPEER => false,
+            'userAgent' => Yii::$app->name . ' OAuth ' . $this->version . ' Client',
+            'timeout' => 30,
+            'sslVerifyPeer' => false,
         ];
-    }
-
-    /**
-     * Processes raw response converting it to actual data.
-     * @param string $rawResponse raw response.
-     * @param string $contentType response content type.
-     * @throws Exception on failure.
-     * @return array actual response.
-     */
-    protected function processResponse($rawResponse, $contentType = self::CONTENT_TYPE_AUTO)
-    {
-        if (empty($rawResponse)) {
-            return [];
-        }
-        switch ($contentType) {
-            case self::CONTENT_TYPE_AUTO: {
-                $contentType = $this->determineContentTypeByRaw($rawResponse);
-                if ($contentType == self::CONTENT_TYPE_AUTO) {
-                    throw new Exception('Unable to determine response content type automatically.');
-                }
-                $response = $this->processResponse($rawResponse, $contentType);
-                break;
-            }
-            case self::CONTENT_TYPE_JSON: {
-                $response = Json::decode($rawResponse, true);
-                break;
-            }
-            case self::CONTENT_TYPE_URLENCODED: {
-                $response = [];
-                parse_str($rawResponse, $response);
-                break;
-            }
-            case self::CONTENT_TYPE_XML: {
-                $response = $this->convertXmlToArray($rawResponse);
-                break;
-            }
-            default: {
-                throw new Exception('Unknown response type "' . $contentType . '".');
-            }
-        }
-        return $response;
-    }
-
-    /**
-     * Converts XML document to array.
-     * @param string|\SimpleXMLElement $xml xml to process.
-     * @return array XML array representation.
-     */
-    protected function convertXmlToArray($xml)
-    {
-        if (!is_object($xml)) {
-            $xml = simplexml_load_string($xml);
-        }
-        $result = (array) $xml;
-        foreach ($result as $key => $value) {
-            if (is_object($value)) {
-                $result[$key] = $this->convertXmlToArray($value);
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Attempts to determine HTTP request content type by headers.
-     * @param array $headers request headers.
-     * @return string content type.
-     */
-    protected function determineContentTypeByHeaders(array $headers)
-    {
-        if (isset($headers['content_type'])) {
-            if (stripos($headers['content_type'], 'json') !== false) {
-                return self::CONTENT_TYPE_JSON;
-            }
-            if (stripos($headers['content_type'], 'urlencoded') !== false) {
-                return self::CONTENT_TYPE_URLENCODED;
-            }
-            if (stripos($headers['content_type'], 'xml') !== false) {
-                return self::CONTENT_TYPE_XML;
-            }
-        }
-        return self::CONTENT_TYPE_AUTO;
-    }
-
-    /**
-     * Attempts to determine the content type from raw content.
-     * @param string $rawContent raw response content.
-     * @return string response type.
-     */
-    protected function determineContentTypeByRaw($rawContent)
-    {
-        if (preg_match('/^\\{.*\\}$/is', $rawContent)) {
-            return self::CONTENT_TYPE_JSON;
-        }
-        if (preg_match('/^[^=|^&]+=[^=|^&]+(&[^=|^&]+=[^=|^&]+)*$/is', $rawContent)) {
-            return self::CONTENT_TYPE_URLENCODED;
-        }
-        if (preg_match('/^<.*>$/is', $rawContent)) {
-            return self::CONTENT_TYPE_XML;
-        }
-        return self::CONTENT_TYPE_AUTO;
     }
 
     /**
@@ -375,6 +207,24 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
+     * Sends the given HTTP request, returning response data.
+     * @param \yii\httpclient\Request $request HTTP request to be sent.
+     * @return array response data.
+     * @throws InvalidResponseException on invalid remote response.
+     * @since 2.1
+     */
+    protected function sendRequest($request)
+    {
+        $response = $request->send();
+
+        if (!$response->getIsOk()) {
+            throw new InvalidResponseException($response, 'Request failed with code: ' . $response->getStatusCode() . ', message: ' . $response->getContent());
+        }
+
+        return $response->getData();
+    }
+
+    /**
      * Composes URL from base URL and GET params.
      * @param string $url base URL.
      * @param array $params GET params.
@@ -382,21 +232,23 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      */
     protected function composeUrl($url, array $params = [])
     {
-        if (strpos($url, '?') === false) {
-            $url .= '?';
-        } else {
-            $url .= '&';
+        if (!empty($params)) {
+            if (strpos($url, '?') === false) {
+                $url .= '?';
+            } else {
+                $url .= '&';
+            }
+            $url .= http_build_query($params, '', '&', PHP_QUERY_RFC3986);
         }
-        $url .= http_build_query($params, '', '&', PHP_QUERY_RFC3986);
         return $url;
     }
 
     /**
      * Saves token as persistent state.
-     * @param OAuthToken $token auth token
+     * @param OAuthToken|null $token auth token to be saved.
      * @return $this the object itself.
      */
-    protected function saveAccessToken(OAuthToken $token)
+    protected function saveAccessToken($token)
     {
         return $this->setState('token', $token);
     }
@@ -410,7 +262,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         $token = $this->getState('token');
         if (is_object($token)) {
             /* @var $token OAuthToken */
-            if ($token->getIsExpired()) {
+            if ($token->getIsExpired() && $this->autoRefreshAccessToken) {
                 $token = $this->refreshAccessToken($token);
             }
         }
@@ -418,98 +270,64 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
-     * Sets persistent state.
-     * @param string $key state key.
-     * @param mixed $value state value
-     * @return $this the object itself
+     * Creates an HTTP request for the API call.
+     * The created request will be automatically processed adding access token parameters and signature
+     * before sending. You may use [[createRequest()]] to gain full control over request composition and execution.
+     * @see createRequest()
+     * @return Request HTTP request instance.
+     * @since 2.1
      */
-    protected function setState($key, $value)
+    public function createApiRequest()
     {
-        if (!Yii::$app->has('session')) {
-            return $this;
-        }
-        /* @var \yii\web\Session $session */
-        $session = Yii::$app->get('session');
-        $key = $this->getStateKeyPrefix() . $key;
-        $session->set($key, $value);
-        return $this;
+        $request = $this->createRequest();
+        $request->on(Request::EVENT_BEFORE_SEND, [$this, 'beforeApiRequestSend']);
+        return $request;
     }
 
     /**
-     * Returns persistent state value.
-     * @param string $key state key.
-     * @return mixed state value.
+     * Handles [[Request::EVENT_BEFORE_SEND]] event.
+     * Applies [[accessToken]] to the request.
+     * @param \yii\httpclient\RequestEvent $event event instance.
+     * @throws Exception on invalid access token.
+     * @since 2.1
      */
-    protected function getState($key)
+    public function beforeApiRequestSend($event)
     {
-        if (!Yii::$app->has('session')) {
-            return null;
-        }
-        /* @var \yii\web\Session $session */
-        $session = Yii::$app->get('session');
-        $key = $this->getStateKeyPrefix() . $key;
-        $value = $session->get($key);
-        return $value;
-    }
-
-    /**
-     * Removes persistent state value.
-     * @param string $key state key.
-     * @return boolean success.
-     */
-    protected function removeState($key)
-    {
-        if (!Yii::$app->has('session')) {
-            return true;
-        }
-        /* @var \yii\web\Session $session */
-        $session = Yii::$app->get('session');
-        $key = $this->getStateKeyPrefix() . $key;
-        $session->remove($key);
-        return true;
-    }
-
-    /**
-     * Returns session key prefix, which is used to store internal states.
-     * @return string session key prefix.
-     */
-    protected function getStateKeyPrefix()
-    {
-        return get_class($this) . '_' . sha1($this->authUrl) . '_';
-    }
-
-    /**
-     * Performs request to the OAuth API.
-     * @param string $apiSubUrl API sub URL, which will be append to [[apiBaseUrl]], or absolute API URL.
-     * @param string $method request method.
-     * @param array $params request parameters.
-     * @param array $headers additional request headers.
-     * @return array API response
-     * @throws Exception on failure.
-     */
-    public function api($apiSubUrl, $method = 'GET', array $params = [], array $headers = [])
-    {
-        if (preg_match('/^https?:\\/\\//is', $apiSubUrl)) {
-            $url = $apiSubUrl;
-        } else {
-            $url = $this->apiBaseUrl . '/' . $apiSubUrl;
-        }
         $accessToken = $this->getAccessToken();
         if (!is_object($accessToken) || !$accessToken->getIsValid()) {
             throw new Exception('Invalid access token.');
         }
-        return $this->apiInternal($accessToken, $url, $method, $params, $headers);
+
+        $this->applyAccessTokenToRequest($event->request, $accessToken);
     }
 
     /**
-     * Composes HTTP request CUrl options, which will be merged with the default ones.
-     * @param string $method request type.
-     * @param string $url request URL.
-     * @param array $params request params.
-     * @return array CUrl options.
-     * @throws Exception on failure.
+     * Performs request to the OAuth API returning response data.
+     * You may use [[createApiRequest()]] method instead, gaining more control over request execution.
+     * @see createApiRequest()
+     * @param string $apiSubUrl API sub URL, which will be append to [[apiBaseUrl]], or absolute API URL.
+     * @param string $method request method.
+     * @param array|string $data request data or content.
+     * @param array $headers additional request headers.
+     * @return array API response data.
      */
-    abstract protected function composeRequestCurlOptions($method, $url, array $params);
+    public function api($apiSubUrl, $method = 'GET', $data = [], $headers = [])
+    {
+        $request = $this->createApiRequest()
+            ->setMethod($method)
+            ->setUrl($apiSubUrl)
+            ->addHeaders($headers);
+
+        if (!empty($data)) {
+            if (is_array($data)) {
+                $request->setData($data);
+            } else {
+                $request->setContent($data);
+            }
+        }
+
+        return $this->sendRequest($request);
+    }
 
     /**
      * Gets new auth token to replace expired one.
@@ -519,14 +337,10 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     abstract public function refreshAccessToken(OAuthToken $token);
 
     /**
-     * Performs request to the OAuth API.
-     * @param OAuthToken $accessToken actual access token.
-     * @param string $url absolute API URL.
-     * @param string $method request method.
-     * @param array $params request parameters.
-     * @param array $headers additional request headers.
-     * @return array API response.
-     * @throws Exception on failure.
+     * Applies access token to the HTTP request instance.
+     * @param \yii\httpclient\Request $request HTTP request instance.
+     * @param OAuthToken $accessToken access token instance.
+     * @since 2.1
      */
-    abstract protected function apiInternal($accessToken, $url, $method, array $params, array $headers);
+    abstract public function applyAccessTokenToRequest($request, $accessToken);
 }

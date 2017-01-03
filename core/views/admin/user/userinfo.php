@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -15,7 +15,7 @@ use app\models\User;
 
 $this->title = '用户信息';
 $session = Yii::$app->getSession();
-
+$formatter = Yii::$app->getFormatter();
 ?>
 
 <div class="row">
@@ -32,19 +32,43 @@ $session = Yii::$app->getSession();
     'fieldConfig' => [
 //			        'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
         'horizontalCssClasses' => [
-            'label' => 'col-sm-2',
+            'label' => 'col-sm-3',
 //			            'offset' => 'col-sm-offset-4',
-            'wrapper' => 'col-sm-10',
+            'wrapper' => 'col-sm-9',
             'error' => '',
-            'hint' => 'col-sm-offset-2 col-sm-10',
+            'hint' => 'col-sm-offset-3 col-sm-9',
         ],
     ],
 ]); ?>
 	<li class="list-group-item">
 		<div class="form-group">
-			<label class="control-label col-sm-2">用户名</label>
-			<div class="col-sm-10" style="padding-top:7px;">
-				<strong><?php echo $user->username; ?></strong>
+			<label class="control-label col-sm-3">用户名</label>
+			<div class="col-sm-9">
+				<p class="form-control-static"><strong><?php echo $user->username; ?></strong></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-3">注册时间</label>
+			<div class="col-sm-9">
+				<p class="form-control-static"><strong><?php echo $formatter->asDateTime($user->getUser()->created_at, 'y-MM-dd HH:mm:ss xxx'); ?></strong></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-3">注册IP</label>
+			<div class="col-sm-9">
+				<p class="form-control-static"><strong><?php echo long2ip($user->getUser()->userInfo->reg_ip); ?></strong></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-3">最后登录时间</label>
+			<div class="col-sm-9">
+				<p class="form-control-static"><strong><?php echo $formatter->asDateTime($user->getUser()->userInfo->last_login_at, 'y-MM-dd HH:mm:ss xxx'); ?></strong></p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-3">最后登录IP</label>
+			<div class="col-sm-9">
+				<p class="form-control-static"><strong><?php echo long2ip($user->getUser()->userInfo->last_login_ip); ?></strong></p>
 			</div>
 		</div>
 	</li>
@@ -66,7 +90,7 @@ if ( $session->hasFlash('adminProfileNG') ) {
 		<?php echo $form->field($user, "status")->dropDownList(User::$statusOptions); ?>
 		<?php echo $form->field($user, "email")->textInput(['maxlength'=>50]); ?>
         <div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
+			<div class="col-sm-offset-3 col-sm-9">
             <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
@@ -96,17 +120,17 @@ if ( $session->hasFlash('adminPwdNG') ) {
 	    'fieldConfig' => [
 //			        'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
 	        'horizontalCssClasses' => [
-	            'label' => 'col-sm-2',
+	            'label' => 'col-sm-3',
 //			            'offset' => 'col-sm-offset-4',
-	            'wrapper' => 'col-sm-10',
+	            'wrapper' => 'col-sm-9',
 	            'error' => '',
-	            'hint' => 'col-sm-offset-2 col-sm-10',
+	            'hint' => 'col-sm-offset-3 col-sm-9',
 	        ],
 	    ],
 	]); ?>
 		<?php echo $form->field($user, "password")->textInput(['maxlength'=>20]); ?>
         <div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
+			<div class="col-sm-offset-3 col-sm-9">
             <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>

@@ -10,6 +10,7 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
 use yii\authclient\Collection;
+use app\components\SfHtml;
 use app\models\UserInfo;
 use app\models\UploadForm;
 use app\models\ChangePasswordForm;
@@ -72,14 +73,14 @@ if ( $session->hasFlash('EditProfileNG') ) {
         ]); ?>
         <div class="form-group">
             <label class="control-label col-sm-3 username-label">用户名</label>
-            <div class="col-sm-6" style="padding-top:7px;">
-                <strong><?php echo $me->username; ?></strong>
+            <div class="col-sm-6">
+				<p class="form-control-static"><strong><?php echo $me->username; ?></strong></p>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-3 status-label">状态</label>
-            <div class="col-sm-6" style="padding-top:7px;">
-                <?php echo $me->getStatus(); ?>
+            <div class="col-sm-6">
+				<p class="form-control-static"><?php echo $me->getStatus(); ?></p>
             </div>
         </div>
         <?php echo $form->field($me->userInfo, 'website')->textInput(['maxlength'=>100]); ?>
@@ -114,10 +115,10 @@ if ( $session->hasFlash('setAvatarNG') ) {
         <div class="form-group">
             <label class="control-label col-sm-3 avatar-label">当前头像</label>
             <div class="col-sm-6">
-            <?php echo Html::img('@web/'.str_replace('{size}', 'large', $me->avatar), ['class'=>'img-circle']), ' ', Html::img('@web/'.str_replace('{size}', 'normal', $me->avatar), ['class'=>'img-circle']), ' ', Html::img('@web/'.str_replace('{size}', 'small', $me->avatar), ['class'=>'img-circle']); ?>
+            <?php echo SfHtml::uimg($me, 'large', []), ' ', SfHtml::uImg($me, 'normal', []), ' ', SfHtml::uImg($me, 'small', []); ?>
             </div>
         </div>
-        <?php echo $form->field((new UploadForm()), 'file')->fileInput(); ?>
+        <?php echo $form->field((new UploadForm(Yii::$container->get('avatarUploader'))), 'file')->fileInput(); ?>
 
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
@@ -148,12 +149,12 @@ if ( $session->hasFlash('chgEmailNG') ) {
 ?>
         <div class="form-group">
             <label class="control-label col-sm-3 username-label">当前邮箱</label>
-            <div class="col-sm-6" style="padding-top:7px;">
-                <strong><?php echo $me->email; ?></strong>
+            <div class="col-sm-6">
+				<p class="form-control-static"><strong><?php echo $me->email; ?></strong></p>
             </div>
         </div>
         <?php echo $form->field($ceModel, 'email')->textInput(['maxlength'=>50]); ?>
-        <?php echo $form->field($ceModel, 'password')->passwordInput(['maxlength'=>20]); ?>
+        <?php echo $form->field($ceModel, 'password')->passwordInput(['maxlength'=>20, 'autocomplete'=>'new-password']); ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
             <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>

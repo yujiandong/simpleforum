@@ -1,6 +1,39 @@
 Yii Framework 2 authclient extension Change Log
 ===============================================
 
+2.1.1 August 29, 2016
+---------------------
+
+- Bug #128: Fixed `\yii\authclient\BaseClient::createRequest()` does not apply `defaultRequestOptions` and `requestOptions` (klimov-paul)
+- Bug #130: Fixed `\yii\authclient\OAuth1::fetchRequestToken()` unable to unset current access token (klimov-paul)
+- Enh #27: Added `\yii\authclient\OAuth1::authorizationHeaderMethods` option allowing to control request methods, which require authorization header (klimov-paul)
+- Enh #132: URL endpoints for `authUrl` and `tokenUrl` for `yii\authclient\clients\VKontakte` updated (KhristenkoYura)
+
+
+2.1.0 August 04, 2016
+---------------------
+
+- Enh #27: This extension no longer require PHP 'cURL' extension to be installed (klimov-paul)
+- Enh #30: Added support for 'client_credentials' grant type via `\yii\authclient\OAuth2::authenticateClient()` (klimov-paul)
+- Enh #33: Added ability to pass raw request content at `\yii\authclient\BaseOAuth::api()` (klimov-paul)
+- Enh #41: Added support for signature generation from request token at `\yii\authclient\OAuth1::fetchAccessToken()` (klimov-paul)
+- Enh #63: Markup for `\yii\authclient\widgets\AuthChoice` simplified (klimov-paul)
+- Enh #108: This extension now uses `yii2-httpclient` library for the HTTP requests (klimov-paul)
+- Enh #118: Added support for 'password' grant type via `\yii\authclient\OAuth2::authenticateUser()` (klimov-paul)
+- Enh #121: Auth client 'State Storage' abstraction layer extracted (klimov-paul)
+- Enh #124: Methods `clientLink()` and `renderMainContent()` of `yii\authclient\widgets\AuthChoice` reworked to return HTML instead of echo (klimov-paul)
+- Enh #127: Auth 'state' validation added to `OAuth2` for preventing cross-site request forgery (klimov-paul)
+
+
+2.0.6 July 08, 2016
+-------------------
+
+- Bug #37: Fixed `\yii\authclient\widgets\AuthChoice` overrides any `<a>` tag click behavior between `begin()` and `end()` methods (klimov-paul)
+- Enh #31: Allow to disable automatic 'refresh access token' requests (klimov-paul)
+- Enh #58: Added support for user attribute request params setup for Twitter (umanamente, klimov-paul)
+- Enh #111: `yii\authclient\clients\GitHub` now retrieves user email even if it is set as 'private' at GitHub account (klimov-paul)
+
+
 2.0.5 September 23, 2015
 ------------------------
 

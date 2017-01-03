@@ -7,10 +7,13 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use app\models\Topic;
 
 $settings = Yii::$app->params['settings'];
 
-$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
+//$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
+$editorClass = '\app\plugins\\'. $settings['editor']. '\\'. $settings['editor'];
+$editor = new $editorClass();
 $editor->registerAsset($this);
 $editor->registerTagItAsset($this);
 
@@ -31,6 +34,8 @@ $editor->registerTagItAsset($this);
     <?php echo $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120])->label(false); ?>
 	<p>主题内容</p>
 	<?php echo $form->field($content, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false); ?>
+	<p>查看权限</p>
+    <?php echo $form->field($model, 'access_auth')->dropDownList(Topic::$access)->label(false); ?>
 	<p>标签 <span class="gray">( 最多4个，以空格分隔 )</span></p>
 	<?php echo $form->field($model, 'tags')->textInput(['id'=>'tags', 'maxlength'=>60])->label(false); ?>
 <?php

@@ -9,6 +9,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\bootstrap\Alert;
 use app\models\Node;
+use app\models\Topic;
 
 $session = Yii::$app->getSession();
 $settings = Yii::$app->params['settings'];
@@ -16,7 +17,9 @@ $settings = Yii::$app->params['settings'];
 $this->registerAssetBundle('app\assets\Select2Asset');
 $this->registerJs('$(".nodes-select2").select2({placeholder:"请选择一个节点",allowClear: true});');
 
-$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
+//$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
+$editorClass = '\app\plugins\\'. $settings['editor']. '\\'. ucfirst($settings['editor']);
+$editor = new $editorClass();
 $editor->registerAsset($this);
 $editor->registerTagItAsset($this);
 
@@ -53,6 +56,8 @@ echo Alert::widget([
             }
         ?>
         </div>
+		<p>查看权限</p>
+	    <?php echo $form->field($model, 'access_auth')->dropDownList(Topic::$access)->label(false); ?>
         <p>标签 <span class="gray">( 最多4个，以空格分隔 )</span></p>
         <?php echo $form->field($model, 'tags')->textInput(['id'=>'tags', 'maxlength'=>60])->label(false); ?>
 <?php
