@@ -12,10 +12,11 @@
 namespace Imagine\Imagick;
 
 use Imagine\Image\AbstractLayers;
-use Imagine\Imagick\Image;
+use Imagine\Image\Metadata\MetadataBag;
 use Imagine\Exception\RuntimeException;
 use Imagine\Exception\OutOfBoundsException;
 use Imagine\Exception\InvalidArgumentException;
+use Imagine\Image\Palette\PaletteInterface;
 
 class Layers extends AbstractLayers
 {
@@ -36,10 +37,13 @@ class Layers extends AbstractLayers
      */
     private $layers = array();
 
-    public function __construct(Image $image, \Imagick $resource)
+    private $palette;
+
+    public function __construct(Image $image, PaletteInterface $palette, \Imagick $resource)
     {
         $this->image = $image;
         $this->resource = $resource;
+        $this->palette = $palette;
     }
 
     /**
@@ -52,9 +56,7 @@ class Layers extends AbstractLayers
                 $this->resource->setIteratorIndex($offset);
                 $this->resource->setImage($image->getImagick());
             } catch (\ImagickException $e) {
-                throw new RuntimeException(
-                    'Failed to substitute layer', $e->getCode(), $e
-                );
+                throw new RuntimeException('Failed to substitute layer', $e->getCode(), $e);
             }
         }
     }
@@ -68,19 +70,26 @@ class Layers extends AbstractLayers
             throw new InvalidArgumentException('Animated picture is currently only supported on gif');
         }
 
-        foreach (array('Loops' => $loops, 'Delay' => $delay) as $name => $value) {
-            if (!is_int($value) || $value < 0) {
-                throw new InvalidArgumentException(sprintf('%s must be a positive integer.', $name));
-            }
+        if (!is_int($loops) || $loops < 0) {
+            throw new InvalidArgumentException('Loops must be a positive integer.');
+        }
+
+        if (null !== $delay && (!is_int($delay) || $delay < 0)) {
+            throw new InvalidArgumentException('Delay must be either null or a positive integer.');
         }
 
         try {
             foreach ($this as $offset => $layer) {
                 $this->resource->setIteratorIndex($offset);
                 $this->resource->setFormat($format);
-                $this->resource->setImageDelay($delay / 10);
-                $this->resource->setImageTicksPerSecond(100);
-                $this->resource->setImageIterations($loops);
+
+                if (null !== $delay) {
+                    $layer->getImagick()->setImageDelay($delay / 10);
+                    $layer->getImagick()->setImageTicksPerSecond(100);
+                }
+                $layer->getImagick()->setImageIterations($loops);
+
+                $this->resource->setImage($layer->getImagick());
             }
         } catch (\ImagickException $e) {
             throw new RuntimeException('Failed to animate layers', $e->getCode(), $e);
@@ -97,20 +106,16 @@ class Layers extends AbstractLayers
         try {
             $coalescedResource = $this->resource->coalesceImages();
         } catch (\ImagickException $e) {
-            throw new RuntimeException(
-                'Failed to coalesce layers', $e->getCode(), $e
-            );
+            throw new RuntimeException('Failed to coalesce layers', $e->getCode(), $e);
         }
 
         $count = $coalescedResource->getNumberImages();
         for ($offset = 0; $offset < $count; $offset++) {
             try {
                 $coalescedResource->setIteratorIndex($offset);
-                $this->layers[$offset] = new Image($coalescedResource->getImage());
+                $this->layers[$offset] = new Image($coalescedResource->getImage(), $this->palette, new MetadataBag());
             } catch (\ImagickException $e) {
-                throw new RuntimeException(
-                    'Failed to retrieve layer', $e->getCode(), $e
-                );
+                throw new RuntimeException('Failed to retrieve layer', $e->getCode(), $e);
             }
         }
     }
@@ -126,7 +131,8 @@ class Layers extends AbstractLayers
     /**
      * Tries to extract layer at given offset
      *
-     * @param  integer          $offset
+     * @param integer $offset
+     *
      * @return Image
      * @throws RuntimeException
      */
@@ -135,12 +141,9 @@ class Layers extends AbstractLayers
         if (!isset($this->layers[$offset])) {
             try {
                 $this->resource->setIteratorIndex($offset);
-                $this->layers[$offset] = new Image($this->resource->getImage());
+                $this->layers[$offset] = new Image($this->resource->getImage(), $this->palette, new MetadataBag());
             } catch (\ImagickException $e) {
-                throw new RuntimeException(
-                    sprintf('Failed to extract layer %d', $offset),
-                    $e->getCode(), $e
-                );
+                throw new RuntimeException(sprintf('Failed to extract layer %d', $offset), $e->getCode(), $e);
             }
         }
 
@@ -187,9 +190,7 @@ class Layers extends AbstractLayers
         try {
             return $this->resource->getNumberImages();
         } catch (\ImagickException $e) {
-            throw new RuntimeException(
-                'Failed to count the number of layers', $e->getCode(), $e
-            );
+            throw new RuntimeException('Failed to count the number of layers', $e->getCode(), $e);
         }
     }
 
@@ -222,16 +223,11 @@ class Layers extends AbstractLayers
             $offset = count($this) - 1;
         } else {
             if (!is_int($offset)) {
-                throw new InvalidArgumentException(
-                    'Invalid offset for layer, it must be an integer'
-                );
+                throw new InvalidArgumentException('Invalid offset for layer, it must be an integer');
             }
 
             if (count($this) < $offset || 0 > $offset) {
-                throw new OutOfBoundsException(sprintf(
-                    'Invalid offset for layer, it must be a value between 0 and %d, %d given',
-                    count($this), $offset
-                ));
+                throw new OutOfBoundsException(sprintf('Invalid offset for layer, it must be a value between 0 and %d, %d given', count($this), $offset));
             }
 
             if (isset($this[$offset])) {

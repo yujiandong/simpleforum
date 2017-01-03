@@ -1,6 +1,8 @@
 #Imagine
 [![project status](http://stillmaintained.com/avalanche123/Imagine.png)](http://stillmaintained.com/avalanche123/Imagine)
-[![Build Status](https://secure.travis-ci.org/avalanche123/Imagine.png?branch=develop)](http://travis-ci.org/avalanche123/Imagine)
+[![Build Status](https://travis-ci.org/avalanche123/Imagine.svg?branch=develop)](https://travis-ci.org/avalanche123/Imagine)
+
+Tweet about it using the [#php_imagine](https://twitter.com/search?q=%23php_imagine) hashtag.
 
 Image manipulation library for PHP 5.3 inspired by Python's PIL and other image
 libraries.
@@ -16,6 +18,9 @@ Depending on the chosen Image implementation, you may need one of the following:
  - GD2
  - Imagick
  - Gmagick
+
+### Installation using composer
+`php composer.phar require imagine/imagine`
 
 ##Basic Principles##
 
