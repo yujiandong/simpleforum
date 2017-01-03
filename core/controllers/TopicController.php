@@ -22,7 +22,7 @@ use app\models\Node;
 use app\models\Navi;
 use app\models\Tag;
 use app\models\History;
-use app\lib\Util;
+use app\components\Util;
 
 class TopicController extends AppController
 {
@@ -121,7 +121,9 @@ class TopicController extends AppController
     public function actionView($id)
     {
         $topic = Topic::getTopicFromView($id);
-        if (intval($topic['node']['access_auth']) === 1 && Yii::$app->getUser()->getIsGuest()) {
+        if ( ( intval($topic['node']['access_auth']) === Topic::TOPIC_ACCESS_LOGIN || 
+				intval($topic->access_auth) !== Topic::TOPIC_ACCESS_NONE
+			 ) && Yii::$app->getUser()->getIsGuest()) {
             Yii::$app->getSession()->setFlash('accessNG', '您查看的页面需要先登录');
             return $this->redirect(['site/login']);
         }
@@ -273,7 +275,7 @@ class TopicController extends AppController
 
     protected function findNodeModel($name, $with=null)
     {
-        $model = Node::find()->select(['id', 'name', 'ename', 'topic_count', 'access_auth', 'about'])->where(['ename' => $name]);
+        $model = Node::find()->select(['id', 'name', 'ename', 'topic_count', 'favorite_count', 'access_auth', 'about'])->where(['ename' => $name]);
         if ( !empty($with) ) {
             $model = $model->with($with);
         }

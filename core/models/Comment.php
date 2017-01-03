@@ -164,7 +164,7 @@ class Comment extends ActiveRecord
                 ->all();
 
             if ( !empty($pids) ) {
-                $models = static::find()->select(['id', 'position', 'user_id', 'created_at', 'invisible', 'content'])
+                $models = static::find()->select(['id', 'position', 'user_id', 'created_at', 'invisible', 'good', 'content'])
                     ->where(['topic_id' => $topic_id, 'position'=>$pids])
                     ->orderBy(['position'=>SORT_ASC])
                     ->with(['author'])

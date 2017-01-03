@@ -123,9 +123,11 @@ CREATE TABLE simple_topic (
   `top` tinyint(1) unsigned NOT NULL default 0,
   `invisible` tinyint(1) unsigned NOT NULL default 0,
   `closed` tinyint(1) unsigned NOT NULL default 0,
+  `access_auth` tinyint(1) unsigned NOT NULL default 0,
   `comment_closed` tinyint(1) unsigned NOT NULL default 0,
   `comment_count` mediumint(8) unsigned NOT NULL default 0,
   `favorite_count` smallint(6) unsigned NOT NULL default 0,
+  `good` smallint(6) unsigned NOT NULL default 0,
   `views` mediumint(8) unsigned NOT NULL default 0,
   `title` char(120) NOT NULL,
   `tags` char(60) NOT NULL default '',
@@ -155,6 +157,7 @@ CREATE TABLE simple_comment (
   `topic_id` mediumint(8) unsigned NOT NULL,
   `position` mediumint(8) unsigned NOT NULL auto_increment,
   `invisible` tinyint(1) unsigned NOT NULL default 0,
+  `good` smallint(6) unsigned NOT NULL default 0,
   `content` text NOT NULL,
   PRIMARY KEY topic_position(`topic_id`, `position`),
   UNIQUE KEY id(`id`),
@@ -260,17 +263,14 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (2,'extend', '放在页面底部的<br/>统计代码', 'textarea','analytics_code', 'text', '','示例： 直接粘贴google 或 百度统计代码', ''),
 (3,'extend', '底部链接', 'textarea','footer_links','text', '', '一行一个链接，格式： 描述 http://url<br />如：关于本站 http://simpleforum.org/t/1', ''),
 (4,'extend', '时区', 'select','timezone','text', 'Asia/Shanghai', '修改时要特别注意！默认Asia/Shanghai', ''),
-(5,'extend', '编辑器', 'select','editor','text', 'wysibb', '普通论坛推荐Wysibb编辑器(BBCode)，技术类论坛推荐SimpleMarkdown编辑器。注意：换编辑器可能会使以前发的帖子格式混乱。', '{"wysibb":"Wysibb编辑器(BBCode)","smd":"SimpleMarkdown编辑器"}'),
+(5,'extend', '编辑器', 'select','editor','text', 'WysibbEditor', '普通论坛推荐Wysibb编辑器(BBCode)，技术类论坛推荐SimpleMarkdown编辑器。注意：换编辑器可能会使以前发的帖子格式混乱。', '{"WysibbEditor":"Wysibb编辑器(BBCode)"}'),
+(6,'extend', '会员头像', 'select','avatar_style','text', 'img-rounded', '', '{"img-circle":"圆形","img-rounded":"圆角方形"}'),
 (1,'cache', '开启缓存', 'select','cache_enabled','integer', '0', '默认0（不开启）', '["0(关闭)","1(开启)"]'),
 (2,'cache', '缓存时间(分)', 'text','cache_time','integer', '10', '默认10分', ''),
 (3,'cache', '缓存类型', 'select','cache_type', 'text', 'file', '默认file', '{"file":"file","apc":"apc","memcache":"memcache","memcached":"memcached"}'),
 (4,'cache', '缓存服务器', 'textarea','cache_servers', 'text','', '缓存类型设为MemCache时设置<br/>一个服务器一行，格式为：IP 端口 权重<br />示例：<br />127.0.0.1 11211 100<br />127.0.0.2 11211 200', ''),
 (1,'auth', '开启第三方登录', 'select','auth_enabled', 'integer','0', '', '["0(关闭)","1(开启)"]'),
-(1,'auth.qq', 'appid', 'text','qq_appid', 'text','', '', ''),
-(2,'auth.qq', 'appkey', 'text','qq_appkey', 'text','', '', ''),
-(3,'auth.qq', 'scope', 'text','qq_scope','text', 'get_user_info', '', ''),
-(1,'auth.weibo', 'App Key', 'text','wb_key', 'text','', '', ''),
-(2,'auth.weibo', 'App Secret', 'text','wb_secret', 'text', '','', ''),
+(2,'auth', '第三方登录设定', 'textarea','auth_setting', 'text','[]', '', ''),
 (1,'other', '首页显示帖子数', 'text', 'index_pagesize', 'integer', '20','默认20', ''),
 (2,'other', '每页显示帖子数', 'text','list_pagesize', 'integer', '20','默认20', ''),
 (3,'other', '每页显示回复数', 'text','comment_pagesize', 'integer', '20','默认20', ''),
@@ -291,9 +291,7 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (2,'upload', '附件上传', 'select','upload_file','text', 'disable', '默认:网站空间', '{"disable":"关闭上传","local":"上传到网站所在空间","remote":"上传到第三方空间"}'),
 (3,'upload', '附件上传条件(注册时间)', 'text','upload_file_regday','integer', '30', '默认：30天', ''),
 (3,'upload', '附件上传条件(主题数)', 'text','upload_file_topicnum','integer', '20', '默认：20', ''),
-(4,'upload', '第三方空间', 'select','upload_remote', 'text','', '', '{"qiniu":"七牛云","upyun":"又拍云"}'),
-(5,'upload', '第三方空间信息', 'text','upload_remote_info', 'text','', '逗号分隔。又拍云：空间名,操作员,密码；<br />七牛：空间名,access key,secret key', ''),
-(6,'upload', '第三方空间URL', 'text','upload_remote_url', 'text','', '', '');
+(4,'upload', '第三方空间', 'select','upload_remote', 'text','', '', '[]');
 
 DROP TABLE IF EXISTS `simple_favorite`;
 CREATE TABLE `simple_favorite` (
@@ -344,3 +342,23 @@ CREATE TABLE simple_ad (
   UNIQUE KEY id(`id`),
   KEY adkey(`location`,`node_id`, `expires`, `sortid`, `id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS simple_plugin;
+CREATE TABLE simple_plugin (
+  `id` smallint(6) unsigned NOT NULL auto_increment,
+  `status` tinyint(1) unsigned NOT NULL default 0,
+  `pid` varchar(20) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `description` varchar(255) NOT NULL default '',
+  `author` varchar(20) NOT NULL default '',
+  `url` varchar(255) NOT NULL default '',
+  `version` varchar(10) NOT NULL default '',
+  `config` text NOT NULL,
+  `settings` text NOT NULL,
+  `events` text NOT NULL,
+  PRIMARY KEY id(`id`),
+  UNIQUE KEY `pid`(`pid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `simple_plugin` (`id`, `status`, `pid`, `name`, `description`, `author`, `url`, `version`, `config`, `settings`, `events`) VALUES
+(1, 0, 'WysibbEditor', 'Wysibb编辑器(BBcode)', 'Wysibb编辑器(BBcode)', 'SimpleForum', 'http://simpleforum.org', '1.0', '', '', '');

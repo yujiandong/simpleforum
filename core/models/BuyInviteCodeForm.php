@@ -8,7 +8,7 @@
 namespace app\models;
 
 use Yii;
-use app\lib\Util;
+use app\components\Util;
 
 class BuyInviteCodeForm extends \yii\base\Model
 {

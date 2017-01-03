@@ -34,23 +34,25 @@ class UpgradeController extends \yii\web\Controller
         return $this->render('index');
     }
 
-    public function actionV114to115()
+    public function actionV115to120()
     {
-        if (file_exists(Yii::getAlias('@runtime/upv1.1.4to1.1.5.lock'))) {
+        if (file_exists(Yii::getAlias('@runtime/upv1.1.5to1.2.0.lock'))) {
+            header("Content-Type: text/html; charset=UTF-8");
             echo '您已升级完成';
             exit;
         }
         $error = false;
         try {
-			@set_time_limit(180);
-            $this->excuteSql($this->module->basePath . '/data/v1.1.4to1.1.5.sql');
-            file_put_contents(Yii::getAlias('@runtime/upv1.1.4to1.1.5.lock'), '');
-        	Yii::$app->getCache()->flush();
+            @set_time_limit(180);
+            $this->excuteSql($this->module->basePath . '/data/v1.1.5to1.2.0.sql');
+            file_put_contents(Yii::getAlias('@runtime/upv1.1.5to1.2.0.lock'), '');
+            Yii::$app->getCache()->flush();
             return $this->render('completed');
         } catch (\yii\db\Exception $e) {
-            $error = '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();
+            header("Content-Type: text/html; charset=UTF-8");
+            echo '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();
+            exit;
         }
-        return $this->render('dbSetting', ['model'=>$model, 'error'=>$error]);
     }
 
     private function excuteSql($file)

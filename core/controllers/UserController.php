@@ -18,10 +18,19 @@ class UserController extends AppController
 {
     public function actionView($username)
     {
-        $model = $this->findUserModel($username, ['userInfo', 'topics.node', 'topics.lastReply', 'comments.topic.author']);
-        return $this->render('view', [
-             'user' => $model,
-        ]);
+        $req = Yii::$app->getRequest();
+        if ($req->getIsAjax()) {
+            $this->layout = false;
+            $model = $this->findUserModel($username, ['userInfo']);
+            return $this->render('ajaxView', [
+                 'user' => $model,
+            ]);
+        } else {
+            $model = $this->findUserModel($username, ['userInfo', 'topics.node', 'topics.lastReply', 'comments.topic.author']);
+            return $this->render('view', [
+                 'user' => $model,
+            ]);
+        }
     }
 
     public function actionTopics($username)

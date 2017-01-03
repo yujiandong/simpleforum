@@ -15,6 +15,7 @@ class UserForm extends Model
 {
     const SCENARIO_EDIT = 1;
     const SCENARIO_RESET_PWD = 2;
+    const SCENARIO_SEARCH = 3;
 
     public $id;
     public $username;
@@ -28,6 +29,7 @@ class UserForm extends Model
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_EDIT] = ['email', 'status', '!username', '!id'];
         $scenarios[self::SCENARIO_RESET_PWD] = ['password'];
+        $scenarios[self::SCENARIO_SEARCH] = ['username'];
         return $scenarios;
     }
     /**
@@ -37,11 +39,13 @@ class UserForm extends Model
     {
         return [
             ['status', 'integer', 'max'=>User::STATUS_ACTIVE, 'min'=>User::STATUS_BANNED],
-            [['email'], 'trim'],
+            ['email', 'trim'],
             [['email', 'password'], 'required'],
+            ['username', 'required'],
             ['email', 'email'],
             ['password', 'string', 'length' => [6, 16]],
-            ['email', 'unique', 'targetClass' => '\app\models\User', 'filter' => 'id != '. $this->_user->id, 'message' => '邮箱已存在'],
+//            ['email', 'unique', 'targetClass' => '\app\models\User', 'filter' => 'id != '. $this->_user->id, 'message' => '邮箱已存在'],
+            ['email', 'validateEmail'],
         ];
     }
 
@@ -55,6 +59,12 @@ class UserForm extends Model
         ];
     }
 
+    public function search()
+	{
+		$this->_user = User::find()->select(['id','username', 'status'])->where(['username'=>$this->username])->one();
+		return $this->_user;
+	}
+
     public function find($id)
 	{
 			$this->_user = User::findOne($id);
@@ -65,6 +75,14 @@ class UserForm extends Model
 			}
 			return ($this->_user !== null);
 	}
+
+    public function validateEmail($attribute, $params)
+    {
+        $user = User::find()->where(['email'=>$this->$attribute])->one();
+		if($user && $user->id != $this->_user->id) {
+            $this->addError($attribute, '邮箱已存在');
+		}
+    }
 
     public function edit()
     {
@@ -83,4 +101,9 @@ class UserForm extends Model
         $user->setPassword($this->password);
         return $user->save();
     }
+
+	public function getUser()
+	{
+		return $this->_user;
+	}
 }

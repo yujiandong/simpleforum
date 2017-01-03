@@ -1,6 +1,6 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
+ * @link http://simpleforum.org/
  * @copyright Copyright (c) 2015 Simple Forum
  * @author Jiandong Yu admin@simpleforum.org
  */
@@ -64,7 +64,7 @@ class Favorite extends \yii\db\ActiveRecord
 	public function getTopic()
     {
         return $this->hasOne(Topic::className(), ['id' => 'target_id'])
-			->select(['id', 'node_id', 'user_id', 'reply_id', 'title', 'comment_count', 'replied_at']);
+			->select(['id', 'node_id', 'user_id', 'reply_id', 'title', 'comment_count', 'replied_at', 'comment_closed']);
     }
 
 	public function getFollowingTopic()
