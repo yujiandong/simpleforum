@@ -13,9 +13,8 @@ namespace Imagine\Image;
 
 use Imagine\Draw\DrawerInterface;
 use Imagine\Effects\EffectsInterface;
-use Imagine\Image\BoxInterface;
-use Imagine\Image\Color;
-use Imagine\Image\PointInterface;
+use Imagine\Image\Palette\PaletteInterface;
+use Imagine\Image\Palette\Color\ColorInterface;
 use Imagine\Exception\RuntimeException;
 use Imagine\Exception\OutOfBoundsException;
 
@@ -98,7 +97,7 @@ interface ImageInterface extends ManipulatorInterface
     public function mask();
 
     /**
-     * Returns array of image colors as Imagine\Image\Color instances
+     * Returns array of image colors as Imagine\Image\Palette\Color\ColorInterface instances
      *
      * @return array
      */
@@ -111,7 +110,7 @@ interface ImageInterface extends ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return Color
+     * @return ColorInterface
      */
     public function getColorAt(PointInterface $point);
 
@@ -135,4 +134,40 @@ interface ImageInterface extends ManipulatorInterface
      * @return ImageInterface
      */
     public function interlace($scheme);
+
+    /**
+     * Return the current color palette
+     *
+     * @return PaletteInterface
+     */
+    public function palette();
+
+    /**
+     * Set a palette for the image. Useful to change colorspace.
+     *
+     * @param PaletteInterface $palette
+     *
+     * @return ImageInterface
+     *
+     * @throws RuntimeException
+     */
+    public function usePalette(PaletteInterface $palette);
+
+    /**
+     * Applies a color profile on the Image
+     *
+     * @param ProfileInterface $profile
+     *
+     * @return ImageInterface
+     *
+     * @throws RuntimeException
+     */
+    public function profile(ProfileInterface $profile);
+
+    /**
+     * Returns the Image's meta data
+     *
+     * @return Metadata\MetadataInterface
+     */
+    public function metadata();
 }

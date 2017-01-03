@@ -13,14 +13,18 @@ namespace Imagine\Gd;
 
 use Imagine\Image\AbstractLayers;
 use Imagine\Exception\RuntimeException;
+use Imagine\Image\Metadata\MetadataBag;
+use Imagine\Image\Palette\PaletteInterface;
+use Imagine\Exception\NotSupportedException;
 
 class Layers extends AbstractLayers
 {
     private $image;
     private $offset;
     private $resource;
+    private $palette;
 
-    public function __construct(Image $image, $resource)
+    public function __construct(Image $image, PaletteInterface $palette, $resource)
     {
         if (!is_resource($resource)) {
             throw new RuntimeException('Invalid Gd resource provided');
@@ -29,6 +33,7 @@ class Layers extends AbstractLayers
         $this->image = $image;
         $this->resource = $resource;
         $this->offset = 0;
+        $this->palette = $palette;
     }
 
     /**
@@ -58,7 +63,7 @@ class Layers extends AbstractLayers
      */
     public function current()
     {
-        return new Image($this->resource);
+        return new Image($this->resource, $this->palette, new MetadataBag());
     }
 
     /**
@@ -115,7 +120,7 @@ class Layers extends AbstractLayers
     public function offsetGet($offset)
     {
         if (0 === $offset) {
-            return new Image($this->resource);
+            return new Image($this->resource, $this->palette, new MetadataBag());
         }
 
         throw new RuntimeException('GD only supports one layer at offset 0');
@@ -126,7 +131,7 @@ class Layers extends AbstractLayers
      */
     public function offsetSet($offset, $value)
     {
-        throw new RuntimeException('GD does not support layer set');
+        throw new NotSupportedException('GD does not support layer set');
     }
 
     /**
@@ -134,6 +139,6 @@ class Layers extends AbstractLayers
      */
     public function offsetUnset($offset)
     {
-        throw new RuntimeException('GD does not support layer unset');
+        throw new NotSupportedException('GD does not support layer unset');
     }
 }

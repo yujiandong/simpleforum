@@ -11,12 +11,10 @@
 
 namespace Imagine\Image;
 
+use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\OutOfBoundsException;
 use Imagine\Exception\RuntimeException;
-use Imagine\Image\BoxInterface;
-use Imagine\Image\Color;
-use Imagine\Image\ImageInterface;
-use Imagine\Image\PointInterface;
+use Imagine\Image\Palette\Color\ColorInterface;
 use Imagine\Image\Fill\FillInterface;
 
 /**
@@ -32,7 +30,7 @@ interface ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function copy();
 
@@ -46,7 +44,7 @@ interface ManipulatorInterface
      * @throws OutOfBoundsException
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function crop(PointInterface $start, BoxInterface $size);
 
@@ -58,7 +56,7 @@ interface ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function resize(BoxInterface $size, $filter = ImageInterface::FILTER_UNDEFINED);
 
@@ -67,14 +65,14 @@ interface ManipulatorInterface
      * Optional $background can be used to specify the fill color of the empty
      * area of rotated image.
      *
-     * @param integer $angle
-     * @param Color   $background
+     * @param integer        $angle
+     * @param ColorInterface $background
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
-    public function rotate($angle, Color $background = null);
+    public function rotate($angle, ColorInterface $background = null);
 
     /**
      * Pastes an image into a parent image
@@ -90,7 +88,7 @@ interface ManipulatorInterface
      * @throws OutOfBoundsException
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function paste(ImageInterface $image, PointInterface $start);
 
@@ -104,9 +102,9 @@ interface ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
-    public function save($path, array $options = array());
+    public function save($path = null, array $options = array());
 
     /**
      * Outputs the image content
@@ -116,7 +114,7 @@ interface ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function show($format, array $options = array());
 
@@ -125,7 +123,7 @@ interface ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function flipHorizontally();
 
@@ -134,7 +132,7 @@ interface ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function flipVertically();
 
@@ -143,7 +141,7 @@ interface ManipulatorInterface
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function strip();
 
@@ -153,19 +151,20 @@ interface ManipulatorInterface
      *
      * @param BoxInterface $size
      * @param string       $mode
+     * @param string       $filter The filter to use for resizing, one of ImageInterface::FILTER_*
      *
      * @throws RuntimeException
      *
-     * @return ManipulatorInterface
+     * @return static
      */
-    public function thumbnail(BoxInterface $size, $mode = self::THUMBNAIL_INSET);
+    public function thumbnail(BoxInterface $size, $mode = self::THUMBNAIL_INSET, $filter = ImageInterface::FILTER_UNDEFINED);
 
     /**
      * Applies a given mask to current image's alpha channel
      *
      * @param ImageInterface $mask
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function applyMask(ImageInterface $mask);
 
@@ -176,7 +175,7 @@ interface ManipulatorInterface
      *
      * @param FillInterface $fill
      *
-     * @return ManipulatorInterface
+     * @return static
      */
     public function fill(FillInterface $fill);
 }

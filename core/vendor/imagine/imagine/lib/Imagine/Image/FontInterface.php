@@ -11,8 +11,7 @@
 
 namespace Imagine\Image;
 
-use Imagine\Image\BoxInterface;
-use Imagine\Image\Color;
+use Imagine\Image\Palette\Color\ColorInterface;
 
 /**
  * The font interface
@@ -36,7 +35,7 @@ interface FontInterface
     /**
      * Gets font's color
      *
-     * @return Color
+     * @return ColorInterface
      */
     public function getColor();
 
