@@ -50,3 +50,18 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Eclipse
+.buildpath
+.project
+.settings
+
+# data
+assets
+avatar
+runtime
+
+# config
+/core/config/db.php
+/core/config/params.php
+/core/config/plugins.php
