@@ -60,3 +60,8 @@ $RECYCLE.BIN/
 assets
 avatar
 runtime
+
+# config
+/core/config/db.php
+/core/config/params.php
+/core/config/plugins.php
