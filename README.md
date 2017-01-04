@@ -15,7 +15,7 @@
 
 1. PHP 5.4.0及以上
 2. 必须安装open_ssl扩展
-3. core/config目录下db.php和params.php文件要求写权限
+3. core/config目录下db.php,params.php,plugins.php文件要求写权限
 4. core/runtime目录及里面的目录文件要有写权限
 5. 根目录下的assets目录和avatar目录要求写权限
 
@@ -35,12 +35,17 @@
 
 **帮助文档：**
 
-1. Nginx配置 http://simpleforum.org/t/49
-2. SMTP服务器设置 http://simpleforum.org/t/39
-3. 开启验证码 http://simpleforum.org/t/43
-4. 编辑器选择 http://simpleforum.org/t/41
-5. 开启缓存 http://simpleforum.org/t/3
-6. 开启第三方帐号登录 http://simpleforum.org/t/2
-7. 用户名过滤 http://simpleforum.org/t/54
-8. 网站验证 http://simpleforum.org/t/55
-9. 上传设置 http://simpleforum.org/t/83
+1. Nginx配置 https://simpleforum.org/t/49
+2. SMTP服务器设置 https://simpleforum.org/t/39
+3. 开启验证码 https://simpleforum.org/t/43
+4. 编辑器选择 https://simpleforum.org/t/41
+5. 开启缓存 https://simpleforum.org/t/3
+6. 开启第三方帐号登录 https://simpleforum.org/t/2
+7. 用户名过滤 https://simpleforum.org/t/54
+8. 网站验证 https://simpleforum.org/t/55
+9. 上传设置 https://simpleforum.org/t/83
+10. 用户组设定 https://simpleforum.org/t/330
+10. 模板设计 https://simpleforum.org/t/248
+11. 图片上传设定的修改 https://simpleforum.org/t/295
+12. 积分设置 https://simpleforum.org/t/328
+13. 启用https的方法 https://simpleforum.org/t/634
