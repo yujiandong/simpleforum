@@ -59,6 +59,13 @@ if (!file_exists(SF_PATH . '/config/params.php')) {
     }
 }
 
+if (!file_exists(SF_PATH . '/config/plugins.php')) {
+    if (!copy(SF_PATH . '/config/plugins.php.default', SF_PATH . '/config/plugins.php')) {
+        echo '文件copy出错，请手动将' . SF_DIR . '/config目录下plugins.php.default改名为plugins.php';
+        exit;
+    }
+}
+
 header("Location: install");
 
 ?>

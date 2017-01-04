@@ -18,6 +18,6 @@ return [
     'member/<username:\w+>' => 'user/view',
     'member/<username:\w+>/topics' => 'user/topics',
     'member/<username:\w+>/comments' => 'user/comments',
-    'site/auth-<authclient:\w+>' => 'site/auth',
+    'site/auth-<authclient:(?!(signup|bind-account))>' => 'site/auth',
     'admin' => 'admin/setting/all',
 ];
