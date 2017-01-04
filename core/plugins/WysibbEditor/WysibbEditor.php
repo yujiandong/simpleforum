@@ -66,8 +66,6 @@ class WysibbEditor extends Editor implements PluginInterface
         $this->_parser->setParser('image', '/\[img\](.*?)\[\/img\]/s', '<img src="'.\Yii::getAlias('@web/static/css/img/load.gif').'" data-original="$1" class="lazy" data-lightbox="zoom">', '$1');
         $this->_parser->setParser('listitem', '/\[\*\](.*?)\[\/\*\]/', '<li>$1</li>', '$1');
         $this->_parser->setParser('listitem2', '/\[\*\](.*)/', '<li>$1</li>', '$1');
-//        $this->_parser->setParser('code', '/\[code\](.*?)\[\/code\]/s', '<pre><code>$1</code></pre>', '$1');
-        $this->_parser->setParser('codebr', '/<code>(.*?)<br \/>(.*?)<\/code>/s', '<code>$1'."\r\n". '\2</code>', '');
         return Util::autoLink($this->_parser->parse(Html::encode($text)));
     }
 
