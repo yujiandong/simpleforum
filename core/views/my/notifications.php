@@ -39,7 +39,7 @@ foreach($notices as $notice) {
             <span class="fr gray small">', $formatter->asRelativeTime($notice['created_at']), '</span>',
             SfHtml::uLink($notice['source']['username']), ' ';
             if($notice['type'] == Notice::TYPE_COMMENT) {
-                echo '回复了您的帖子【'. Html::a(Html::encode($notice['topic']['title']), Topic::getRedirectUrl($notice['topic_id'], $notice['position'])) . '】',
+                echo '回复了您的主题【'. Html::a(Html::encode($notice['topic']['title']), Topic::getRedirectUrl($notice['topic_id'], $notice['position'])) . '】',
                     $notice['notice_count']>0?'<span class="small gray">(省略类似通知'.$notice['notice_count'].'次)</span>':'';
             } else if($notice['type'] == Notice::TYPE_MENTION) {
                 if ($notice['position'] > 0) {
