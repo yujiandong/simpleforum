@@ -9,42 +9,25 @@ namespace app\plugins\SmdEditor;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 class SmdParser extends \Parsedown
 {
     protected function inlineImage($Excerpt)
     {
-        if ( ! isset($Excerpt['text'][1]) or $Excerpt['text'][1] !== '[')
+        $Inline = parent::inlineImage($Excerpt);
+        if( !$Inline )
         {
             return;
         }
-
-        $Excerpt['text']= substr($Excerpt['text'], 1);
-
-        $Link = $this->inlineLink($Excerpt);
-
-        if ($Link === null)
-        {
-            return;
-        }
-
-        $Inline = array(
-            'extent' => $Link['extent'] + 1,
-            'element' => array(
-                'name' => 'img',
-                'attributes' => array(
-                    'src' => Yii::getAlias('@web/static/css/img/load.gif'),
-                    'data-original' => $Link['element']['attributes']['href'],
-                    'alt' => $Link['element']['text'],
-                    'class' => 'lazy',
-                ),
-            ),
-        );
-
-        $Inline['element']['attributes'] += $Link['element']['attributes'];
-
-        unset($Inline['element']['attributes']['href']);
-
+        $src = ArrayHelper::remove($Inline['element']['attributes'], 'src', '');
+        $alt = ArrayHelper::remove($Inline['element']['attributes'], 'alt', '');
+        $Inline['element']['attributes'] += [
+            'src' => Yii::getAlias('@web/static/css/img/load.gif'),
+            'data-original' => Html::encode($src),
+            'alt' => Html::encode($alt),
+            'class' => 'lazy',
+        ];
         return $Inline;
     }
 
@@ -65,12 +48,12 @@ class SmdParser extends \Parsedown
             }
             $Inline = array(
                 'extent' => strlen($matches[0][0]),
-                'position' => $matches[0][1],
+                'position' => Html::encode($matches[0][1]),
                 'element' => array(
                     'name' => 'a',
                     'text' => $matches[0][0],
                     'attributes' => array(
-                        'href' => $matches[0][0],
+                        'href' => Html::encode($matches[0][0]),
                     ),
                 ),
             );
@@ -79,4 +62,13 @@ class SmdParser extends \Parsedown
         }
     }
 
+    protected function inlineLink($Excerpt)
+    {
+        $Inline = parent::inlineLink($Excerpt);
+        if( !$Inline ) {
+            return;
+        }
+        $Inline['element']['attributes']['href'] = Html::encode($Inline['element']['attributes']['href']);
+        return $Inline;
+    }
 }
