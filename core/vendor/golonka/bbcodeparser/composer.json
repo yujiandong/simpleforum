@@ -1,0 +1,25 @@
+{
+    "name": "golonka/bbcodeparser",
+    "description": "Parse your BBCode easy with this library.",
+    "keywords": ["bbcode", "parser", "laravel", "psr-1", "psr-2", "psr-4", "php7"],
+    "homepage": "http://github.com/juiceland/bbcodeparser",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joseph Landberg",
+            "email": "joseph.landberg@gmail.com",
+            "homepage": "http://github.com/juiceland/"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~8"
+    },
+    "autoload": {
+        "psr-4": {"Golonka\\BBCode\\": "src/"}
+    },
+    "minimum-stability": "stable"
+}
