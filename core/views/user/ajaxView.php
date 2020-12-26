@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use app\models\Favorite;
 use app\components\SfHtml;
 
-$this->title = Html::encode($user['username']);
+$this->title = $user['username'];
 $settings = Yii::$app->params['settings'];
 
 $fomatter = Yii::$app->getFormatter();
@@ -22,15 +22,15 @@ $userOp = [];
 if (!$isGuest && $me->isActive() && $me->id != $user['id']) {
     if (Favorite::checkFollow($me->id, Favorite::TYPE_USER, $user['id'])) {
         $favorIcon = 'fa-star';
-        $favorName = '取消关注';
+        $favorName = Yii::t('app', 'Unfollow');
         $favorParams = 'unfavorite';
     } else {
         $favorIcon = 'fa-star-o';
-        $favorName = '关注 Ta';
+        $favorName = Yii::t('app', 'Follow');
         $favorParams = 'favorite';
     }
     $userOp['follow'] = Html::a('<i class="fa '.$favorIcon.' fa-lg aria-hidden="true""></i><span class="favorite-name">'.$favorName.'</span>', null, ['class'=>'btn btn-xs btn-default favorite', 'title'=>$favorName, 'href' => 'javascript:void(0);', 'params'=> $favorParams.' user '. $user['id']]);
-    $userOp['sms'] = Html::a('<i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i><span class="favorite-name">私信 Ta</span>', ['service/sms', 'to'=>Html::encode($user['username'])], ['class'=>'btn btn-xs btn-default']);
+    $userOp['sms'] = Html::a('<i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i><span class="favorite-name">' . Yii::t('app', 'SMS') . '</span>', ['service/sms', 'to'=>$user['username']], ['class'=>'btn btn-xs btn-default']);
 }
 
 ?>
@@ -54,16 +54,16 @@ if (!$isGuest && $me->isActive() && $me->id != $user['id']) {
     <?php if( !empty($user['userInfo']['about']) ) : ?>
     <div class="small profile">
     <?php 
-        echo '简介：'. Html::encode(mb_strlen($user['userInfo']['about'])>19?mb_substr($user['userInfo']['about'], 0, 16).'...':$user['userInfo']['about']);
+        echo Yii::t('app', 'Bio') . ' : ' . Html::encode(mb_strlen($user['userInfo']['about'])>19?mb_substr($user['userInfo']['about'], 0, 16).'...':$user['userInfo']['about']);
     ?>
     </div>
     <?php endif ?>
   </li>
   <li class="list-group-item text-center small">
-      <p><strong>关注 <?php echo $user['userInfo']['favorite_user_count'] ?></strong> | 
-      <strong>粉丝 <span class="favorite-num"><?php echo $user['userInfo']['favorite_count']; ?></span></strong> |
-      <strong>主题 <?php echo $user['userInfo']['topic_count']; ?></strong> |
-      <strong>回复 <?php echo $user['userInfo']['comment_count']; ?></strong></p>
+      <p><strong><?php echo Yii::t('app', 'Following'), '&nbsp;', $user['userInfo']['following_count']； ?></strong> | 
+      <strong><?php echo Yii::t('app', 'Followers'), '&nbsp;', $user['userInfo']['follower_count']; ?></strong> |
+      <strong><?php echo Yii::t('app', 'Topics'), '&nbsp;', $user['userInfo']['topic_count']; ?></strong> |
+      <strong><?php echo Yii::t('app', 'Comments'), '&nbsp;', $user['userInfo']['comment_count']; ?></strong></p>
       <?php echo implode(' ', $userOp); ?>
   </li>
 </ul>

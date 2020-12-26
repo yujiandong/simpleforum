@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -37,7 +37,7 @@ class TopicContent extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'content' => '内容',
+            'content' => Yii::t('app', 'Content'),
         ];
     }
 

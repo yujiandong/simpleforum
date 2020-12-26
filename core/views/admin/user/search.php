@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -10,8 +10,7 @@ use yii\widgets\LinkPager;
 use yii\bootstrap\ActiveForm;
 use app\models\User;
 
-$this->title = '用户管理';
-
+$this->title = Yii::t('app/admin', 'Members');
 ?>
 
 <div class="row">
@@ -20,9 +19,9 @@ $this->title = '用户管理';
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-        <?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
+        <?php echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
-	<li class="list-group-item list-group-item-info"><strong>检索</strong></li>
+	<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app', 'Search'); ?></strong></li>
 	<li class="list-group-item sf-box-form">
     <?php $form = ActiveForm::begin([
 	    'layout' => 'horizontal',
@@ -41,7 +40,7 @@ $this->title = '用户管理';
 		<?php echo $form->field($model, "username"); ?>
         <div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-            <?php echo Html::submitButton('搜索', ['class' => 'btn btn-primary']); ?>
+            <?php echo Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 	<?php
@@ -50,19 +49,19 @@ $this->title = '用户管理';
 	</li>
     <li class="list-group-item list-group-item-info">
         <span class="fr"><?php
-                foreach(User::$statusOptions as $status=>$statusName) {
+                foreach(User::getStatusList() as $status=>$statusName) {
                     $links[] = Html::a($statusName, ['index', 'status'=>$status]);
                 }
                 echo implode('&nbsp;|&nbsp;', $links);
-        ?></span><strong>检索结果</strong>
+        ?></span><strong><?php echo Yii::t('app', 'Search result'); ?></strong>
     </li>
     <li class="list-group-item">
         <ul>
         <?php
 			if( !empty($user) ) {
-                echo '<li>[', $user['id'], '] ', Html::a(Html::encode($user['username']), ['info', 'id'=>$user['id']]), ($user['status']===User::STATUS_ACTIVE?'':'&nbsp;|&nbsp;'.Html::a('激活', ['activate', 'id'=>$user['id']])), '</li>';
+                echo '<li>[', $user['id'], '] ', Html::a($user['username'], ['info', 'id'=>$user['id']]), ($user['status']===User::STATUS_ACTIVE?'':'&nbsp;|&nbsp;'.Html::a(Yii::t('app/admin', 'Activate'), ['activate', 'id'=>$user['id']])), '</li>';
 			} else {
-				echo '检索的用户不存在';
+				echo Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Username')]);
             }
         ?>
         </ul>

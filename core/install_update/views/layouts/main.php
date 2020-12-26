@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -50,9 +50,23 @@ $settings = Yii::$app->params['settings'];
 
     <footer class="footer">
         <div class="container">
-			<p>
-				Powered by <a href="http://simpleforum.org/" rel="external">极简论坛 <?php echo SIMPLE_FORUM_VERSION; ?></a>
-			</p>
+<ul class="footer-links list-inline">
+	<!-- language selector start -->
+	<li class="dropup">
+	        <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+	          Language<span class="caret"></span>
+	        </a>
+	        <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
+	          <li><a href="/site/language?language=en-US">English</a></li>
+	          <li><a href="/site/language?language=ja">日本語</a></li>
+	          <li><a href="/site/language?language=zh-CN">简体中文</a></li>
+	        </ul>
+	</li>
+	<!-- language selector end -->
+</ul>
+<div class="copyright">
+<span>Powered by <a href="http://simpleforum.org/" rel="external" target="_blank">SimpleForum <?php echo SIMPLE_FORUM_VERSION; ?></a></span>
+</div>
         </div>
     </footer>
 <?php $this->endBody() ?>

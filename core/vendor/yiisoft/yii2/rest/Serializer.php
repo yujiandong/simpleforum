@@ -121,7 +121,7 @@ class Serializer extends Component
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -137,7 +137,7 @@ class Serializer extends Component
      * Serializes the given data into a format that can be easily turned into other formats.
      * This method mainly converts the objects of recognized types into array representation.
      * It will not do conversion for unknown object types or non-object data.
-     * The default implementation will handle [[Model]] and [[DataProviderInterface]].
+     * The default implementation will handle [[Model]], [[DataProviderInterface]] and [\JsonSerializable](https://www.php.net/manual/en/class.jsonserializable.php).
      * You may override this method to support more object types.
      * @param mixed $data the data to be serialized.
      * @return mixed the converted data.
@@ -146,13 +146,21 @@ class Serializer extends Component
     {
         if ($data instanceof Model && $data->hasErrors()) {
             return $this->serializeModelErrors($data);
+        } elseif ($data instanceof \JsonSerializable) {
+            return $data->jsonSerialize();
         } elseif ($data instanceof Arrayable) {
             return $this->serializeModel($data);
         } elseif ($data instanceof DataProviderInterface) {
             return $this->serializeDataProvider($data);
-        } else {
-            return $data;
+        } elseif (is_array($data)) {
+            $serializedArray = [];
+            foreach ($data as $key => $value) {
+                $serializedArray[$key] = $this->serialize($value);
+            }
+            return $serializedArray;
         }
+
+        return $data;
     }
 
     /**
@@ -195,16 +203,16 @@ class Serializer extends Component
             return null;
         } elseif ($this->collectionEnvelope === null) {
             return $models;
-        } else {
-            $result = [
-                $this->collectionEnvelope => $models,
-            ];
-            if ($pagination !== false) {
-                return array_merge($result, $this->serializePagination($pagination));
-            } else {
-                return $result;
-            }
         }
+
+        $result = [
+            $this->collectionEnvelope => $models,
+        ];
+        if ($pagination !== false) {
+            return array_merge($result, $this->serializePagination($pagination));
+        }
+
+        return $result;
     }
 
     /**
@@ -254,10 +262,10 @@ class Serializer extends Component
     {
         if ($this->request->getIsHead()) {
             return null;
-        } else {
-            list ($fields, $expand) = $this->getRequestedFields();
-            return $model->toArray($fields, $expand);
         }
+
+        list($fields, $expand) = $this->getRequestedFields();
+        return $model->toArray($fields, $expand);
     }
 
     /**
@@ -286,7 +294,7 @@ class Serializer extends Component
      */
     protected function serializeModels(array $models)
     {
-        list ($fields, $expand) = $this->getRequestedFields();
+        list($fields, $expand) = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
                 $models[$i] = $model->toArray($fields, $expand);

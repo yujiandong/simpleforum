@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -55,7 +55,7 @@ class WysibbEditor extends Editor implements PluginInterface
     public function registerAsset($view)
     {
         WysibbAsset::register($view);
-        $view->registerJs("$('#editor').wysibb({lang:'cn', buttons: 'bold,italic,underline,fontcolor,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,img,link,|,code,quote'});");
+        $view->registerJs("$('#editor').wysibb({lang:'ja', buttons: 'bold,italic,underline,fontcolor,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,img,link,|,code,quote'});");
     }
 
     public function parseEditor($text)

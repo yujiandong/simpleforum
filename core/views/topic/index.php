@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -16,12 +16,12 @@ $currentPage = $pages->page+1;
 
 if( empty($title) ) {
     $this->title = Html::encode($settings['site_name']);
-    $title = '最近更新';
+    $title = Yii::t('app', 'Latest');
 } else {
     $this->title = Html::encode($title);
 }
 if($currentPage > 1) {
-    $this->title = $this->title . ' - 第' . $currentPage . '页';
+    $this->title = $this->title . ' - ' . Yii::t('app', 'Page {0,number}', $currentPage);
 }
 ?>
 
@@ -32,8 +32,8 @@ if($currentPage > 1) {
 <ul class="list-group sf-box">
     <li class="list-group-item navi-top-list">
 <?php
-    echo Yii::$app->getUser()->getIsGuest()?'':'<span class="fr">' . Html::a('<i class="fa fa-pencil" aria-hidden="true"></i>发表', ['topic/new']) . '</span>';
-    echo Html::a('全部', ['topic/index'], ['class'=>'btn btn-sm btn-primary current']);
+    echo Yii::$app->getUser()->getIsGuest()?'':'<span class="fr">' . Html::a('<i class="fa fa-pencil" aria-hidden="true"></i>'.Yii::t('app', 'Add Topic'), ['topic/new']) . '</span>';
+    echo Html::a(Yii::t('app', 'All Topics'), ['topic/index'], ['class'=>'btn btn-sm btn-primary current']);
     $navis = Navi::getHeadNaviNodes();
     foreach($navis as $current) {
         echo Html::a(Html::encode($current['name']), ['topic/navi', 'name'=>$current['ename']]);
@@ -62,10 +62,10 @@ if($currentPage > 1) {
             echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
         }
                     echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-                    ' • <strong><i class="fa fa-user" aria-hidden="true"></i>', SfHtml::uLink($topic['author']['username']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
-                    ' • ', $topic['alltop']==1?'<i class="fa fa-arrow-up" aria-hidden="true"></i>置顶':'<i class="fa fa-clock-o" aria-hidden="true"></i>' . $formatter->asRelativeTime($topic['replied_at']);
+                    ' • <strong><i class="fa fa-user" aria-hidden="true"></i>', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
+                    ' • ', $topic['alltop']==1?'<i class="fa fa-arrow-up" aria-hidden="true"></i>'.Yii::t('app', 'Top'):'<i class="fa fa-clock-o" aria-hidden="true"></i>' . $formatter->asRelativeTime($topic['replied_at']);
         if ($topic['comment_count']>0) {
-                    echo '<span class="item-lastreply"> • <i class="fa fa-reply" aria-hidden="true"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';
+                    echo '<span class="item-lastreply"> • <i class="fa fa-comment" aria-hidden="true"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';
         }
                     echo '</div>
                 </div>';
@@ -87,8 +87,8 @@ if($currentPage > 1) {
 if ( intval($settings['cache_enabled'])===0 || $this->beginCache('f-bottom-nodes', ['duration' => intval($settings['cache_time'])*60])) :
 ?>
 <ul class="list-group sf-box bottom-navi">
-    <li class="list-group-item gray"><span class="fr"><?php echo Html::a('浏览全部节点', ['node/index']); ?></span>节点导航
-    </li>
+	<li class="list-group-item gray"><span class="fr"><?php echo Html::a(Yii::t('app', 'All Nodes'), ['node/index']); ?></span><?php echo Yii::t('app', 'Node Navi'); ?>
+	</li>
 <?php
     $bNavis = Navi::getBottomNaviNodes();
     foreach($bNavis as $cNavi) :

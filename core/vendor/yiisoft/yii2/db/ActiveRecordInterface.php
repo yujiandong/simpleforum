@@ -7,14 +7,16 @@
 
 namespace yii\db;
 
+use yii\base\StaticInstanceInterface;
+
 /**
- * ActiveRecordInterface
+ * ActiveRecordInterface.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-interface ActiveRecordInterface
+interface ActiveRecordInterface extends StaticInstanceInterface
 {
     /**
      * Returns the primary key **name(s)** for this AR class.
@@ -54,13 +56,13 @@ interface ActiveRecordInterface
     /**
      * Returns a value indicating whether the record has an attribute with the specified name.
      * @param string $name the name of the attribute
-     * @return boolean whether the record has an attribute with the specified name.
+     * @return bool whether the record has an attribute with the specified name.
      */
     public function hasAttribute($name);
 
     /**
      * Returns the primary key value(s).
-     * @param boolean $asArray whether to return the primary key value as an array. If true,
+     * @param bool $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with attribute names as keys and attribute values as values.
      * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
      * @return mixed the primary key value. An array (attribute name => attribute value) is returned if the primary key
@@ -74,7 +76,7 @@ interface ActiveRecordInterface
      * This refers to the primary key value that is populated into the record
      * after executing a find method (e.g. find(), findOne()).
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
-     * @param boolean $asArray whether to return the primary key value as an array. If true,
+     * @param bool $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.
      * If this is `false` (default), a scalar value will be returned for non-composite primary key.
      * @property mixed The old primary key value. An array (column name => column value) is
@@ -87,9 +89,9 @@ interface ActiveRecordInterface
     public function getOldPrimaryKey($asArray = false);
 
     /**
-     * Returns a value indicating whether the given set of attributes represents the primary key for this model
+     * Returns a value indicating whether the given set of attributes represents the primary key for this model.
      * @param array $keys the set of attributes to check
-     * @return boolean whether the given set of attributes represents the primary key for this model
+     * @return bool whether the given set of attributes represents the primary key for this model
      */
     public static function isPrimaryKey($keys);
 
@@ -161,9 +163,16 @@ interface ActiveRecordInterface
      *    first record (or `null` if not found).
      *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
      *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
+     *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limited to simple filter conditions.
+     *  - a yii\db\Expression: The expression will be used directly. (@since 2.0.37)
      *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
-     * instance. For example,
+     * instance.
+     *
+     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
+     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     *
+     * See the following code for usage examples:
      *
      * ```php
      * // find a single customer whose primary key value is 10
@@ -172,6 +181,12 @@ interface ActiveRecordInterface
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['id' => 10])->one();
      *
+     * // find the customers whose primary key value is 10, 11 or 12.
+     * $customers = Customer::findOne([10, 11, 12]);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['id' => [10, 11, 12]])->one();
+     *
      * // find the first customer whose age is 30 and whose status is 1
      * $customer = Customer::findOne(['age' => 30, 'status' => 1]);
      *
@@ -179,8 +194,26 @@ interface ActiveRecordInterface
      * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
      * ```
      *
+     * If you need to pass user input to this method, make sure the input value is scalar or in case of
+     * array condition, make sure the array structure can not be changed from the outside:
+     *
+     * ```php
+     * // yii\web\Controller ensures that $id is scalar
+     * public function actionView($id)
+     * {
+     *     $model = Post::findOne($id);
+     *     // ...
+     * }
+     *
+     * // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+     * $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+     *
+     * // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+     * $model = Post::findOne(Yii::$app->request->get('id'));
+     * ```
+     *
      * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition);
 
@@ -198,9 +231,16 @@ interface ActiveRecordInterface
      *  - an associative array of name-value pairs: query by a set of attribute values and return an array of records
      *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
      *    a non-associative array.
+     *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limted to simple filter conditions.
+     *  - a yii\db\Expression: The expression will be used directly. (@since 2.0.37)
      *
      * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
-     * instances. For example,
+     * instances.
+     *
+     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
+     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     *
+     * See the following code for usage examples:
      *
      * ```php
      * // find the customers whose primary key value is 10
@@ -222,6 +262,24 @@ interface ActiveRecordInterface
      * $customers = Customer::find()->where(['age' => 30, 'status' => 1])->all();
      * ```
      *
+     * If you need to pass user input to this method, make sure the input value is scalar or in case of
+     * array condition, make sure the array structure can not be changed from the outside:
+     *
+     * ```php
+     * // yii\web\Controller ensures that $id is scalar
+     * public function actionView($id)
+     * {
+     *     $model = Post::findOne($id);
+     *     // ...
+     * }
+     *
+     * // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+     * $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+     *
+     * // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+     * $model = Post::findOne(Yii::$app->request->get('id'));
+     * ```
+     *
      * @param mixed $condition primary key value or a set of column values
      * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
      */
@@ -229,6 +287,7 @@ interface ActiveRecordInterface
 
     /**
      * Updates records using the provided attribute values and conditions.
+     *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
      * ```php
@@ -237,10 +296,10 @@ interface ActiveRecordInterface
      *
      * @param array $attributes attribute values (name-value pairs) to be saved for the record.
      * Unlike [[update()]] these are not going to be validated.
-     * @param array $condition the condition that matches the records that should get updated.
+     * @param mixed $condition the condition that matches the records that should get updated.
      * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
      * An empty condition will match all records.
-     * @return integer the number of rows updated
+     * @return int the number of rows updated
      */
     public static function updateAll($attributes, $condition = null);
 
@@ -257,7 +316,7 @@ interface ActiveRecordInterface
      * @param array $condition the condition that matches the records that should get deleted.
      * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
      * An empty condition will match all records.
-     * @return integer the number of rows deleted
+     * @return int the number of rows deleted
      */
     public static function deleteAll($condition = null);
 
@@ -276,12 +335,12 @@ interface ActiveRecordInterface
      * $customer->save();
      * ```
      *
-     * @param boolean $runValidation whether to perform validation (calling [[Model::validate()|validate()]])
+     * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
      * @param array $attributeNames list of attribute names that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
-     * @return boolean whether the saving succeeded (i.e. no validation errors occurred).
+     * @return bool whether the saving succeeded (i.e. no validation errors occurred).
      */
     public function save($runValidation = true, $attributeNames = null);
 
@@ -297,12 +356,12 @@ interface ActiveRecordInterface
      * $customer->insert();
      * ```
      *
-     * @param boolean $runValidation whether to perform validation (calling [[Model::validate()|validate()]])
+     * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
      * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
-     * @return boolean whether the attributes are valid and the record is inserted successfully.
+     * @return bool whether the attributes are valid and the record is inserted successfully.
      */
     public function insert($runValidation = true, $attributes = null);
 
@@ -318,12 +377,12 @@ interface ActiveRecordInterface
      * $customer->update();
      * ```
      *
-     * @param boolean $runValidation whether to perform validation (calling [[Model::validate()|validate()]])
+     * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
      * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
-     * @return integer|boolean the number of rows affected, or `false` if validation fails
+     * @return int|bool the number of rows affected, or `false` if validation fails
      * or updating process is stopped for other reasons.
      * Note that it is possible that the number of rows affected is 0, even though the
      * update execution is successful.
@@ -333,14 +392,14 @@ interface ActiveRecordInterface
     /**
      * Deletes the record from the database.
      *
-     * @return integer|boolean the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
+     * @return int|bool the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
      * Note that it is possible that the number of rows deleted is 0, even though the deletion execution is successful.
      */
     public function delete();
 
     /**
      * Returns a value indicating whether the current record is new (not saved in the database).
-     * @return boolean whether the record is new and should be inserted when calling [[save()]].
+     * @return bool whether the record is new and should be inserted when calling [[save()]].
      */
     public function getIsNewRecord();
 
@@ -348,7 +407,7 @@ interface ActiveRecordInterface
      * Returns a value indicating whether the given active record is the same as the current one.
      * Two [[getIsNewRecord()|new]] records are considered to be not equal.
      * @param static $record record to compare to
-     * @return boolean whether the two active records refer to the same row in the same database table.
+     * @return bool whether the two active records refer to the same row in the same database table.
      */
     public function equals($record);
 
@@ -357,8 +416,8 @@ interface ActiveRecordInterface
      * A relation is defined by a getter method which returns an object implementing the [[ActiveQueryInterface]]
      * (normally this would be a relational [[ActiveQuery]] object).
      * It can be declared in either the ActiveRecord class itself or one of its behaviors.
-     * @param string $name the relation name
-     * @param boolean $throwException whether to throw exception if the relation does not exist.
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
+     * @param bool $throwException whether to throw exception if the relation does not exist.
      * @return ActiveQueryInterface the relational query object
      */
     public function getRelation($name, $throwException = true);
@@ -366,7 +425,7 @@ interface ActiveRecordInterface
     /**
      * Populates the named relation with the related records.
      * Note that this method does not check if the relation exists or not.
-     * @param string $name the relation name (case-sensitive)
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
      * @since 2.0.8
      */
@@ -384,7 +443,7 @@ interface ActiveRecordInterface
      *
      * This method requires that the primary key value is not `null`.
      *
-     * @param string $name the case sensitive name of the relationship.
+     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param static $model the record to be linked with the current one.
      * @param array $extraColumns additional column values to be saved into the junction table.
      * This parameter is only meaningful for a relationship involving a junction table
@@ -398,9 +457,9 @@ interface ActiveRecordInterface
      * The record with the foreign key of the relationship will be deleted if `$delete` is true.
      * Otherwise, the foreign key will be set `null` and the record will be saved without validation.
      *
-     * @param string $name the case sensitive name of the relationship.
+     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param static $model the model to be unlinked from the current one.
-     * @param boolean $delete whether to delete the model that contains the foreign key.
+     * @param bool $delete whether to delete the model that contains the foreign key.
      * If false, the model's foreign key will be set `null` and saved.
      * If true, the model containing the foreign key will be deleted.
      */

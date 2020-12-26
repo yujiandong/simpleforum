@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -31,7 +31,11 @@ class InstallController extends \yii\web\Controller
                     ],
                 ],
                 'denyCallback' => function ($rule, $action) {
-                        throw new ForbiddenHttpException('你已安装过本程序。如确定要重装，请'."\n".'1.做好数据备份，'."\n".'2.删除runtime/install.lock文件，'."\n".'3.重新执行安装程序。');
+                        throw new ForbiddenHttpException(Yii::t('app/admin', 'SimpleForum was already installed. If you want to reinstall it, please ')
+                          ."\n".Yii::t('app/admin', '1. Backup your database')
+                          ."\n".Yii::t('app/admin', '2. Delete \'runtime/install.lock\' file')
+                          ."\n".Yii::t('app/admin', '3. Retry installation')
+                        );
                 },
             ],
         ];
@@ -51,14 +55,14 @@ class InstallController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        if (version_compare(PHP_VERSION, '4.3', '<')) {
-            echo 'php版本过低，请先安装php4.3以上版本';
+        if (version_compare(PHP_VERSION, '5.4', '<')) {
+            echo Yii::t('app/admin', 'PHP 5.4.0 or higher is required.');
             exist;
         }
 
         $requirementsChecker = new RequirementChecker();
 
-        $gdMemo = $imagickMemo = '启用验证码时需要安装php的gd组件或imagick组件。';
+        $gdMemo = $imagickMemo = Yii::t('app/admin', 'GD or ImageMagick extension is equired for captcha.');
         $gdOK = $imagickOK = false;
 
         if (extension_loaded('imagick')) {
@@ -67,7 +71,7 @@ class InstallController extends \yii\web\Controller
             if (in_array('PNG', $imagickFormats)) {
                 $imagickOK = true;
             } else {
-                $imagickMemo = 'Imagick组件不支持png。';
+                $imagickMemo = Yii::t('app/admin', 'Imagick extension does not support PNG.');
             }
         }
 
@@ -76,7 +80,7 @@ class InstallController extends \yii\web\Controller
             if (!empty($gdInfo['FreeType Support'])) {
                 $gdOK = true;
             } else {
-                $gdMemo = 'gd组件不支持FreeType。';
+                $gdMemo = Yii::t('app/admin', 'GD extension does not support FreeType.');
             }
         }
 
@@ -85,154 +89,152 @@ class InstallController extends \yii\web\Controller
          */
         $requirements = array(
             array(
-                'name' => 'PHP版本',
+                'name' => Yii::t('app/admin', 'PHP version'),
                 'mandatory' => true,
                 'condition' => version_compare(PHP_VERSION, '5.4.0', '>='),
                 'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
-                'memo' => 'PHP 5.4.0及以上',
+                'memo' => Yii::t('app/admin', 'PHP 5.4.0 or higher is required.'),
             ),
             array(
-                'name' => 'core/config目录写权限',
+                'name' => Yii::t('app/admin', '\'{folder}\' folder is writable', ['folder' => 'core/config']),
                 'mandatory' => true,
                 'condition' => is_writeable(Yii::getAlias('@app/config')),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
-                'memo' => 'core/config目录需要写权限',
+                'memo' => Yii::t('app/admin', 'Write permissions is required.'),
             ),
             array(
-                'name' => 'core/runtime目录写权限',
+                'name' => Yii::t('app/admin', '\'{folder}\' folder is writable', ['folder' => 'core/runtime']),
                 'mandatory' => true,
                 'condition' => is_writeable(Yii::getAlias('@app/runtime')),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
-                'memo' => 'core/runtime目录需要写权限',
+                'memo' => Yii::t('app/admin', 'Write permissions is required.'),
             ),
             array(
-                'name' => 'assets目录写权限',
+                'name' => Yii::t('app/admin', '\'{folder}\' folder is writable', ['folder' => 'assets']),
                 'mandatory' => true,
                 'condition' => is_writeable(Yii::getAlias('@webroot/assets')),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
-                'memo' => 'assets目录需要写权限',
+                'memo' => Yii::t('app/admin', 'Write permissions is required.'),
             ),
             array(
-                'name' => 'avatar目录写权限',
+                'name' => Yii::t('app/admin', '\'{folder}\' folder is writable', ['folder' => 'avatar']),
                 'mandatory' => true,
                 'condition' => is_writeable(Yii::getAlias('@webroot/avatar')),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
-                'memo' => 'avatar目录需要写权限',
+                'memo' => Yii::t('app/admin', 'Write permissions is required.'),
             ),
             array(
-                'name' => 'upload目录写权限',
+                'name' => Yii::t('app/admin', '\'{folder}\' folder is writable', ['folder' => 'upload']),
                 'mandatory' => true,
                 'condition' => is_writeable(Yii::getAlias('@webroot/upload')),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
-                'memo' => 'upload目录需要写权限',
+                'memo' => Yii::t('app/admin', 'Write permissions is required.'),
             ),
             // Database :
             array(
-                'name' => 'PDO扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'PDO']),
                 'mandatory' => true,
                 'condition' => extension_loaded('pdo'),
-                'by' => 'DB连接',
-                'memo' => 'MySQL连接。',
+                'by' => Yii::t('app/admin', 'DB connection'),
+                'memo' => Yii::t('app/admin', 'Required for MySQL connection.'),
             ),
             array(
-                'name' => 'PDO_MySQL扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'PDO_MySQL']),
                 'mandatory' => true,
                 'condition' => extension_loaded('pdo_mysql'),
-                'by' => 'DB连接',
-                'memo' => 'MySQL连接。',
+                'by' => Yii::t('app/admin', 'DB connection'),
+                'memo' => Yii::t('app/admin', 'Required for MySQL connection.'),
             ),
             // openssl :
             array(
-                'name' => 'OpenSSL扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'OpenSSL']),
                 'mandatory' => true,
                 'condition' => extension_loaded('openssl'),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
-                'memo' => '用于用户密码加密',
+                'memo' => Yii::t('app/admin', 'Required by encrypt and decrypt methods.'),
             ),
 /*          // File Upload :
             array(
-                'name' => 'FileInfo扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'FileInfo']),
                 'mandatory' => true,
                 'condition' => extension_loaded('fileinfo'),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
-                'memo' => '用于文件上传',
+                'memo' => Yii::t('app/admin', 'Required for files upload to detect correct file mime-types.'),
             ),
 */
             // Cache :
             array(
-                'name' => 'Memcache(d)扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'Memcache(d)']),
                 'mandatory' => false,
                 'condition' => extension_loaded('memcache') || extension_loaded('memcached'),
-                'by' => 'memcache/memcached缓存',
-                'memo' => '用于开启缓存',
+                'memo' => Yii::t('app/admin', 'Required for cache.'),
             ),
             array(
-                'name' => 'APC扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'APC']),
                 'mandatory' => false,
                 'condition' => extension_loaded('apc'),
-                'by' => 'APC缓存',
-                'memo' => '用于开启缓存',
+                'memo' => Yii::t('app/admin', 'Required for cache.'),
             ),
             // CAPTCHA:
             array(
-                'name' => 'GD扩展(支持FreeType)',
+                'name' => Yii::t('app/admin', 'GD extension(support FreeType)'),
                 'mandatory' => false,
                 'condition' => $gdOK,
-                'by' => '验证码',
                 'memo' => $gdMemo,
             ),
             array(
-                'name' => 'ImageMagick扩展(支持png)',
+                'name' => Yii::t('app/admin', 'Imagick extension(support png)'),
                 'mandatory' => false,
                 'condition' => $imagickOK,
-                'by' => '验证码',
                 'memo' => $imagickMemo,
             ),
             // PHP ini :
             'phpExposePhp' => array(
-                'name' => 'php.ini的expose_php设值',
+                'name' => Yii::t('app/admin', 'expose_php setting in the php.ini'),
                 'mandatory' => false,
                 'condition' => $requirementsChecker->checkPhpIniOff("expose_php"),
-                'by' => '安全问题',
-                'memo' => '请修改为 expose_php = Off',
+                'memo' => Yii::t('app/admin', 'Please change to \'expose_php = Off\''),
             ),
             'phpAllowUrlInclude' => array(
-                'name' => 'php.ini的allow_url_include设值',
+                'name' => Yii::t('app/admin', 'allow_url_include setting in the php.ini'),
                 'mandatory' => false,
                 'condition' => $requirementsChecker->checkPhpIniOff("allow_url_include"),
-                'by' => '安全问题',
-                'memo' => '请修改为 allow_url_include = Off',
+                'memo' => Yii::t('app/admin', 'Please change to \'allow_url_include = Off\''),
             ),
             'phpSmtp' => array(
-                'name' => 'PHP SMTP邮件',
+                'name' => Yii::t('app/admin', 'PHP SMPT mail'),
                 'mandatory' => false,
                 'condition' => strlen(ini_get('SMTP'))>0,
-                'by' => '邮件',
-                'memo' => '用于发送邮件',
+                'memo' => Yii::t('app/admin', 'Required for sending email.'),
             ),
             array(
-                'name' => 'MBString扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'MBString']),
                 'mandatory' => true,
                 'condition' => extension_loaded('mbstring'),
                 'by' => '<a href="http://www.php.net/manual/en/book.mbstring.php">Multibyte string</a> processing',
-                'memo' => ''
             ),
             array(
-                'name' => 'Reflection扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'Reflection']),
                 'mandatory' => true,
                 'condition' => class_exists('Reflection', false),
                 'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
             ),
             array(
-                'name' => 'PCRE扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'PCRE']),
                 'mandatory' => true,
                 'condition' => extension_loaded('pcre'),
                 'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
             ),
             array(
-                'name' => 'SPL扩展',
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'SPL']),
                 'mandatory' => true,
                 'condition' => extension_loaded('SPL'),
+                'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+            ),
+            array(
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'ctype']),
+                'mandatory' => true,
+                'condition' => extension_loaded('ctype'),
                 'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
             ),
         );
@@ -256,7 +258,7 @@ class InstallController extends \yii\web\Controller
                 $session->set('install-step', 2);
                 return $this->redirect(['create-admin']);
             } catch (\yii\db\Exception $e) {
-                $error = '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();
+                $error = Yii::t('app/admin', 'Error establishing a database connection: Please confirm database settings.') . '<br />' . $e->getMessage();
             }
         }
         return $this->render('dbSetting', ['model'=>$model, 'error'=>$error]);

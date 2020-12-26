@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -57,17 +57,17 @@ class Token extends ActiveRecord
     public static function findByToken($token, $type=self::TYPE_PWD)
     {
         if (empty($token) || !is_string($token)) {
-            throw new InvalidParamException('网址参数不正确');
+            throw new InvalidParamException(Yii::t('app', 'Parameter error'));
         }
 
        $model = static::find()->where(['token'=>$token])->with(['user'])->one();
 
         if (!$model || $model->type != $type) {
-            throw new InvalidParamException('网址参数不正确');
+            throw new InvalidParamException(Yii::t('app', 'Parameter error'));
         } else if ( $model->status == self::STATUS_VALID && $model->expires > 0 && $model->expires < time() || !$model->user ) {
-            throw new InvalidParamException('该网址已超过有效期，请重新申请');
+            throw new InvalidParamException(Yii::t('app', 'The token has expired. Please apply again.'));
         } else if ($model->status == self::STATUS_USED ) {
-            throw new InvalidParamException('该网址被使用过，已失效');
+            throw new InvalidParamException(Yii::t('app', 'The token was used.'));
         }
         return $model;
     }
@@ -81,10 +81,10 @@ class Token extends ActiveRecord
 
         if ( $model ) {
             try {
-                return Yii::$app->getMailer()->compose('registerVerifyToken-text', ['token' => $model, 'username'=>$user['username']])
+                return Yii::$app->getMailer()->compose('@app/mail/' . Yii::$app->language . '/registerVerifyToken-text', ['token' => $model, 'username'=>$user['username']])
                     ->setFrom([$settings['mailer_username'] => $settings['site_name']])
                     ->setTo($email)
-                    ->setSubject($settings['site_name']. '会员注册激活')
+                    ->setSubject(Yii::t('app', '{name}: Activate account', ['name' => $settings['site_name']]))
                     ->send();
             } catch(\Exception $e) {
                 return false;

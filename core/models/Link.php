@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -41,9 +41,9 @@ class Link extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'sortid' => '排序',
-            'name' => '链接文字',
-            'url' => '链接网址',
+            'sortid' => Yii::t('app', 'Sort'),
+            'name' => Yii::t('app', 'Link Text'),
+            'url' => Yii::t('app', 'Link Url'),
         ];
     }
 

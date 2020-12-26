@@ -8,7 +8,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '绑定本站帐号';
+$this->title = Yii::t('app', 'Bind your account');
 ?>
 
 <div class="row">
@@ -17,7 +17,7 @@ $this->title = '绑定本站帐号';
 
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
-		<?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+		<?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 	<div class="panel-body sf-box-form">
         <?php $form = ActiveForm::begin([
@@ -26,28 +26,28 @@ $this->title = '绑定本站帐号';
 		]); ?>
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-6" style="padding-top:7px;">
-				您已通过<?php echo $authInfo['sourceName']; ?>登录
+				<?php echo Yii::t('app', 'You have signed in with your {name} account.', ['name'=>$authInfo['sourceName']]); ?>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-3">用户名</label>
+			<label class="control-label col-sm-3"><?php echo Yii::t('app', 'Username'); ?></label>
 			<div class="col-sm-6" style="padding-top:7px;">
 				<strong><?php echo $authInfo['username']; ?></strong>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-3">还没本站帐号</label>
+			<label class="control-label col-sm-3"><?php echo Yii::t('app', 'Don\'t have an account?'); ?></label>
 			<div class="col-sm-6">
-				<?php echo Html::a('创建本站帐号并绑定', ['auth-signup'], ['class'=>'btn btn-primary']); ?>
+				<?php echo Html::a(Yii::t('app', 'Create an account and bind it'), ['auth-signup'], ['class'=>'btn btn-primary']); ?>
 			</div>
 		</div>
-		<br /><strong>绑定本站账号</strong><hr>
+		<br /><strong><?php echo Yii::t('app', 'Bind your account'); ?></strong><hr>
         <?php echo $form->field($model, 'username')->textInput(['maxlength'=>20]); ?>
         <?php echo $form->field($model, 'password')->passwordInput(['maxlength'=>20]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton('绑定', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
-			&nbsp;&nbsp;<?php echo Html::a('忘记密码了', ['site/forgot-password']); ?>
+            <?php echo Html::submitButton(Yii::t('app', 'Bind'), ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
+			&nbsp;&nbsp;<?php echo Html::a(Yii::t('app', 'Forgot password?'), ['site/forgot-password']); ?>
 			</div>
         </div>
         <?php ActiveForm::end(); ?>

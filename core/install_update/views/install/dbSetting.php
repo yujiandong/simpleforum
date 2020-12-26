@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
 
-$this->title = 'Mysql数据库设置';
+$this->title = Yii::t('app/admin', 'MySQL setting');
 ?>
 
 <div class="row">
@@ -17,7 +17,7 @@ $this->title = 'Mysql数据库设置';
 <div class="col-md-8 sf-left">
     <div class="panel panel-default sf-box">
         <div class="panel-heading">
-            <?php echo Html::a('极简论坛安装', ['index']), '&nbsp;/&nbsp;', $this->title; ?>
+            <?php echo Html::a(Yii::t('app/admin', 'Install SimpleForum'), ['index']), '&nbsp;/&nbsp;', $this->title; ?>
         </div>
         <div class="panel-body sf-box-form">
 <?php
@@ -41,7 +41,7 @@ if ( !empty($error) ) {
                 <?php echo $form->field($model, 'tablePrefix'); ?>
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9">
-                    <?php echo Html::submitButton('确定', ['class' => 'btn btn-primary', 'name' => 'dbsetting-button']); ?>
+                    <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary', 'name' => 'dbsetting-button']); ?>
                     </div>
                 </div>
             <?php ActiveForm::end(); ?>

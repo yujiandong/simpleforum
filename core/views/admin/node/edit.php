@@ -1,13 +1,13 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 
-$this->title = $model->name;
+$this->title = Yii::t('app/admin', 'Edit a node');
 ?>
 
 <div class="row">
@@ -17,7 +17,7 @@ $this->title = $model->name;
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('节点管理', ['index']), '&nbsp;/&nbsp;节点修改' ;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Nodes'), ['index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
 	<div class="panel-body">

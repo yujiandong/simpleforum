@@ -18,15 +18,21 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0.4",
-        "swiftmailer/swiftmailer": "~5.0"
+        "yiisoft/yii2": ">=2.0.4",
+        "swiftmailer/swiftmailer": "~6.0"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "autoload": {
-        "psr-4": { "yii\\swiftmailer\\": "" }
+        "psr-4": { "yii\\swiftmailer\\": "src" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "2.1.x-dev"
         }
     }
 }

@@ -168,24 +168,6 @@ $(function(){
     }
 });
 
-var showBaiduShare = function(target){
-    var shares = {
-     'weibo': ['tsina', '分享到新浪微博'],
-     'weixin': ['weixin', '分享到微信'],
-     'share-alt': ['more', ''],
-    };
-    $.each(shares, function(name, item){
-        $(target).append('<a href="#" class="bds bds_'+item[0]+' fa fa-lg fa-'+name+'" data-cmd="'+item[0]+'" title="'+item[1]+'"></a>');
-    });
-}
-
-$(function(){
-    if ($('.bdsharebuttonbox').length>0) {
-        showBaiduShare('.bdsharebuttonbox');
-        window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{"bdCustomStyle":"../static/css/share.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-    }
-});
-
 $(function(){
     $('input#q').focus(function(){
         $(this).animate({width: "250"}, 'fast');
@@ -219,9 +201,9 @@ $(function(){
 
 $(function(){
     var authInfo = {
-        title: {qq:'qq登录', weibo:'微博登陆', weixin:'微信登录', weixinmp:'微信公众平台'},
-        clientId: {qq:'appid', weibo:'App Key'},
-        clientSecret: {qq:'appkey', weibo:'App Secret'},
+        title: {xx:'xx Log in'},
+        clientId: {xx:'App Key'},
+        clientSecret: {xx:'App Secret'},
     };
 
     if($(".auth-items div.auth-item").length == 1) {
@@ -236,7 +218,7 @@ $(function(){
         var last = $('.auth-items div.auth-item').last();
         var id = parseInt(last.attr('id').replace('auth_', ''))+1;
         var newNode = last.clone(true).attr('id', 'auth_'+id);
-        newNode.find('.auth-item-id').text('设定'+id);
+        newNode.find('.auth-item-id').text('Account'+id);
         newNode.find('.auth-key').each(function(index, el){
             $(el).attr('id', 'setting-'+id+'-'+index+'-key').attr('name', 'Setting['+id+']'+'['+index+'][key]');
         });
@@ -257,8 +239,8 @@ $(function(){
         type = $(this).val();
         authItem = $(this).closest('.auth-item');
 
-        $('.auth-item-id', authItem).text(type+'登录设定');
-        $('.auth-title', authItem).val( authInfo['title'][type]===undefined?type+'登录':authInfo['title'][type] );
+        $('.auth-item-id', authItem).text(type);
+        $('.auth-title', authItem).val( authInfo['title'][type]===undefined?type+'ログイン':authInfo['title'][type] );
         $('.auth-clientId', authItem).closest('div').siblings('label').text( authInfo['clientId'][type]===undefined?'clientId':authInfo['clientId'][type] );
         $('.auth-clientSecret', authItem).closest('div').siblings('label').text( authInfo['clientSecret'][type]===undefined?'clientSecret':authInfo['clientSecret'][type] );
     });
@@ -294,8 +276,8 @@ $(function(){
 $(function(){
     $('body').on('click', '.favorite', function(e) {
         var title = {
-            'favorite':{'user':'取消关注', 'topic':'取消收藏', 'node':'取消收藏'},
-            'unfavorite':{user:'关注 Ta', topic:'收藏', node:'收藏'}
+            'favorite':{'user':'フォロー解除', 'topic':'お気に入り削除', 'node':'お気に入り削除'},
+            'unfavorite':{user:'フォロー', topic:'お気に入り', node:'お気に入り'}
         };
         self = $(this);
         params = self.attr('params').split(' ');
@@ -327,57 +309,6 @@ $(function(){
         });
     });
 });
-/*
-var favorite = function(e, type, id) {
-    var title = {'user':'取消关注', 'topic':'取消收藏', 'node':'取消收藏'};
-    $.ajax({
-        url:baseUrl+"/service/favorite",
-        type: "POST",
-        data: { type:type, id: id },
-        success: function (data) {
-            if(data.result == 1) {
-                count = $(".favorite-num", e).text();
-                if (count == '') {
-                    count = 1;
-                } else {
-                    count = parseInt(count) + 1;
-                }
-                $(".favorite-num", e).text(count);
-                $(".favorite .fa").removeClass('fa-star-o').addClass('fa-star');
-                $(".favorite .favorite-name").text(title[type]);
-                $(".favorite").attr({'onclick':'javascript:unfavorite(\''+type+'\','+id+')', 'title':title[type]});
-            } else {
-                alert(data.msg);
-            }
-        }
-    });
-};
-
-var unfavorite = function(type, id) {
-    var title = {user:'关注 Ta', topic:'收藏', node:'收藏'};
-    $.ajax({
-        url:baseUrl+"/service/unfavorite",
-        type: "POST",
-        data: { type:type, id: id },
-        success: function (data) {
-            if(data.result == 1) {
-                count = $(".favorite-num").text();
-                if (count == '' || count=='1') {
-                    count = '';
-                } else {
-                    count = parseInt(count) - 1;
-                }
-                $(".favorite-num").text(count);
-                $(".favorite .fa").removeClass('fa-star').addClass('fa-star-o');
-                $(".favorite .favorite-name").text(title[type]);
-                $(".favorite").attr({'onclick':'javascript:favorite(\''+type+'\','+id+')', 'title':title[type]});
-            } else {
-                alert(data.msg);
-            }
-        }
-    });
-};
-*/
 $(function(){
     $('.img-zoom img.lazy').each(function( index ) {
         if ( $(this).parents('a').length == 0 ) {

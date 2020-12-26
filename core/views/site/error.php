@@ -10,7 +10,7 @@ use yii\bootstrap\Alert;
 
 $session = Yii::$app->getSession();
 
-$this->title = '出错了';
+$this->title = Yii::t('app', 'Error occurred');
 ?>
 
 <div class="row">
@@ -19,15 +19,15 @@ $this->title = '出错了';
 
 <div class="panel panel-default sf-box">
     <div class="panel-heading">
-        <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
     <div class="panel-body">
         <p><strong><?php echo Html::encode($name); ?></strong></p>
         <div class="alert alert-danger">
             <?php echo nl2br(Html::encode($message)); ?>
         </div>
-        <p>论坛处理您的请求时，发生了以上错误。</p>
-        <p>如您认为是服务器错误或论坛程序错误，请联系站长 <?php echo Yii::$app->params['settings']['admin_email']; ?></p>
+        <p><?php echo Yii::t('app', 'The above error occurred while the Web server was processing your request.'); ?></p>
+        <p><?php echo Yii::t('app', 'Please contact administrator if you think this is a server error. Thank you.'); ?></p>
     </div>
 </div>
 

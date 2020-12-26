@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 \app\assets\Select2Asset::register($this);
 $this->registerJs("$('.select2').select2();");
 
-$this->title = '转移主题节点';
+$this->title = Yii::t('app/admin', 'Move Node');
 
 $request = Yii::$app->getRequest();
 $me = Yii::$app->getUser()->getIdentity();
@@ -31,7 +31,7 @@ if ($request->get('np', 1) > 1) {
 
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
-		<?php echo Html::a('首页', $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title; ?>
+		<?php echo Html::a(Yii::t('app', 'Home'), $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
 	<div class="panel-body">
 <?php $form = ActiveForm::begin(); ?>
@@ -40,7 +40,7 @@ if ($request->get('np', 1) > 1) {
 	?>
     <?php echo $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120, 'readonly'=>'readonly']); ?>
 	<div class="form-group">
-		<?php echo Html::submitButton($model->isNewRecord ? '创建' : '修改', ['class' => 'btn btn-primary']); ?>
+		<?php echo Html::submitButton($model->isNewRecord ? Yii::t('app', 'Add') : Yii::t('app', 'Edut'), ['class' => 'btn btn-primary']); ?>
 	</div>
 <?php ActiveForm::end(); ?>
 	</div>

@@ -7,7 +7,9 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use Yii;
+use yii\base\BaseObject;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -18,15 +20,17 @@ use yii\helpers\Html;
  * You may also query other information about the file, including [[name]],
  * [[tempName]], [[type]], [[size]] and [[error]].
  *
- * @property string $baseName Original file base name. This property is read-only.
- * @property string $extension File extension. This property is read-only.
- * @property boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed
- * error code information. This property is read-only.
+ * For more details and usage information on UploadedFile, see the [guide article on handling uploads](guide:input-file-upload).
+ *
+ * @property-read string $baseName Original file base name. This property is read-only.
+ * @property-read string $extension File extension. This property is read-only.
+ * @property-read bool $hasError Whether there is an error with the uploaded file. Check [[error]] for
+ * detailed error code information. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UploadedFile extends Object
+class UploadedFile extends BaseObject
 {
     /**
      * @var string the original name of the file being uploaded
@@ -45,17 +49,32 @@ class UploadedFile extends Object
      */
     public $type;
     /**
-     * @var integer the actual size of the uploaded file in bytes
+     * @var int the actual size of the uploaded file in bytes
      */
     public $size;
     /**
-     * @var integer an error code describing the status of this file uploading.
-     * @see http://www.php.net/manual/en/features.file-upload.errors.php
+     * @var int an error code describing the status of this file uploading.
+     * @see https://secure.php.net/manual/en/features.file-upload.errors.php
      */
     public $error;
 
+    /**
+     * @var resource a temporary uploaded stream resource used within PUT and PATCH request.
+     */
+    private $_tempResource;
     private static $_files;
 
+
+    /**
+     * UploadedFile constructor.
+     *
+     * @param array $config name-value pairs that will be used to initialize the object properties
+     */
+    public function __construct($config = [])
+    {
+        $this->_tempResource = ArrayHelper::remove($config, 'tempResource');
+        parent::__construct($config);
+    }
 
     /**
      * String output.
@@ -74,7 +93,7 @@ class UploadedFile extends Object
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes.
      * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return UploadedFile the instance of the uploaded file.
+     * @return null|UploadedFile the instance of the uploaded file.
      * Null is returned if no file is uploaded for the specified model attribute.
      * @see getInstanceByName()
      */
@@ -132,6 +151,7 @@ class UploadedFile extends Object
                 $results[] = new static($file);
             }
         }
+
         return $results;
     }
 
@@ -146,24 +166,46 @@ class UploadedFile extends Object
 
     /**
      * Saves the uploaded file.
-     * Note that this method uses php's move_uploaded_file() method. If the target file `$file`
-     * already exists, it will be overwritten.
-     * @param string $file the file path used to save the uploaded file
-     * @param boolean $deleteTempFile whether to delete the temporary file after saving.
+     * If the target file `$file` already exists, it will be overwritten.
+     * @param string $file the file path or a path alias used to save the uploaded file.
+     * @param bool $deleteTempFile whether to delete the temporary file after saving.
      * If true, you will not be able to save the uploaded file again in the current request.
-     * @return boolean true whether the file is saved successfully
+     * @return bool true whether the file is saved successfully
      * @see error
      */
     public function saveAs($file, $deleteTempFile = true)
     {
-        if ($this->error == UPLOAD_ERR_OK) {
-            if ($deleteTempFile) {
-                return move_uploaded_file($this->tempName, $file);
-            } elseif (is_uploaded_file($this->tempName)) {
-                return copy($this->tempName, $file);
-            }
+        if ($this->hasError) {
+            return false;
         }
-        return false;
+
+        $targetFile = Yii::getAlias($file);
+        if (is_resource($this->_tempResource)) {
+            $result = $this->copyTempFile($targetFile);
+            return $deleteTempFile ? @fclose($this->_tempResource) : (bool) $result;
+        }
+
+        return $deleteTempFile ? move_uploaded_file($this->tempName, $targetFile) : copy($this->tempName, $targetFile);
+    }
+
+    /**
+     * Copy temporary file into file specified
+     *
+     * @param string $targetFile path of the file to copy to
+     * @return bool|int the total count of bytes copied, or false on failure
+     * @since 2.0.32
+     */
+    protected function copyTempFile($targetFile)
+    {
+        $target = fopen($targetFile, 'wb');
+        if ($target === false) {
+            return false;
+        }
+
+        $result = stream_copy_to_stream($this->_tempResource, $target);
+        @fclose($target);
+
+        return $result;
     }
 
     /**
@@ -185,7 +227,7 @@ class UploadedFile extends Object
     }
 
     /**
-     * @return boolean whether there is an error with the uploaded file.
+     * @return bool whether there is an error with the uploaded file.
      * Check [[error]] for detailed error code information.
      */
     public function getHasError()
@@ -203,10 +245,12 @@ class UploadedFile extends Object
             self::$_files = [];
             if (isset($_FILES) && is_array($_FILES)) {
                 foreach ($_FILES as $class => $info) {
-                    self::loadFilesRecursive($class, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
+                    $resource = isset($info['tmp_resource']) ? $info['tmp_resource'] : [];
+                    self::loadFilesRecursive($class, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error'], $resource);
                 }
             }
         }
+
         return self::$_files;
     }
 
@@ -219,16 +263,18 @@ class UploadedFile extends Object
      * @param mixed $sizes file sizes provided by PHP
      * @param mixed $errors uploading issues provided by PHP
      */
-    private static function loadFilesRecursive($key, $names, $tempNames, $types, $sizes, $errors)
+    private static function loadFilesRecursive($key, $names, $tempNames, $types, $sizes, $errors, $tempResources)
     {
         if (is_array($names)) {
             foreach ($names as $i => $name) {
-                self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
+                $resource = isset($tempResources[$i]) ? $tempResources[$i] : [];
+                self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i], $resource);
             }
-        } elseif ((int)$errors !== UPLOAD_ERR_NO_FILE) {
+        } elseif ((int) $errors !== UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = [
                 'name' => $names,
                 'tempName' => $tempNames,
+                'tempResource' => $tempResources,
                 'type' => $types,
                 'size' => $sizes,
                 'error' => $errors,

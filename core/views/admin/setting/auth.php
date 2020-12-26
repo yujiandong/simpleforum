@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -12,7 +12,7 @@ use yii\bootstrap\ActiveForm;
 //\app\assets\Select2Asset::register($this);
 //$this->registerJs("$('select').select2();");
 
-$this->title = '第三方帐号登录';
+$this->title = Yii::t('app', 'Third-party login');
 
 function showSettingForm($settings, $form, $parentKey='')
 {
@@ -40,9 +40,8 @@ function showSettingForm($settings, $form, $parentKey='')
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-        <span class="fr">参考 <a href="http://simpleforum.org/t/2" target="_blank">开启第三方帐号登录</a></span>
         <?php
-            echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
+            echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
         ?>
     </li>
 <?php $form = ActiveForm::begin([
@@ -67,7 +66,7 @@ unset($settings['auth_enabled']);
 $key = 0;
 foreach($settings as $type=>$part) {
     $key++;
-    echo '<div id=auth_',$key,' class="auth-item"><p class="login-three-home"><strong><span class="auth-item-id">', $type===1?'设定'.$type:$type.'登录设定', '</span> <span class="auth-item-del">删除</span></strong></p>';
+    echo '<div id=auth_',$key,' class="auth-item"><p class="login-three-home"><strong><span class="auth-item-id">', $type===1?'Account'.$type:$type, '</span> <span class="auth-item-del">' . Yii::t('app', 'Delete') . '</span></strong></p>';
     showSettingForm($part, $form, '['.$key.']');
     echo '</div>';
 }
@@ -75,7 +74,7 @@ foreach($settings as $type=>$part) {
         </div>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?> <?php echo Html::button('添加', ['class' => 'btn btn-primary auth-item-add']); ?>
+            <?php echo Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary']); ?> <?php echo Html::button(Yii::t('app', 'Add'), ['class' => 'btn btn-primary auth-item-add']); ?>
             </div>
         </div>
     </li>

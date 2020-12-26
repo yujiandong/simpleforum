@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -71,7 +71,7 @@ class UserController extends AppController
 
     protected function findUserModel($username, $with=null)
     {
-        $model = User::find()->select(['id', 'created_at', 'status', 'username', 'avatar', 'score', 'comment'])->where(['username'=>$username]);
+        $model = User::find()->select(['id', 'created_at', 'status', 'username', 'avatar', 'score', 'comment', 'name'])->where(['username'=>$username]);
         if ( !empty($with) ) {
             $model = $model->with($with);
         }
@@ -80,7 +80,7 @@ class UserController extends AppController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到['.$username.']的用户');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'User')]));
         }
     }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -29,7 +29,7 @@ class ForgotPasswordForm extends Model
             ['email', 'exist',
                 'targetClass' => '\app\models\User',
                 'filter' => ['status' => User::STATUS_ACTIVE],
-                'message' => 'There is no user with such email.'
+                'message' => Yii::t('app', 'That email address is not associated with a personal user account.')
             ],
         ];
     }
@@ -37,16 +37,16 @@ class ForgotPasswordForm extends Model
     public function attributeLabels()
     {
         return [
-            'email' => '注册邮箱',
+            'email' => Yii::t('app', 'Email'),
         ];
     }
 
     public function apply()
     {
         if ( !self::findUser() ) {
-            throw new InvalidParamException('该邮件对应的用户不存在');
+            throw new InvalidParamException(Yii::t('app', 'That email address is not associated with a personal user account.'));
         } else if ( !self::sendEmail() ) {
-            throw new InvalidParamException('邮件发送出错，请重新申请或联系站长('.Yii::$app->params['settings']['admin_email'].')');
+            throw new InvalidParamException(Yii::t('app', 'An error occured when sending email. Please try later or contact the administrator.'));
         } else {
             return true;
         }
@@ -76,10 +76,10 @@ class ForgotPasswordForm extends Model
         $rtnCd = false;
         if ( $token ) {
             try {
-                $rtnCd = Yii::$app->getMailer()->compose('passwordResetToken-text', ['token' => $token])
+                $rtnCd = Yii::$app->getMailer()->compose(['html' => '@app/mail/' . Yii::$app->language . '/passwordResetToken-text'], ['token' => $token])
                     ->setFrom([$settings['mailer_username'] => $settings['site_name']])
                     ->setTo($this->email)
-                    ->setSubject($settings['site_name']. '密码重置')
+                    ->setSubject(Yii::t('app', '{name}: Reset password', ['name' => $settings['site_name']]))
                     ->send();
             } catch(\Exception $e) {
                 return false;

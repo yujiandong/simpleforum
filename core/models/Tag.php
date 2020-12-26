@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -56,7 +56,7 @@ class Tag extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => '标签',
+            'name' => Yii::t('app', 'Label'),
         ];
     }
 

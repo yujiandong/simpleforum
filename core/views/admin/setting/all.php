@@ -1,25 +1,25 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '论坛管理';
+$this->title = Yii::t('app/admin', 'Forum Manager');
 
 $items = [
-    '配置管理'=>['admin/setting'],
-    '第三方登录管理'=>['admin/setting/auth'],
-    '节点管理'=>['admin/node'],
-    '导航管理'=>['admin/navi'],
-    '用户管理'=>['admin/user'],
-    '链接管理'=>['admin/link'],
-    '插件管理'=>['admin/plugin'],
-    '邮件测试'=>['admin/setting/test-email'],
-    '清空缓存'=>['admin/setting/clear-cache'],
+    'Settings'=>['admin/setting'],
+    'Third-party login'=>['admin/setting/auth'],
+    'Nodes'=>['admin/node'],
+    'Navigations'=>['admin/navi'],
+    'Members'=>['admin/user'],
+    'Links'=>['admin/link'],
+    'Plugins'=>['admin/plugin'],
+    'Test email'=>['admin/setting/test-email'],
+    'Clear cache'=>['admin/setting/clear-cache'],
 ];
 
 ?>
@@ -32,7 +32,7 @@ $items = [
     <div class="panel-body sf-btn">
 <?php
     foreach($items as $k=>$v) {
-        echo Html::a($k, $v, ['class'=>'btn btn-default']);
+        echo Html::a(Yii::t('app/admin', $k), $v, ['class'=>'btn btn-default']);
     }
 ?>
     </div>

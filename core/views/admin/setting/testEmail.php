@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
 
-$this->title = '邮件发送测试';
+$this->title = Yii::t('app/admin', 'Test Email Sending');
 
 ?>
 
@@ -18,19 +18,20 @@ $this->title = '邮件发送测试';
 
 <div class="panel panel-default sf-box">
     <div class="panel-heading">
-        <?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title; ?>
+        <?php echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;›&nbsp;', $this->title; ?>
     </div>
     <div class="panel-body sf-box-form">
 <?php
 if ( $rtnCd === 9 ) {
     echo Alert::widget([
            'options' => ['class' => 'alert-warning'],
-           'body' => '测试邮件发送出错，请确认 '. Html::a('SMTP邮箱设置', ['admin/setting/update', '#'=>'mailer']) . ' 是否正确。',
+           'body' => Yii::t('app/admin', 'An error has occurred with sending a test email. Please check {link}.', ['link'=>Html::a(Yii::t('app/admin', 'SMTP Settings'), ['admin/setting/update', '#'=>'mailer'])])
+               . '<br />' . $msg,
         ]);
 } else if ( $rtnCd === 1 ) {
     echo Alert::widget([
            'options' => ['class' => 'alert-success'],
-           'body' => '测试邮件发送成功，请进测试邮箱查看是否收到。',
+           'body' => Yii::t('app/admin', 'A test email has been successfully sent. Please check your email.'),
         ]);
 }
 ?>
@@ -42,7 +43,7 @@ if ( $rtnCd === 9 ) {
         <?php echo $form->field($model, 'content')->textArea(['maxlength'=>255]); ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton('测试', ['class' => 'btn btn-primary']); ?>
+            <?php echo Html::submitButton(Yii::t('app/admin', 'Test'), ['class' => 'btn btn-primary']); ?>
             </div>
         </div>
 <?php ActiveForm::end(); ?>

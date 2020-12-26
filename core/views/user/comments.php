@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -11,12 +11,11 @@ use yii\bootstrap\Alert;
 use app\components\SfHtml;
 use app\models\User;
 
-$this->title = Html::encode($user['username']).'的全部回复';
+$this->title = Yii::t('app', '{username}\'s All Comments', ['username'=>$user['username']]);
 $formatter = Yii::$app->getFormatter();
 $settings = Yii::$app->params['settings'];
 
-//$editor = new \app\lib\Editor(['editor'=>$settings['editor']]);
-$editorClass = '\app\plugins\\'. $settings['editor']. '\\'. $settings['editor'];
+$editorClass = Yii::$app->params['plugins'][$settings['editor']]['class'];
 $editor = new $editorClass();
 
 $isGuest = Yii::$app->getUser()->getIsGuest();
@@ -32,14 +31,14 @@ $whiteWrapClass = $settings['editor']=='SmdEditor'?'white-wrap':'';
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-        <?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', SfHtml::uLink($user['username']), '&nbsp;›&nbsp;全部回帖'; ?>
+        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;›&nbsp;', SfHtml::uLink($user['username'], $user['name']), '&nbsp;›&nbsp;', Yii::t('app', 'All Comments'); ?>
     </li>
 <?php
 foreach($comments as $comment):
 ?>
     <li class="list-group-item gray small list-group-item-info">
         <p class='fr'><?php echo $formatter->asRelativeTime($comment['created_at']); ?></p>
-        回复了 <?php echo SfHtml::uLink($comment['topic']['author']['username']); ?> 创建的主题 › <?php echo Html::a(Html::encode($comment['topic']['title']), ['topic/view', 'id'=>$comment['topic_id']]); ?>
+        <?php echo Yii::t('app', 'Commented on {author}\'s topic', ['author'=>SfHtml::uLink($comment['topic']['author']['username'], $comment['topic']['author']['name'])]); ?> › <?php echo Html::a(Html::encode($comment['topic']['title']), ['topic/view', 'id'=>$comment['topic_id']]); ?>
     </li>
     <li class="list-group-item word-wrap <?php echo $whiteWrapClass; ?>">
     <?php
@@ -48,7 +47,7 @@ foreach($comments as $comment):
             echo Alert::widget([
                 'options' => ['class' => 'alert-warning'],
                 'closeButton'=>false,
-                'body' => '此回复已被屏蔽',
+                'body' => Yii::t('app', 'This {target} is blocked.', ['target'=>Yii::t('app', 'comment')]),
             ]);
             $commentShow = false;
         }

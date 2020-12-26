@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -72,7 +72,7 @@ class NodeController extends CommonController
         if (($model = Node::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的节点');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Node')]));
         }
     }
 }

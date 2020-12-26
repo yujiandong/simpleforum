@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -12,13 +12,19 @@ use yii\bootstrap\ActiveForm;
 \app\assets\Select2Asset::register($this);
 $this->registerJs("$('select').select2();");
 
-$this->title = '插件['.$plugin['pid'].']配置';
+$this->title = Yii::t('app/admin', 'Plugin') . '['.$plugin['pid'].']';
 
 function showSettingForm($settings, $form)
 {
     foreach ($settings as $key=>$setting) {
+        $options = ArrayHelper::getValue($setting, 'option', []);
+        if (!empty($options)) { 
+	        foreach ($options as $k=>$v) {
+	            $options[$k] = Yii::t('app', $v);
+	        }
+	    }
         if ($setting['type'] === 'select') {
-            $options = json_decode($setting['option'],true);
+//            $options = json_decode($setting['option'],true);
             echo $form->field($setting, "[$key]value", ['enableError'=>false,])
                     ->dropDownList($options)->label($setting['label'])->hint($setting['description']);
         } else if ($setting['type'] === 'textarea') {
@@ -28,7 +34,7 @@ function showSettingForm($settings, $form)
 //            $options = json_decode($setting['option'],true);
 //			$setting['value'] = json_decode($setting['value'],true);
             echo $form->field($setting, "[$key]value", ['enableError'=>false,])
-                    ->inline()->checkboxList($setting['option'])->label($setting['label'])->hint($setting['description']);
+                    ->inline()->checkboxList($options)->label($setting['label'])->hint($setting['description']);
         } else  {
             echo $form->field($setting, "[$key]value", ['enableError'=>false,])->input($setting['type'])
                     ->label($setting['label'])->hint($setting['description']);
@@ -43,7 +49,7 @@ function showSettingForm($settings, $form)
 <ul class="list-group sf-box">
     <li class="list-group-item">
         <?php
-            echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('插件管理', ['admin/plugin']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Plugins'), ['index']), '&nbsp;/&nbsp;', $this->title;
         ?>
     </li>
 <?php $form = ActiveForm::begin([
@@ -68,7 +74,7 @@ if ( !empty($settings) ) {
 ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton('确定', ['class' => 'btn btn-primary']); ?>
+            <?php echo Html::submitButton(Yii::t('app/admin', 'Submit'), ['class' => 'btn btn-primary']); ?>
             </div>
         </div>
     </li>

@@ -28,7 +28,7 @@ use yii\authclient\OAuth2;
  *             ],
  *         ],
  *     ]
- *     ...
+ *     // ...
  * ]
  * ```
  *
@@ -41,21 +41,21 @@ use yii\authclient\OAuth2;
 class GitHub extends OAuth2
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $authUrl = 'https://github.com/login/oauth/authorize';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $tokenUrl = 'https://github.com/login/oauth/access_token';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $apiBaseUrl = 'https://api.github.com';
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -66,7 +66,7 @@ class GitHub extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultNormalizeUserAttributeMap()
     {
@@ -76,7 +76,7 @@ class GitHub extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function initUserAttributes()
     {
@@ -102,7 +102,7 @@ class GitHub extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultName()
     {
@@ -110,10 +110,18 @@ class GitHub extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultTitle()
     {
         return 'GitHub';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function applyAccessTokenToRequest($request, $accessToken)
+    {
+        $request->getHeaders()->add('Authorization', 'token ' . $accessToken->getToken());
     }
 }

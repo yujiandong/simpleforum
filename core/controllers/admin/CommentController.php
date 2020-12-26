@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -31,7 +31,7 @@ class CommentController extends CommonController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的回复');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Comment')]));
         }
     }
 }

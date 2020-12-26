@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -19,6 +19,7 @@ use app\models\Token;
 use app\models\UploadForm;
 use app\models\ChangePasswordForm;
 use app\models\ChangeEmailForm;
+use app\models\EditProfileForm;
 use app\models\Notice;
 use app\models\Auth;
 use app\models\History;
@@ -59,15 +60,20 @@ class ServiceController extends AppController
 
     public function actionEditProfile()
     {
-        $me = Yii::$app->getUser()->getIdentity();
+/*        $me = Yii::$app->getUser()->getIdentity();
         $userInfo = $me->userInfo;
         $userInfo->scenario = UserInfo::SCENARIO_EDIT;
 
         if ( $userInfo->load(Yii::$app->getRequest()->post()) && $userInfo->save() ) {
-            Yii::$app->getSession()->setFlash('EditProfileOK', '您的会员信息修改成功。');
+            Yii::$app->getSession()->setFlash('EditProfileOK', Yii::t('app', '{attribute} has been changed successfully.', ['attribute'=>Yii::t('app', 'Your account information')]));
         } else {
             Yii::$app->getSession()->setFlash('EditProfileNG', implode('<br />', $userInfo->getFirstErrors()));
         }
+*/
+        $model = new EditProfileForm();
+        $model->load(Yii::$app->getRequest()->post());
+        $result = $model->apply();
+        Yii::$app->getSession()->setFlash($result[0], $result[1]);
 
         return $this->redirect(['my/settings', '#'=>'info']);
     }
@@ -104,9 +110,9 @@ class ServiceController extends AppController
     public function actionSendActivateMail()
     {
         if (Token::sendActivateMail(Yii::$app->getUser()->getIdentity())) {
-            Yii::$app->getSession()->setFlash('activateMailOK', '邮件发送成功，请进邮箱点击激活链接');
+            Yii::$app->getSession()->setFlash('activateMailOK', Yii::t('app', 'Email has been sent successfully. Please check your email to activate your account.'));
         } else {
-            Yii::$app->getSession()->setFlash('activateMailNG', '邮件发送失败');
+            Yii::$app->getSession()->setFlash('activateMailNG', Yii::t('app', 'An error occured when sending email. Please try later or contact the administrator.'));
         }
 
 //      return $this->goBack();
@@ -125,7 +131,7 @@ class ServiceController extends AppController
         if ( $result ) {
             $me->avatar = $result;
             $me->save(false);
-            $session->setFlash('setAvatarOK', '头像设定成功，显示可能有延迟，请刷新。');
+            $session->setFlash('setAvatarOK', Yii::t('app', 'Avatar has been set successfully. Please refresh the page if it is not shown.'));
         } else {
             $session->setFlash('setAvatarNG', implode('<br />', $model->getFirstErrors()));
         }
@@ -145,7 +151,7 @@ class ServiceController extends AppController
         if ( $result ) {
             $me->userInfo->cover = $result;
             $me->userInfo->save(false);
-            $session->setFlash('setCoverOK', '用户卡背景图片上传成功，显示可能有延迟，请刷新。');
+            $session->setFlash('setCoverOK', Yii::t('app', 'Background picture has been set successfully. Please refresh the page if it is not shown.'));
         } else {
             $session->setFlash('setCoverNG', implode('<br />', $model->getFirstErrors()));
         }
@@ -160,7 +166,7 @@ class ServiceController extends AppController
         $me = Yii::$app->getUser()->getIdentity();
 
         if( !$me->canUpload($this->settings) ) {
-            return ['jquery-upload-file-error'=> '您没有权限上传附件。' ];
+            return ['jquery-upload-file-error'=> Yii::t('app', 'You have no authority to upload attachment.') ];
         }
 
         $model = new UploadForm(Yii::$container->get('fileUploader'), ['scenario' => UploadForm::SCENARIO_UPLOAD]);
@@ -186,7 +192,7 @@ class ServiceController extends AppController
         if ($req->getIsAjax()) {
             $data = $req->post();
             if ( !isset($types[$data['type']]) ) {
-                return ['result'=>0, 'msg'=>'参数不正确'];
+                return ['result'=>0, 'msg'=>Yii::t('app', 'Parameter error')];
             }
 
             Favorite::add([
@@ -212,7 +218,7 @@ class ServiceController extends AppController
         if ($req->getIsAjax()) {
             $data = $req->post();
             if ( !isset($types[$data['type']]) ) {
-                return ['result'=>0, 'msg'=>'参数不正确'];
+                return ['result'=>0, 'msg'=>Yii::t('app', 'Parameter error')];
             }
 
             Favorite::cancel([
@@ -255,9 +261,9 @@ class ServiceController extends AppController
         $me = Yii::$app->getUser()->getIdentity();
         if( !$me->checkActionCost('sendMsg') ) {
             return $this->render('@app/views/common/info', [
-                'title' => '您的积分不足',
+                'title' => Yii::t('app', 'You don\'t have enough points.'),
                 'status' => 'warning',
-                'msg' => '您的积分不足，不能发送消息。每日签到可以获取10-50不等积分。',
+                'msg' => Yii::t('app', 'You don\'t have enough points. You can get points from daily bonus service.'),
             ]);
         }
         $model = new SendMsgForm();
@@ -266,7 +272,7 @@ class ServiceController extends AppController
         if( $id>0 ) {
             $sms = Notice::findOne($id);
             if ( !$sms ) {
-                throw new NotFoundHttpException('参数不正确。');
+                throw new NotFoundHttpException(Yii::t('app', 'Parameter error'));
             } else {
                 $model->username = $sms->source->username;
             }
@@ -275,7 +281,7 @@ class ServiceController extends AppController
         }
         if ($model->load(Yii::$app->getRequest()->post()) && $model->validate()) {
             if ( $model->apply() ) {
-                Yii::$app->getSession()->setFlash('SendMsgOK', '短消息发送成功。');
+                Yii::$app->getSession()->setFlash('SendMsgOK', Yii::t('app', 'Message has been sent successfully.'));
                 $model = new SendMsgForm();
             }
         }

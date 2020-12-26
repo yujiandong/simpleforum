@@ -7,7 +7,7 @@
 
 use yii\helpers\Html;
 
-$this->title = '缓存清理';
+$this->title = Yii::t('app/admin', 'Clear cache');
 
 ?>
 
@@ -16,10 +16,10 @@ $this->title = '缓存清理';
 
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
-		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;›&nbsp;', Html::a('配置管理', ['admin/setting']), '&nbsp;›&nbsp;', $this->title; ?>
+		<?php echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;›&nbsp;', $this->title; ?>
 	</div>
 	<div class="panel-body sf-box-form">
-		缓存清理完毕
+		<?php echo Yii::t('app/admin', 'Cache is cleared.'); ?>
 	</div>
 </div>
 

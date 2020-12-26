@@ -15,46 +15,46 @@ return array (
   'yiisoft/yii2-httpclient' => 
   array (
     'name' => 'yiisoft/yii2-httpclient',
-    'version' => '2.0.2.0',
+    'version' => '2.0.12.0',
     'alias' => 
     array (
-      '@yii/httpclient' => $vendorDir . '/yiisoft/yii2-httpclient',
+      '@yii/httpclient' => $vendorDir . '/yiisoft/yii2-httpclient/src',
     ),
   ),
   'yiisoft/yii2-authclient' => 
   array (
     'name' => 'yiisoft/yii2-authclient',
-    'version' => '2.1.1.0',
+    'version' => '2.2.9.0',
     'alias' => 
     array (
-      '@yii/authclient' => $vendorDir . '/yiisoft/yii2-authclient',
+      '@yii/authclient' => $vendorDir . '/yiisoft/yii2-authclient/src',
     ),
   ),
   'yiisoft/yii2-bootstrap' => 
   array (
     'name' => 'yiisoft/yii2-bootstrap',
-    'version' => '2.0.6.0',
+    'version' => '2.0.10.0',
     'alias' => 
     array (
-      '@yii/bootstrap' => $vendorDir . '/yiisoft/yii2-bootstrap',
+      '@yii/bootstrap' => $vendorDir . '/yiisoft/yii2-bootstrap/src',
     ),
   ),
   'yiisoft/yii2-swiftmailer' => 
   array (
     'name' => 'yiisoft/yii2-swiftmailer',
-    'version' => '2.0.6.0',
+    'version' => '2.1.2.0',
     'alias' => 
     array (
-      '@yii/swiftmailer' => $vendorDir . '/yiisoft/yii2-swiftmailer',
+      '@yii/swiftmailer' => $vendorDir . '/yiisoft/yii2-swiftmailer/src',
     ),
   ),
   'yiisoft/yii2-imagine' => 
   array (
     'name' => 'yiisoft/yii2-imagine',
-    'version' => '2.1.0.0',
+    'version' => '2.2.0.0',
     'alias' => 
     array (
-      '@yii/imagine' => $vendorDir . '/yiisoft/yii2-imagine',
+      '@yii/imagine' => $vendorDir . '/yiisoft/yii2-imagine/src',
     ),
   ),
 );

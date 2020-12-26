@@ -57,13 +57,13 @@ class Node extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '节点ID',
-            'name' => '节点名称',
-            'ename' => '节点英文名',
-            'topic_count' => '主题数',
-            'access_auth' => '登录后才能浏览',
-            'invisible' => '主题只显示在本节点',
-            'about' => '介绍',
+            'id' => 'ID',
+            'name' => Yii::t('app', 'Node name'),
+            'ename' => Yii::t('app', 'Node ID'),
+            'topic_count' => Yii::t('app', 'Topic count'),
+            'access_auth' => Yii::t('app', 'Topics only shown for signed in users'),
+            'invisible' => Yii::t('app', 'Topics only shown in this node\'s list'),
+            'about' => Yii::t('app', 'Description'),
         ];
     }
 

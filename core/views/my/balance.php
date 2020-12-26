@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -10,57 +10,57 @@ use yii\widgets\LinkPager;
 use app\models\History;
 use app\components\SfHtml;
 
-$this->title = '账户余额';
+$this->title = Yii::t('app', 'My Points');
 $formatter = Yii::$app->getFormatter();
 $me = Yii::$app->getUser()->getIdentity();
 
 $types = [
-    History::ACTION_REG => '注册帐号',
-    History::ACTION_ADD_TOPIC => '发表主题',
-    History::ACTION_ADD_COMMENT => '回复主题',
-    History::ACTION_COMMENTED => '主题回复收益',
-    History::ACTION_ORIGINAL_SCORE => '初始积分',
-    History::ACTION_SIGNIN => '每日登录奖励',
-    History::ACTION_SIGNIN_10DAYS => '连续登录奖励',
-    History::ACTION_INVITE_CODE => '购买邀请码',
-    History::ACTION_MSG => '发送私信',
-    History::ACTION_GOOD_TOPIC => '感谢主题',
-    History::ACTION_GOOD_COMMENT => '感谢回复',
-    History::ACTION_TOPIC_THANKED => '主题收到谢意',
-    History::ACTION_COMMENT_THANKED => '回复收到谢意',
-    History::ACTION_CHARGE_POINT => '积分充值',
+    History::ACTION_REG => Yii::t('app', 'Sign up'),
+    History::ACTION_ADD_TOPIC => Yii::t('app', 'Add Topic'),
+    History::ACTION_ADD_COMMENT => Yii::t('app', 'Add Comment'),
+    History::ACTION_COMMENTED => Yii::t('app', 'Topic Commented'),
+    History::ACTION_ORIGINAL_SCORE => Yii::t('app', 'Original Points'),
+    History::ACTION_SIGNIN => Yii::t('app', 'Daily Bonus'),
+    History::ACTION_SIGNIN_10DAYS => Yii::t('app', '10 Days Bonus'),
+    History::ACTION_INVITE_CODE => Yii::t('app', 'Buy Invite Codes'),
+    History::ACTION_MSG => Yii::t('app', 'Send Message'),
+    History::ACTION_GOOD_TOPIC => Yii::t('app', 'Thank Topic'),
+    History::ACTION_GOOD_COMMENT => Yii::t('app', 'Thank Comment'),
+    History::ACTION_TOPIC_THANKED => Yii::t('app', 'Topic Thanked'),
+    History::ACTION_COMMENT_THANKED => Yii::t('app', 'Comment Thanked'),
+    History::ACTION_CHARGE_POINT => Yii::t('app', 'Charge Points'),
 ];
 
 function getComment($action, $ext) {
     $str = '';
     if( $action == History::ACTION_ADD_TOPIC ) {
-        $str = '发表了主题 › ' . Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]);
+        $str = Yii::t('app', 'Added a topic › {url}', ['url' => Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']])]);
     } else if( $action == History::ACTION_ADD_COMMENT ) {
-        $str = '回复了主题 › ' . Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]);
+        $str = Yii::t('app', 'Added a comment on › {url}', ['url' => Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']])]);
     } else if( $action == History::ACTION_ORIGINAL_SCORE ) {
-        $str = '获得初始积分 ' . $ext['cost'];
+        $str = Yii::t('app', 'Got {n} original points', ['n' => $ext['cost']]);
     } else if( $action == History::ACTION_COMMENTED ) {
-        $str = '收到 ' . Html::a(Html::encode($ext['commented_by']), ['user/view', 'username'=>$ext['commented_by']]) . ' 的回复 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]);
+        $str = Yii::t('app', 'Received a comment from {username} on > {url}', ['username' => Html::a(Html::encode($ext['commented_by']), ['user/view', 'username'=>$ext['commented_by']]), 'url' => Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']])]);
     } else if( $action == History::ACTION_SIGNIN ) {
-        $str = '每日登录奖励 ' . $ext['cost'] . ' 积分';
+        $str = Yii::t('app', 'Got {n} bonus points', ['n' => $ext['cost']]);
     } else if( $action == History::ACTION_SIGNIN_10DAYS ) {
-        $str = '连续登录每 10 天奖励 ' . $ext['cost'] . ' 积分';
+        $str = Yii::t('app', 'Got {n} bonus points for consecutive 10 days', ['n' => $ext['cost']]);
     } else if( $action == History::ACTION_INVITE_CODE ) {
-        $str = '购买了 ' . $ext['amount'] . ' 枚邀请码';
+        $str = Yii::t('app', 'Bought {n, plural, =1{# invite code} other{# invite codes}}', ['n' => (int)$ext['amount']]);
     } else if( $action == History::ACTION_REG ) {
-        $str = '注册帐号奖励 ' . $ext['cost'] . ' 积分';
+        $str = Yii::t('app', 'Got {n} points for registration', ['n' => $ext['cost']]);
     } else if( $action == History::ACTION_MSG ) {
-        $str = '给 ' . Html::a(Html::encode($ext['target']), ['user/view', 'username'=>$ext['target']]) . ' 发送私信';
+        $str = Yii::t('app', 'Sent a message to {username}', ['username' => Html::a(Html::encode($ext['target']), ['user/view', 'username'=>$ext['target']])]);
     } else if( $action == History::ACTION_GOOD_TOPIC ) {
-        $str = '感谢了'.SfHtml::uLink($ext['thank_to']).'的主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]);
+        $str = Yii::t('app', 'Thanked for {username}\'s topic > {url}', ['username' => SfHtml::uLink($ext['thank_to']), 'url' => Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']])]);
     } else if( $action == History::ACTION_GOOD_COMMENT ) {
-        $str = '感谢了'.SfHtml::uLink($ext['thank_to']).'在主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]) . ' 中的回复';
+        $str = Yii::t('app', 'Thanked for {username}\'s comment on > {url}', ['username' => SfHtml::uLink($ext['thank_to']), 'url'=>Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']])]);
     } else if( $action == History::ACTION_TOPIC_THANKED ) {
-        $str = SfHtml::uLink($ext['thank_by']).' 感谢了您的主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]);
+        $str = Yii::t('app', '{username} thanked you for your topic > {url}', ['username' => SfHtml::uLink($ext['thank_by']), 'url'=>Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']])]);
     } else if( $action == History::ACTION_COMMENT_THANKED ) {
-        $str = SfHtml::uLink($ext['thank_by']).' 感谢了您在主题 › '. Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']]) . ' 中的回复';
+        $str = Yii::t('app', '{username} thanked you for your comment on > {url}', ['username' => SfHtml::uLink($ext['thank_by']), 'url'=>Html::a(Html::encode($ext['title']), ['topic/view', 'id'=>$ext['topic_id']])]);
     } else if( $action == History::ACTION_CHARGE_POINT ) {
-        $str = '积分充值 ' . $ext['cost'] . ' 积分。附言：'. Html::encode($ext['msg']);
+        $str = Yii::t('app', 'Charged {n} points. Message: {msg}', ['n' => $ext['cost'], 'msg' => Html::encode($ext['msg'])]);
     }
     return $str;
 }
@@ -77,30 +77,30 @@ function getCostName($cost) {
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-    <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+    <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
     <li class="list-group-item">
-        <h4>当前账户余额： <?php echo SfHtml::uScore($me->score); ?></h4>
+        <h4><?php echo Yii::t('app', 'My Points'); ?>： <?php echo SfHtml::uScore($me->score); ?></h4>
     </li>
     <li class="list-group-item">
     <table class="table table-condensed table-bordered small">
       <thead>
-        <tr>
-          <th>类型/时间</th>
-          <th>数额</th>
-          <th>余额</th>
-          <th>描述</th>
+        <tr class="row">
+          <th class="col-md-auto"><?php echo Yii::t('app', 'Type/Time'); ?></th>
+          <th class="col-md-auto"><?php echo Yii::t('app', 'Points'); ?></th>
+          <th class="col-md-auto"><?php echo Yii::t('app', 'Total'); ?></th>
+          <th class="col-md-8"><?php echo Yii::t('app', 'Description'); ?></th>
         </tr>
       </thead>
       <tbody>
 <?php
 foreach($records as $record) {
     $ext = json_decode($record['ext'], true);
-    echo '<tr>',
-            '<td width="120">', $types[$record['action']], '<br />', $formatter->asDateTime($record['action_time'], 'y-MM-dd HH:mm'), '</td>',
-            '<td width="50" class="text-right"><strong>', getCostName($ext['cost']), '</strong></td>',
-            '<td width="60" class="text-right">', $ext['score'], '</td>',
-            '<td width="auto">', getComment($record['action'], $ext), '</td>',
+    echo '<tr class="row">',
+            '<td class="col-md-auto">', $types[$record['action']], '<br />', $formatter->asDateTime($record['action_time'], 'y-MM-dd HH:mmZ'), '</td>',
+            '<td class="col-md-auto text-right"><strong>', getCostName($ext['cost']), '</strong></td>',
+            '<td class="col-md-auto text-right">', $ext['score'], '</td>',
+            '<td class="col-md-8">', getComment($record['action'], $ext), '</td>',
          '</tr>';
 }
 ?>

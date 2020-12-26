@@ -8,7 +8,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '论坛升级完成';
+$this->title = Yii::t('app/admin', 'Upgrade completed successfully.');
 ?>
 
 <div class="row">
@@ -19,8 +19,8 @@ $this->title = '论坛升级完成';
 			<?php echo $this->title; ?>
 		</div>
 		<div class="panel-body">
-			<h2>论坛升级完成</h2>
-			<p>1. <?php echo Html::a('登录管理后台更新论坛配置', ['/admin/setting/all']); ?></p>
+			<h2><?php echo Yii::t('app/admin', 'Please goto Admin Panel and complete forum\'s settings.'); ?></h2>
+			<?php echo Html::a(Yii::t('app', 'Admin Panel'), ['/admin/setting/all']); ?>
 		</div>
 	</div>
 </div>

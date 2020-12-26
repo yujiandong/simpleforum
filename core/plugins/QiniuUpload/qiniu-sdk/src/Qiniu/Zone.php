@@ -1,24 +1,47 @@
 <?php
 namespace Qiniu;
 
-final class Zone
+use Qiniu\Region;
+
+class Zone extends Region
 {
-    public $upHost;
-    public $upHostBackup;
-
-    public function __construct($upHost, $upHostBackup)
+    public static function zonez0()
     {
-        $this->upHost = $upHost;
-        $this->upHostBackup = $upHostBackup;
+        return parent::regionHuadong();
     }
 
-    public static function zone0()
+    public static function zonez1()
     {
-        return new self('http://up.qiniu.com', 'http://upload.qiniu.com');
+        return parent::regionHuabei();
     }
 
-    public static function zone1()
+    public static function zonez2()
     {
-        return new self('http://up-z1.qiniu.com', 'http://upload-z1.qiniu.com');
+        return parent::regionHuanan();
+    }
+
+    public static function zoneAs0()
+    {
+        return parent::regionSingapore();
+    }
+
+    public static function zoneNa0()
+    {
+        return parent::regionNorthAmerica();
+    }
+
+    public static function qvmZonez0()
+    {
+        return parent::qvmRegionHuadong();
+    }
+
+    public static function qvmZonez1()
+    {
+        return parent::qvmRegionHuabei();
+    }
+
+    public static function queryZone($ak, $bucket)
+    {
+        return parent::queryRegion($ak, $bucket);
     }
 }

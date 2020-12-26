@@ -1,14 +1,14 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 
-$this->title = '标签管理';
+$this->title = Yii::t('app/admin', 'Tags');
 $formatter = Yii::$app->getFormatter();
 ?>
 
@@ -19,7 +19,7 @@ $formatter = Yii::$app->getFormatter();
 <ul class="list-group sf-box">
 	<li class="list-group-item">
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</li>
 	<li class="list-group-item list-group-item-info"><strong>标签</strong></li>
@@ -28,9 +28,9 @@ $formatter = Yii::$app->getFormatter();
       <thead>
         <tr>
           <th>ID</th>
-          <th>标签</th>
-          <th>新建时间</th>
-          <th>操作</th>
+          <th><?php echo Yii::t('app', 'Tag'); ?></th>
+          <th><?php echo Yii::t('app', 'Create time'); ?></th>
+          <th><?php echo Yii::t('app', 'Operation'); ?></th>
         </tr>
       </thead>
       <tbody>
@@ -38,11 +38,11 @@ $formatter = Yii::$app->getFormatter();
     foreach($tags as $tag) {
         echo '<tr><td>', $tag['id'], '</td>
 			<td>', Html::a(Html::encode($tag['name']), ['tag/index', 'name'=>$tag['name']], ['target'=>'_blank']), '</td>
-			<td>', $formatter->asDateTime($tag['created_at'], 'y-MM-dd HH:mm') ,'</td>
-			<td>', Html::a('修改', ['edit', 'id'=>$tag['id']]).'&nbsp;|&nbsp;', 
-	            Html::a('删除', ['delete', 'id'=>$tag['id']], [
+			<td>', $formatter->asDateTime($tag['created_at'], 'y-MM-dd HH:mmZ') ,'</td>
+			<td>', Html::a(Yii::t('app', 'Edit'), ['edit', 'id'=>$tag['id']]).'&nbsp;|&nbsp;', 
+	            Html::a(Yii::t('app', 'Edit'), ['delete', 'id'=>$tag['id']], [
 	                'data' => [
-	                    'confirm' => '注意：删除后将不会恢复！确认删除！',
+	                    'confirm' => Yii::t('app', 'Are you sure you want to delete it? This operation cannot be undone.'),
 	                    'method' => 'post',
 	            ]]), '</td>
 		</tr>';

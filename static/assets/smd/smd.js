@@ -194,7 +194,7 @@ SimpleMarkdown.prototype = {
 			preview:'预览',
 			fullscreen:'全屏'
 		},
-		'ja-JP':{
+		'ja':{
 			bold:'太字(Ctrl+B)',
 			italic:'斜体(Ctrl+I)',
 			code:'コード(Ctrl+K)',

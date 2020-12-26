@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -18,6 +18,7 @@ use app\models\History;
 class AdminSignupForm extends Model
 {
     public $username;
+    public $name;
     public $email;
     public $password;
     public $password_repeat;
@@ -28,34 +29,37 @@ class AdminSignupForm extends Model
     public function rules()
     {
         return [
-            [['username', 'email'], 'trim'],
-            [['username', 'email', 'password', 'password_repeat'], 'required'],
-//            ['username', 'string', 'length' => [4, 20]],
-            ['username', 'match', 'pattern' => User::USERNAME_PATTERN, 'message' => '请使用字母(a-z),数字(0-9)或中文'],
-            ['username', 'validateMbString'],
+            [['username', 'name', 'email'], 'trim'],
+            [['username', 'name', 'email', 'password', 'password_repeat'], 'required'],
+            [['username', 'email'], 'filter', 'filter' => 'strtolower'],
+            ['username', 'string', 'length' => [4, 16]],
+            ['username', 'match', 'pattern' => User::USERNAME_PATTERN, 'message' => Yii::t('app', 'Your username can only contain letters, numbers and \'_\'.')],
+//            ['username', 'validateMbString'],
+            ['name', 'string', 'length' => [4, 40]],
             ['email', 'email'],
             ['password', 'string', 'length' => [6, 16]],
-            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => '两次密码输入不一致'],
-            ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => '用户名已存在'],
-            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => '邮箱已存在'],
+            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => Yii::t('app', 'Password confirmation doesn\'t match the password.')],
+            ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => Yii::t('app', '{attribute} is already in use.', ['attribute' => Yii::t('app', 'Username')])],
+            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => Yii::t('app', '{attribute} is already in use.', ['attribute' => Yii::t('app', 'Email')])],
         ];
     }
 
     public function validateMbString($attribute, $params)
     {
         $len = strlen(preg_replace("/[\x{4e00}-\x{9fa5}]/u", '**', $this->$attribute));
-        if ($len<4 || $len>16) {
-            $this->addError($attribute, '用户名长度为4到16位，1个中文等于2位');
+        if ($len<6 || $len>16) {
+            $this->addError($attribute, Yii::t('app', 'Username should contain 6-16 characters.'));
         }
     }
 
     public function attributeLabels()
     {
         return [
-            'username' => '管理员用户名',
-            'email' => '电子邮件',
-            'password' => '密码',
-            'password_repeat' => '确认密码',
+            'username' => Yii::t('app/admin', 'Admin username'),
+            'name' => Yii::t('app', 'Name'),
+            'email' => Yii::t('app', 'Email'),
+            'password' => Yii::t('app', 'Password'),
+            'password_repeat' => Yii::t('app', 'Confirm password'),
         ];
     }
 
@@ -69,6 +73,7 @@ class AdminSignupForm extends Model
         if ($this->validate()) {
             $user = new User();
             $user->username = $this->username;
+            $user->name = $this->name;
             $user->email = $this->email;
             $user->setPassword($this->password);
             $user->generateAuthKey();

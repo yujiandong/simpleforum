@@ -8,8 +8,9 @@
 namespace yii\console\controllers;
 
 use Yii;
-use yii\console\Exception;
 use yii\console\Controller;
+use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -31,14 +32,14 @@ use yii\web\AssetBundle;
  *
  * 4. Adjust your web application config to use compressed assets.
  *
- * Note: in the console environment some path aliases like `@webroot` and `@web` may not exist,
+ * Note: in the console environment some [path aliases](guide:concept-aliases) like `@webroot` and `@web` may not exist,
  * so corresponding paths inside the configuration should be specified directly.
  *
  * Note: by default this command relies on an external tools to perform actual files compression,
  * check [[jsCompressor]] and [[cssCompressor]] for more details.
  *
  * @property \yii\web\AssetManager $assetManager Asset manager instance. Note that the type of this property
- * differs in getter and setter. See [[getAssetManager()]] and [[setAssetManager()]] for details.
+ * differs in getter and setter. See [[getAssetManager()]]  and [[setAssetManager()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -122,7 +123,7 @@ class AssetController extends Controller
      */
     public $cssCompressor = 'java -jar yuicompressor.jar --type css {from} -o {to}';
     /**
-     * @var boolean whether to delete asset source files after compression.
+     * @var bool whether to delete asset source files after compression.
      * This option affects only those bundles, which have [[\yii\web\AssetBundle::sourcePath]] is set.
      * @since 2.0.10
      */
@@ -216,7 +217,8 @@ class AssetController extends Controller
     protected function loadConfiguration($configFile)
     {
         $this->stdout("Loading configuration from '{$configFile}'...\n");
-        foreach (require($configFile) as $name => $value) {
+        $config = require $configFile;
+        foreach ($config as $name => $value) {
             if (property_exists($this, $name) || $this->canSetProperty($name)) {
                 $this->$name = $value;
             } else {
@@ -320,9 +322,9 @@ class AssetController extends Controller
             usort($target['depends'], function ($a, $b) use ($bundleOrders) {
                 if ($bundleOrders[$a] == $bundleOrders[$b]) {
                     return 0;
-                } else {
-                    return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
                 }
+
+                return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
             });
             if (!isset($target['class'])) {
                 $target['class'] = $name;
@@ -482,7 +484,7 @@ class AssetController extends Controller
             }
         }
         $array = VarDumper::export($array);
-        $version = date('Y-m-d H:i:s', time());
+        $version = date('Y-m-d H:i:s');
         $bundleFileContent = <<<EOD
 <?php
 /**
@@ -492,7 +494,7 @@ class AssetController extends Controller
  */
 return {$array};
 EOD;
-        if (!file_put_contents($bundleFile, $bundleFileContent)) {
+        if (!file_put_contents($bundleFile, $bundleFileContent, LOCK_EX)) {
             throw new Exception("Unable to write output bundle configuration at '{$bundleFile}'.");
         }
         $this->stdout("Output bundle configuration created at '{$bundleFile}'.\n", Console::FG_GREEN);
@@ -566,8 +568,14 @@ EOD;
     {
         $content = '';
         foreach ($inputFiles as $file) {
+            // Add a semicolon to source code if trailing semicolon missing.
+            // Notice: It needs a new line before `;` to avoid affection of line comment. (// ...;)
+            $fileContent = rtrim(file_get_contents($file));
+            if (substr($fileContent, -1) !== ';') {
+                $fileContent .= "\n;";
+            }
             $content .= "/*** BEGIN FILE: $file ***/\n"
-                . file_get_contents($file)
+                . $fileContent . "\n"
                 . "/*** END FILE: $file ***/\n";
         }
         if (!file_put_contents($outputFile, $content)) {
@@ -612,7 +620,7 @@ EOD;
         $inputFilePathPartsCount = count($inputFilePathParts);
         $outputFilePathParts = explode('/', $outputFilePath);
         $outputFilePathPartsCount = count($outputFilePathParts);
-        for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+        for ($i = 0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
             if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
                 $sharedPathParts[] = $inputFilePathParts[$i];
             } else {
@@ -638,7 +646,7 @@ EOD;
             $fullMatch = $matches[0];
             $inputUrl = $matches[1];
 
-            if (strpos($inputUrl, '/') === 0 || preg_match('/^https?:\/\//i', $inputUrl) || preg_match('/^data:/i', $inputUrl)) {
+            if (strncmp($inputUrl, '/', 1) === 0 || strncmp($inputUrl, '#', 1) === 0 || preg_match('/^https?:\/\//i', $inputUrl) || preg_match('/^data:/i', $inputUrl)) {
                 return $fullMatch;
             }
             if ($inputFileRelativePathParts === $outputFileRelativePathParts) {
@@ -677,7 +685,7 @@ EOD;
     /**
      * Creates template of configuration file for [[actionCompress]].
      * @param string $configFile output file name.
-     * @return integer CLI exit code
+     * @return int CLI exit code
      * @throws \yii\console\Exception on failure.
      */
     public function actionTemplate($configFile)
@@ -727,15 +735,15 @@ return [
 EOD;
         if (file_exists($configFile)) {
             if (!$this->confirm("File '{$configFile}' already exists. Do you wish to overwrite it?")) {
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
-        if (!file_put_contents($configFile, $template)) {
+        if (!file_put_contents($configFile, $template, LOCK_EX)) {
             throw new Exception("Unable to write template file '{$configFile}'.");
-        } else {
-            $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
-            return self::EXIT_CODE_NORMAL;
         }
+
+        $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
+        return ExitCode::OK;
     }
 
     /**
@@ -757,16 +765,17 @@ EOD;
                 $realPathParts[] = $pathPart;
             }
         }
+
         return implode(DIRECTORY_SEPARATOR, $realPathParts);
     }
 
     /**
      * @param AssetBundle $bundle
-     * @return boolean whether asset bundle external or not.
+     * @return bool whether asset bundle external or not.
      */
     private function isBundleExternal($bundle)
     {
-        return (empty($bundle->sourcePath) && empty($bundle->basePath));
+        return empty($bundle->sourcePath) && empty($bundle->basePath);
     }
 
     /**

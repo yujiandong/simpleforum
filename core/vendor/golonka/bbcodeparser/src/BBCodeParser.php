@@ -112,6 +112,21 @@ class BBCodeParser
             'pattern' => '/\r\n/',
             'replace' => '<br />',
             'content' => ''
+        ],
+        'sub' => [
+          'pattern' => '/\[sub\](.*?)\[\/sub\]/s',
+          'replace' => '<sub>$1</sub>',
+          'content' => '$1'
+        ],
+        'sup' => [
+          'pattern' => '/\[sup\](.*?)\[\/sup\]/s',
+          'replace' => '<sup>$1</sup>',
+          'content' => '$1'
+        ],
+        'small' => [
+          'pattern' => '/\[small\](.*?)\[\/small\]/s',
+          'replace' => '<small>$1</small>',
+          'content' => '$1'
         ]
     ];
 
@@ -224,7 +239,7 @@ class BBCodeParser
      * @param string $name Parser name
      * @param string $pattern Pattern
      * @param string $replace Replace pattern
-     * @param string $content Parsed text pattern 
+     * @param string $content Parsed text pattern
      * @return void
      */
     public function setParser($name, $pattern, $replace, $content)

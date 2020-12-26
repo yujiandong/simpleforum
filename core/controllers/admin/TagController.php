@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -64,7 +64,7 @@ class TagController extends CommonController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到['.$name.']的标签');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Tag')]));
         }
     }
 }

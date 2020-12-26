@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -13,7 +13,7 @@ use app\models\User;
 /* @var $this yii\web\View */
 /* @var $model app\models\Topic */
 
-$this->title = '用户信息';
+$this->title = Yii::t('app/admin', 'Member\'s information');
 $session = Yii::$app->getSession();
 $formatter = Yii::$app->getFormatter();
 ?>
@@ -24,7 +24,7 @@ $formatter = Yii::$app->getFormatter();
 
 <ul class="list-group sf-box">
 	<li class="list-group-item">
-		<?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
+		<?php echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
 	</li>
 <?php $form = ActiveForm::begin([
     'layout' => 'horizontal',
@@ -42,74 +42,74 @@ $formatter = Yii::$app->getFormatter();
 ]); ?>
 	<li class="list-group-item">
 		<div class="form-group">
-			<label class="control-label col-sm-3">用户名</label>
+			<label class="control-label col-sm-3"><?php echo Yii::t('app', 'Username'); ?></label>
 			<div class="col-sm-9">
 				<p class="form-control-static"><strong><?php echo $user->username; ?></strong></p>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-3">注册时间</label>
+			<label class="control-label col-sm-3"><?php echo Yii::t('app/admin', 'Register time'); ?></label>
 			<div class="col-sm-9">
-				<p class="form-control-static"><strong><?php echo $formatter->asDateTime($user->getUser()->created_at, 'y-MM-dd HH:mm:ss xxx'); ?></strong></p>
+				<p class="form-control-static"><strong><?php echo $formatter->asDateTime($user->getUser()->created_at, 'y-MM-dd HH:mm:ssZ'); ?></strong></p>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-3">注册IP</label>
+			<label class="control-label col-sm-3"><?php echo Yii::t('app/admin', 'Register IP'); ?></label>
 			<div class="col-sm-9">
 				<p class="form-control-static"><strong><?php echo long2ip($user->getUser()->userInfo->reg_ip); ?></strong></p>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-3">最后登录时间</label>
+			<label class="control-label col-sm-3"><?php echo Yii::t('app/admin', 'Last login time'); ?></label>
 			<div class="col-sm-9">
-				<p class="form-control-static"><strong><?php echo $formatter->asDateTime($user->getUser()->userInfo->last_login_at, 'y-MM-dd HH:mm:ss xxx'); ?></strong></p>
+				<p class="form-control-static"><strong><?php echo $formatter->asDateTime($user->getUser()->userInfo->last_login_at, 'y-MM-dd HH:mm:ssZ'); ?></strong></p>
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="control-label col-sm-3">最后登录IP</label>
+			<label class="control-label col-sm-3"><?php echo Yii::t('app/admin', 'Last login IP'); ?></label>
 			<div class="col-sm-9">
 				<p class="form-control-static"><strong><?php echo long2ip($user->getUser()->userInfo->last_login_ip); ?></strong></p>
 			</div>
 		</div>
 	</li>
-	<li class="list-group-item list-group-item-info"><strong>修改信息</strong></li>
+	<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app', 'Edit {attribute}', ['attribute'=>Yii::t('app/admin', 'Member\'s information')]); ?></strong></li>
 	<li class="list-group-item sf-box-form">
 <?php
 if ( $session->hasFlash('adminProfileNG') ) {
 	echo Alert::widget([
 		   'options' => ['class' => 'alert-warning'],
-		   'body' => $session->getFlash('adminProfileNG'),
+		   'body' => Yii::t('app', $session->getFlash('adminProfileNG')),
 		]);
 } else if ( $session->hasFlash('adminProfileOK') ) {
 	echo Alert::widget([
 		   'options' => ['class' => 'alert-success'],
-		   'body' => $session->getFlash('adminProfileOK'),
+		   'body' => Yii::t('app', $session->getFlash('adminProfileOK')),
 		]);
 }
 ?>
-		<?php echo $form->field($user, "status")->dropDownList(User::$statusOptions); ?>
+		<?php echo $form->field($user, "status")->dropDownList(User::getStatusList()); ?>
 		<?php echo $form->field($user, "email")->textInput(['maxlength'=>50]); ?>
         <div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
+            <?php echo Html::submitButton(Yii::t('app', 'Edit'), ['class' => 'btn btn-primary']); ?>
 			</div>
         </div>
 	</li>
 <?php
 	ActiveForm::end();
 ?>
-	<li class="list-group-item list-group-item-info"><strong>修改密码</strong></li>
+	<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app', 'Edit {attribute}', ['attribute'=>Yii::t('app', 'Password')]); ?></strong></li>
 	<li class="list-group-item sf-box-form">
 <?php
 if ( $session->hasFlash('adminPwdNG') ) {
 	echo Alert::widget([
 		   'options' => ['class' => 'alert-warning'],
-		   'body' => $session->getFlash('adminPwdNG'),
+		   'body' => Yii::t('app', $session->getFlash('adminPwdNG')),
 		]);
 } else if ( $session->hasFlash('adminPwdOK') ) {
 	echo Alert::widget([
 		   'options' => ['class' => 'alert-success'],
-		   'body' => $session->getFlash('adminPwdOK'),
+		   'body' => Yii::t('app', $session->getFlash('adminPwdOK')),
 		]);
 }
 ?>
@@ -130,9 +130,9 @@ if ( $session->hasFlash('adminPwdNG') ) {
 	]); ?>
 		<?php echo $form->field($user, "password")->textInput(['maxlength'=>20]); ?>
         <div class="form-group">
-			<div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
-			</div>
+		<div class="col-sm-offset-3 col-sm-9">
+        	<?php echo Html::submitButton(Yii::t('app', 'Edit'), ['class' => 'btn btn-primary']); ?>
+		</div>
         </div>
 	<?php
 		ActiveForm::end();

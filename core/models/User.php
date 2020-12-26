@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -23,19 +23,14 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
     const ROLE_MEMBER = 0;
     const ROLE_ADMIN = 10;
-    const USERNAME_PATTERN = '/^[a-zA-Z0-9\x{4e00}-\x{9fa5}]*$/u';
-    const USER_MENTION_PATTERN = '/\B\@([a-zA-Z0-9\x{4e00}-\x{9fa5}]{4,20})/u';
-
-    public static $statusOptions = [
-        0 => '被屏蔽用户',
-        8 => '待激活用户',
-        9 => '待管理员验证用户',
-        10 => '正常用户',
-    ];
+//    const USERNAME_PATTERN = '/^[a-zA-Z0-9\x{4e00}-\x{9fa5}]*$/u';
+//    const USER_MENTION_PATTERN = '/\B\@([a-zA-Z0-9\x{4e00}-\x{9fa5}]{4,16})/u';
+    const USERNAME_PATTERN = '/^[a-zA-Z0-9_]*$/u';
+    const USER_MENTION_PATTERN = '/\B\@([a-zA-Z0-9_]{4,16})/u';
 
     public static $roleOptions = [
-        0 => '用户组',
-        10 => '管理员',
+        0 => 'Member Group',
+        10 => 'Admin Group',
     ];
 
     /**
@@ -71,7 +66,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getNoticeCount()
     {
-        return Notice::find()->where(['status'=>0, 'target_id' => $this->id])->count('id');
+        return (int)Notice::find()->where(['status'=>0, 'target_id' => $this->id])->count('id');
     }
 
     public function getSystemNoticeCount()
@@ -81,7 +76,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getSmsCount()
     {
-        return Notice::find()->where(['status'=>0, 'target_id' => $this->id, 'type'=>Notice::TYPE_MSG])->count('id');
+        return (int)Notice::find()->where(['status'=>0, 'target_id' => $this->id, 'type'=>Notice::TYPE_MSG])->count('id');
     }
 
     public function getNotices()
@@ -215,26 +210,37 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getStatus()
     {
-        return self::$statusOptions[$this->status];
+        $statusList = self::getStatusList();
+        return Yii::t('app', $statusList[$this->status]);
+    }
+
+    public static function getStatusList()
+    {
+	    return [
+	        self::STATUS_BANNED => Yii::t('app', 'Banned User'),
+	        self::STATUS_INACTIVE => Yii::t('app', 'Inactive User'),
+	        self::STATUS_ADMIN_VERIFY => Yii::t('app', 'Unapproved User'),
+	        self::STATUS_ACTIVE => Yii::t('app', 'Active User'),
+	    ];
     }
 
     public function getRole()
     {
-        return self::$roleOptions[$this->role];
+        return Yii::t('app', self::$roleOptions[$this->role]);
     }
 
     public static function getCost($action)
     {
         $costs = [
-            'reg' => 1000,  //注册
-            'addTopic' => -20,  //发表主题
-            'addComment' => -5, //发表回复
-            'commented' => 5,   //被回复,不能为负数
-            'sendMsg' => -5,    //发送短消息
-            'buyInviteCode' => -50, //购买邀请码
-            'signin_10days' => 200, //连续签到10天奖励
-            'signin' => function() {return rand(10, 50);},  //签到奖励10-50的随机数
-            'thanks' => -20, //感谢：自己扣分，对方加分
+            'reg' => 1000,
+            'addTopic' => -20,
+            'addComment' => -5,
+            'commented' => 5,
+            'sendMsg' => -5,
+            'buyInviteCode' => -50,
+            'signin_10days' => 200,
+            'signin' => function() {return rand(10, 50);}, 
+            'thanks' => -20,
         ];
         if ($action === 'signin') {
             return $costs[$action]();
@@ -486,12 +492,12 @@ class User extends ActiveRecord implements IdentityInterface
         ];
 
         if( !isset($types[$type]) || !isset($actions[$type]) ) {
-            return ['result'=>0, 'msg'=>'参数错误'];
+            return ['result'=>0, 'msg'=>Yii::t('app', 'Parameter error')];
         }
 
         $action = $this->getAction(['action'=>$actions[$type], 'target'=>$id])->one();
         if ($action) {
-            return ['result'=>0, 'msg'=>'不能重复点赞'];
+            return ['result'=>0, 'msg'=>Yii::t('app', 'Can\'t click \'good\' repeatedly.')];
         }
 
         if ($type == 'topic') {
@@ -513,12 +519,12 @@ class User extends ActiveRecord implements IdentityInterface
             ];
         }
         if (!$target) {
-            return ['result'=>0, 'msg'=>'参数错误'];
+            return ['result'=>0, 'msg'=>Yii::t('app', 'Parameter error')];
         } else if ($this->id == $target->user_id) {
-            return ['result'=>0, 'msg'=>'不能给自己的'.($type===Notice::TYPE_GOOD_TOPIC?'主题':'回复').'点赞'];
+            return ['result'=>0, 'msg'=>Yii::t('app', 'Can\'t click \'good\' to your {attribute}.', ['attribute' => ($type===Notice::TYPE_GOOD_TOPIC?Yii::t('app', 'Topic'):Yii::t('app', 'Comment'))])];
         }
         if ( !$target->updateCounters(['good' => 1]) ) {
-            return ['result'=>0, 'msg'=>'程序出错'];
+            return ['result'=>0, 'msg'=>Yii::t('app', 'Error occurred')];
         }
         $result = ['result'=>1, 'count'=>$target->good];
         $history = [
@@ -529,7 +535,7 @@ class User extends ActiveRecord implements IdentityInterface
         if ($thanks) {
             $cost = static::getCost('thanks');
             if( $this->score+$cost < 0 ) {
-                $result['msg'] = '您的积分不够'.abs($cost);
+                $result['msg'] = Yii::t('app', 'You don\'t have enough points.');
             } else if( ($author = static::findOne($target->user_id)) && $this->updateScore($cost) ) {
                 $thanksCost = abs($cost);
 

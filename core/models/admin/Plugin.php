@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -26,7 +26,8 @@ class Plugin extends \yii\db\ActiveRecord
     {
         return [
 			[['pid', 'name'], 'required'],
-            [['pid', 'name', 'author'], 'string', 'max' => 20],
+            ['pid', 'string', 'max' => 20],
+            [['name', 'author'], 'string', 'max' => 40],
             [['description', 'url'], 'string', 'max' => 255],
             ['version', 'string', 'max' => 10],
             ['url', 'string', 'max' => 200],
@@ -41,14 +42,14 @@ class Plugin extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'pid' => '插件ID',
-            'name' => '插件名',
-            'author' => '作者',
-            'url' => '网址',
-            'version' => '版本',
-            'description' => '描述',
-            'status' => '状态',
+            'id' => 'Id',
+            'pid' => Yii::t('app/admin', 'Plugin id'),
+            'name' => Yii::t('app/admin', 'Plugin name'),
+            'author' => Yii::t('app', 'Author'),
+            'url' => Yii::t('app', 'Homepage'),
+            'version' => Yii::t('app', 'Version'),
+            'description' => Yii::t('app', 'Description'),
+            'status' => Yii::t('app', 'Status'),
         ];
     }
 }

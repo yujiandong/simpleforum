@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -11,11 +11,14 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
+use app\components\SfHook;
+use app\components\SfEvent;
 
 class Comment extends ActiveRecord
 {
     const SCENARIO_AUTHOR = 1;
     const SCENARIO_ADMIN = 10;
+    public $captcha;
 
     public static function tableName()
     {
@@ -32,11 +35,21 @@ class Comment extends ActiveRecord
 
     public function rules()
     {
-        return [
+        $rules = [
             ['invisible', 'boolean'],
             ['content', 'required'],
-            ['content', 'string', 'max'=>20000]
+            ['content', 'string', 'max'=>20000],
         ];
+
+        $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
+        if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
+           $rule = $plugin['class']::captchaValidate('newcomment', $plugin);
+           if(!empty($rule)) {
+             $rules[] = $rule;
+           }
+        }
+
+        return $rules;
     }
 
     /**
@@ -45,8 +58,9 @@ class Comment extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'invisible' => '隐藏',
-            'content' => '内容',
+            'invisible' => Yii::t('app', 'Invisible'),
+            'content' => Yii::t('app', 'Content'),
+            'captcha' => Yii::t('app', 'Enter code'),
         ];
     }
 
@@ -83,7 +97,7 @@ class Comment extends ActiveRecord
     public function getAuthor()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id'])
-            ->select(['id', 'username', 'avatar', 'status', 'score', 'comment']);
+            ->select(['id', 'username', 'avatar', 'status', 'score', 'comment', 'name']);
     }
 
     public function afterSave($insert, $changedAttributes)

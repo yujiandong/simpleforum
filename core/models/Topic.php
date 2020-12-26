@@ -1,17 +1,20 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 use yii\caching\DbDependency;
+use app\components\SfHook;
+use app\components\SfEvent;
 
 class Topic extends ActiveRecord
 {
@@ -23,11 +26,7 @@ class Topic extends ActiveRecord
     const TOPIC_ACCESS_NONE = 0;
     const TOPIC_ACCESS_LOGIN = 1;
     const TOPIC_ACCESS_REPLY = 2;
-	public static $access = [
-		self::TOPIC_ACCESS_NONE => '无限制',
-		self::TOPIC_ACCESS_LOGIN => '登录查看',
-		self::TOPIC_ACCESS_REPLY => '回复查看',
-	];
+    public $captcha;
 
     public static function tableName()
     {
@@ -37,8 +36,8 @@ class Topic extends ActiveRecord
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios[self::SCENARIO_ADD] = ['title', 'access_auth', 'tags'];
-        $scenarios[self::SCENARIO_NEW] = ['title', 'node_id', 'access_auth', 'tags'];
+        $scenarios[self::SCENARIO_ADD] = ['title', 'access_auth', 'tags', 'captcha'];
+        $scenarios[self::SCENARIO_NEW] = ['title', 'node_id', 'access_auth', 'tags', 'captcha'];
         $scenarios[self::SCENARIO_AUTHOR_EDIT] = ['title', 'access_auth', 'tags'];
         $scenarios[self::SCENARIO_ADMIN_EDIT] = ['invisible', 'access_auth', 'comment_closed', 'alltop', 'top', 'title', 'tags'];
         $scenarios[self::SCENARIO_ADMIN_CHGNODE] = ['node_id'];
@@ -63,16 +62,26 @@ class Topic extends ActiveRecord
      */
     public function rules()
     {
-        return [
+        $rules = [
             [['title', 'node_id'], 'required'],
             [['invisible', 'comment_closed', 'alltop', 'top'], 'boolean'],
             [['node_id', 'access_auth'], 'integer'],
-            ['node_id', 'exist', 'targetClass' => '\app\models\Node', 'targetAttribute' => 'id', 'message' => '节点不存在'],
+            ['node_id', 'exist', 'targetClass' => '\app\models\Node', 'targetAttribute' => 'id', 'message' => Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Node')])],
             ['title', 'trim'],
             ['title', 'string', 'length' => [4, 120]],
 //            [['content'], 'string', 'max' => 20000],
 //            ['content', 'filter', 'filter' => 'nl2br'],
         ];
+        
+        $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
+        if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
+           $rule = $plugin['class']::captchaValidate('newtopic', $plugin);
+           if(!empty($rule)) {
+             $rules[] = $rule;
+           }
+        }
+
+        return $rules;
     }
 
     /**
@@ -81,13 +90,14 @@ class Topic extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'node_id' => '所属节点',
-            'invisible' => '隐藏主题',
-            'comment_closed' => '关闭评论',
-            'alltop' => '全局置顶',
-            'top' => '节点置顶',
-            'access_auth' => '查看权限',
-            'title' => '标题',
+            'node_id' => Yii::t('app', 'Node name'),
+            'invisible' => Yii::t('app', 'Invisible'),
+            'comment_closed' => Yii::t('app', 'Close Comment'),
+            'alltop' => Yii::t('app', 'Home Top'),
+            'top' => Yii::t('app', 'Node Top'),
+            'access_auth' => Yii::t('app', 'Visible Option'),
+            'title' => Yii::t('app', 'Title'),
+            'captcha' => Yii::t('app', 'Enter code'),
         ];
     }
 
@@ -95,6 +105,15 @@ class Topic extends ActiveRecord
     {
         return $this->hasOne(Node::className(), ['id' => 'node_id'])
             ->select(['id', 'ename', 'name', 'access_auth']);
+    }
+
+    public static function accessList()
+    {
+		return [
+			self::TOPIC_ACCESS_NONE => Yii::t('app', 'Public'),
+			self::TOPIC_ACCESS_LOGIN => Yii::t('app', 'Sign in Required'),
+			self::TOPIC_ACCESS_REPLY => Yii::t('app', 'Comment Required'),
+		];
     }
 
     public function getTopic()
@@ -112,7 +131,7 @@ class Topic extends ActiveRecord
     public function getAuthor()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id'])
-            ->select(['id', 'username', 'status', 'avatar', 'score', 'comment']);
+            ->select(['id', 'username', 'status', 'avatar', 'score', 'comment', 'name']);
     }
 
     public function getLastReply()
@@ -282,7 +301,7 @@ class Topic extends ActiveRecord
         if ( intval($settings['cache_enabled']) === 0 || ($model = $cache->get($key)) === false) {
             $model = static::find()->where(['id'=>$id])->with(['content', 'node', 'author'])->one();
             if ( !$model ) {
-                throw new \yii\web\NotFoundHttpException('未找到id为['.$id.']的主题');
+                throw new \yii\web\NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Topic')]));
             }
         }
 

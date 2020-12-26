@@ -1,14 +1,14 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = '修改标签';
+$this->title = Yii::t('app/admin', 'Edit a tag');
 ?>
 
 <div class="row">
@@ -18,7 +18,7 @@ $this->title = '修改标签';
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('标签管理', ['index']), '&nbsp;/&nbsp;' . $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Tags'), ['index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
 	<div class="panel-body">
@@ -26,7 +26,7 @@ $this->title = '修改标签';
 	echo $form->field($model, 'name')->textInput(['maxlength' => 20]);
 ?>
 		<div class="form-group">
-			<?php echo Html::submitButton('修改', ['class' => 'btn btn-primary']); ?>
+			<?php echo Html::submitButton(Yii::t('app', 'Edit'), ['class' => 'btn btn-primary']); ?>
 		</div>
 <?php ActiveForm::end(); ?>
 	</div>

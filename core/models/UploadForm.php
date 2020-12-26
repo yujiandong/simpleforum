@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -72,7 +72,7 @@ class UploadForm extends Model
     public function attributeLabels()
     {
         return [
-            'file' => '选择一个图片文件',
+            'file' => Yii::t('app', 'Select a picture'),
         ];
     }
 
@@ -80,7 +80,7 @@ class UploadForm extends Model
     {
         $files = $this->$attribute;
         if(!empty($params['maxFiles']) && count($files) > $params['maxFiles']) {
-            $this->addError($attribute, '一次最多只能上传'.$params['maxFiles'].'个图片');
+            $this->addError($attribute, Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.', ['limit'=>$params['maxFiles']]));
             return false;
         }
 
@@ -90,26 +90,38 @@ class UploadForm extends Model
 
         foreach($files as $file) {
             if(!empty($params['extensions']) && !in_array($file->getExtension(), explode(",", $params['extensions']))){
-                $this->addError($attribute, '该图片格式不允许上传，只支持'. $params['extensions']);
+                $this->addError($attribute, Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.', ['limit'=>$params['extensions']]));
                 return;
             }
-            if(!empty($params['maxSize']) && $file->size > $params['maxSize']) {
-                $this->addError($attribute, '该图片太大，不能超过'. $params['maxSize']/1024 . 'KB');
+            if(!empty($params['maxSize']) && $file->size > $params['maxSize'] * 1024) {
+                $this->addError($attribute, Yii::t('yii', 'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{KB} other{KBs}}.', ['file'=>$file->name, 'limit'=>$params['maxSize']]));
                 return;
             }
             $imgInfo = @getimagesize($file->tempName);
             if(!empty($params['extensions']) && !$imgInfo){
-                $this->addError($attribute, '该图片格式不允许上传，只支持' . $params['extensions']);
+                $this->addError($attribute, Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.', ['limit'=>$params['extensions']]));
                 return;
             }
             if(!empty($params['mimeTypes']) && !in_array($imgInfo['mime'], explode(",", $params['mimeTypes']))){
-                $this->addError($attribute, '该图片格式不允许上传，只支持' . $params['extensions']);
+                $this->addError($attribute, Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.', ['limit'=>$params['extensions']]));
                 return;
             }
-            if($imgInfo[0] < $params['minWidth'] || $imgInfo[0] > $params['maxWidth'] || $imgInfo[1] < $params['minHeight'] || $imgInfo[1] > $params['maxHeight']) {
-                $this->addError($attribute, '该图片尺寸不符合条件('. $params['minWidth'] . 'x' . $params['minHeight'] . ' - ' . $params['maxWidth'] . 'x'. $params['maxHeight'] . ')');
-                return;
-            }
+	    if($imgInfo[0] < $params['minWidth']) {
+		$this->addError($attribute, Yii::t('yii', 'The image "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.', ['file'=>$file->name, 'limit'=>$params['minWidth']]));
+		return;
+	    }
+	    if($imgInfo[0] > $params['maxWidth']) {
+	    	$this->addError($attribute, Yii::t('yii', 'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.', ['file'=>$file->name, 'limit'=>$params['maxWidth']]));
+	    	return;
+	    }
+	    if($imgInfo[1] < $params['minHeight']) {
+	    	$this->addError($attribute, Yii::t('yii', 'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.', ['file'=>$file->name, 'limit'=>$params['minHeight']]));
+		return;
+	    }
+	    if($imgInfo[1] > $params['maxHeight']) {
+	    	$this->addError($attribute, Yii::t('yii', 'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.', ['file'=>$file->name, 'limit'=>$params['maxHeight']]));
+		return;
+	    }
         }
     }
 

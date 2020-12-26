@@ -3,34 +3,138 @@ namespace Qiniu;
 
 final class Config
 {
-    const SDK_VER = '7.0.7';
+    const SDK_VER = '7.3.0';
 
     const BLOCK_SIZE = 4194304; //4*1024*1024 分块上传块大小，该参数为接口规格，不能修改
 
-    const IO_HOST  = 'http://iovip.qbox.me';            // 七牛源站Host
-    const RS_HOST  = 'http://rs.qbox.me';               // 文件元信息管理操作Host
-    const RSF_HOST = 'http://rsf.qbox.me';              // 列举操作Host
-    const API_HOST = 'http://api.qiniu.com';            // 数据处理操作Host
+    const RSF_HOST = 'rsf.qiniu.com';
+    const API_HOST = 'api.qiniu.com';
+    const RS_HOST = 'rs.qiniu.com';      //RS Host
+    const UC_HOST = 'uc.qbox.me';              //UC Host
+    const RTCAPI_HOST = 'http://rtc.qiniuapi.com';
+    const ARGUS_HOST = 'ai.qiniuapi.com';
+    const CASTER_HOST = 'pili-caster.qiniuapi.com';
+    const SMS_HOST="https://sms.qiniuapi.com";
+    const RTCAPI_VERSION = 'v3';
+    const SMS_VERSION='v1';
 
-    private $upHost;                                    // 上传Host
-    private $upHostBackup;                              // 上传备用Host
+    // Zone 空间对应的存储区域
+    public $region;
+    //BOOL 是否使用https域名
+    public $useHTTPS;
+    //BOOL 是否使用CDN加速上传域名
+    public $useCdnDomains;
+    // Zone Cache
+    private $regionCache;
 
-    public function __construct(Zone $z = null)         // 构造函数，默认为zone0
+    // 构造函数
+    public function __construct(Region $z = null)
     {
-        if ($z === null) {
-            $z = Zone::zone0();
+        $this->zone = $z;
+        $this->useHTTPS = false;
+        $this->useCdnDomains = false;
+        $this->regionCache = array();
+    }
+
+    public function getUpHost($accessKey, $bucket)
+    {
+        $region = $this->getRegion($accessKey, $bucket);
+        if ($this->useHTTPS === true) {
+            $scheme = "https://";
+        } else {
+            $scheme = "http://";
         }
-        $this->upHost = $z->upHost;
-        $this->upHostBackup = $z->upHostBackup;
+
+        $host = $region->srcUpHosts[0];
+        if ($this->useCdnDomains === true) {
+            $host = $region->cdnUpHosts[0];
+        }
+
+        return $scheme . $host;
     }
 
-    public function getUpHost()
+    public function getUpBackupHost($accessKey, $bucket)
     {
-        return $this->upHost;
+        $region = $this->getRegion($accessKey, $bucket);
+        if ($this->useHTTPS === true) {
+            $scheme = "https://";
+        } else {
+            $scheme = "http://";
+        }
+
+        $host = $region->cdnUpHosts[0];
+        if ($this->useCdnDomains === true) {
+            $host = $region->srcUpHosts[0];
+        }
+
+        return $scheme . $host;
     }
 
-    public function getUpHostBackup()
+    public function getRsHost($accessKey, $bucket)
     {
-        return $this->upHostBackup;
+        $region = $this->getRegion($accessKey, $bucket);
+
+        if ($this->useHTTPS === true) {
+            $scheme = "https://";
+        } else {
+            $scheme = "http://";
+        }
+
+        return $scheme . $region->rsHost;
+    }
+
+    public function getRsfHost($accessKey, $bucket)
+    {
+        $region = $this->getRegion($accessKey, $bucket);
+
+        if ($this->useHTTPS === true) {
+            $scheme = "https://";
+        } else {
+            $scheme = "http://";
+        }
+
+        return $scheme . $region->rsfHost;
+    }
+
+    public function getIovipHost($accessKey, $bucket)
+    {
+        $region = $this->getRegion($accessKey, $bucket);
+
+        if ($this->useHTTPS === true) {
+            $scheme = "https://";
+        } else {
+            $scheme = "http://";
+        }
+
+        return $scheme . $region->iovipHost;
+    }
+
+    public function getApiHost($accessKey, $bucket)
+    {
+        $region = $this->getRegion($accessKey, $bucket);
+
+        if ($this->useHTTPS === true) {
+            $scheme = "https://";
+        } else {
+            $scheme = "http://";
+        }
+
+        return $scheme . $region->apiHost;
+    }
+
+    private function getRegion($accessKey, $bucket)
+    {
+        $cacheId = "$accessKey:$bucket";
+
+        if (isset($this->regionCache[$cacheId])) {
+            $region = $this->regionCache[$cacheId];
+        } elseif (isset($this->zone)) {
+            $region = $this->zone;
+            $this->regionCache[$cacheId] = $region;
+        } else {
+            $region = Zone::queryZone($accessKey, $bucket);
+            $this->regionCache[$cacheId] = $region;
+        }
+        return $region;
     }
 }

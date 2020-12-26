@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -39,12 +39,12 @@ class DatabaseForm extends Model
     public function attributeLabels()
     {
         return [
-            'host' => '数据库地址',
-            'port' => '数据库端口',
-            'dbname' => '数据库名',
-            'username' => '数据库用户名',
-            'password' => '数据库用户密码',
-            'tablePrefix' => '数据表前缀',
+            'host' => Yii::t('app/admin', 'DB host'),
+            'port' => Yii::t('app/admin', 'DB port'),
+            'dbname' => Yii::t('app/admin', 'DB name'),
+            'username' => Yii::t('app/admin', 'DB username'),
+            'password' => Yii::t('app/admin', 'DB password'),
+            'tablePrefix' => Yii::t('app/admin', 'Table prefix'),
         ];
     }
 
@@ -56,13 +56,13 @@ class DatabaseForm extends Model
             'username' => $this->username,
             'password' => $this->password,
             'tablePrefix' => $this->tablePrefix,
-            'charset' => 'utf8',
+            'charset' => 'utf8mb4',
         ];
         $db = new \yii\db\Connection($this->_dbConfig);
 //      try {
             $db->open();
 //      } catch (\yii\db\Exception $e) {
-//          throw new \yii\base\InvalidParamException('数据库连接出错：'. $e->getMessage());
+//          throw new \yii\base\InvalidParamException(Yii::t('app/admin', Error establishing a database connection: Please confirm database settings.) . '<br />' . $e->getMessage());
 //      }
         return $db;
     }

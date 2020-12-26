@@ -1,14 +1,14 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 
-$this->title = '链接管理';
+$this->title = Yii::t('app/admin', 'Links');
 ?>
 
 <div class="row">
@@ -17,21 +17,21 @@ $this->title = '链接管理';
 
 <ul class="list-group sf-box">
 	<li class="list-group-item">
-		<p class='fr'><?php echo Html::a('创建新链接', ['add']); ?></p>
+		<p class='fr'><?php echo Html::a(Yii::t('app/admin', 'Add a link'), ['add']); ?></p>
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</li>
-	<li class="list-group-item list-group-item-info"><strong>链接</strong></li>
+	<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app', 'Links'); ?></strong></li>
 	<li class="list-group-item">
 		<ul>
 		<?php
 			foreach($links as $link) {
 				echo '<li>', $link['name'], '&nbsp;(', Html::a($link['url'], $link['url']), ')&nbsp;|&nbsp;', 
-					Html::a('修改', ['edit', 'id'=>$link['id']]), '&nbsp;|&nbsp;', 
-					Html::a('删除', ['delete', 'id'=>$link['id']], [
+					Html::a(Yii::t('app', 'Edit'), ['edit', 'id'=>$link['id']]), '&nbsp;|&nbsp;', 
+					Html::a(Yii::t('app', 'Delete'), ['delete', 'id'=>$link['id']], [
 					    'data' => [
-					        'confirm' => '注意：删除后将不会恢复！确认删除！',
+					        'confirm' => Yii::t('app', 'Are you sure you want to delete it? This operation cannot be undone.'),
 					        'method' => 'post',
 					]]), '</li>';
 			}

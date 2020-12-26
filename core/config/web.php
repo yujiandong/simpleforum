@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -13,14 +13,27 @@ $params += require(__DIR__ . '/plugins.php');
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'language' => 'zh-CN',
-    'bootstrap' => ['log', 'app\components\SfBootstrap'],
-    'timeZone' => ArrayHelper::remove($params, 'settings.timezone', 'Asia/Shanghai'),
+    'bootstrap' => ['log', 'app\components\SfBootstrap', 'app\components\LanguageSelector'],
+    'language' => ArrayHelper::remove($params['settings'], 'language', 'en-US'),
+    'timeZone' => ArrayHelper::remove($params['settings'], 'timezone', 'UTC'),
     'defaultRoute' => 'topic/index',
     'components' => [
         'request' => [
             'cookieValidationKey' => 'hwdn8-iyIh5LylPLpD1PoplqjUka98Ba',
         ],
+	    'i18n' => [
+	        'translations' => [
+	            'app*' => [
+	                'class' => 'yii\i18n\PhpMessageSource',
+	                //'basePath' => '@app/messages',
+	                //'sourceLanguage' => 'en-US',
+	                'fileMap' => [
+	                    'app' => 'app.php',
+	                    'app/admin' => 'admin.php',
+	                ],
+	            ],
+	        ],
+	    ],
         'cache' =>  [
             'class' => 'yii\caching\FileCache',
         ],
@@ -140,11 +153,6 @@ if ( intval($setting['auth_enabled']) !== 0 && !empty($setting['auth_setting']) 
         $config['components']['authClientCollection']['clients'][$type] = $client;
     }
 }
-
-//timezone
-//if( !empty($setting['timezone']) ) {
-//    $config['timeZone'] = $setting['timezone'];
-//}
 
 //alias
 if( !empty($setting['alias_static']) ) {

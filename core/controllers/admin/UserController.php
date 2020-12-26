@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -65,10 +65,10 @@ class UserController extends CommonController
     {
         $model = new UserForm(['scenario' => UserForm::SCENARIO_EDIT]);
         if ($model->find($id) == null) {
-            throw new NotFoundHttpException('未找到id为['.$id.']的用户');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'User')]));
         }
         if ($model->load(Yii::$app->getRequest()->post()) && $model->edit()) {
-			Yii::$app->getSession()->setFlash('adminProfileOK', '用户信息修改成功');
+			Yii::$app->getSession()->setFlash('adminProfileOK', Yii::t('app', '{attribute} has been changed successfully.', ['attribute' => Yii::t('app/admin', 'Member\'s information')]));
         }
 
         return $this->render('userinfo', [
@@ -81,10 +81,10 @@ class UserController extends CommonController
     {
         $model = new UserForm(['scenario' => UserForm::SCENARIO_RESET_PWD]);
         if ($model->find($id) == null) {
-            throw new NotFoundHttpException('未找到id为['.$id.']的用户');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'User')]));
         }
         if ($model->load(Yii::$app->getRequest()->post()) && $model->validate() && $model->resetPassword()) {
-			Yii::$app->getSession()->setFlash('adminPwdOK', '用户密码修改成功');
+			Yii::$app->getSession()->setFlash('adminPwdOK', Yii::t('app', '{attribute} has been changed successfully.', ['attribute' => Yii::t('app', 'Password')]));
 		} else {
 			Yii::$app->getSession()->setFlash('adminPwdNG', implode('<br />', $model->getFirstErrors()));
 		}
@@ -96,7 +96,7 @@ class UserController extends CommonController
         $model = new ChargePointForm();
         if ($model->load(Yii::$app->getRequest()->post()) && $model->validate()) {
             if ( $model->apply() ) {
-                Yii::$app->getSession()->setFlash('ChargePointOK', '积分充值成功。');
+                Yii::$app->getSession()->setFlash('ChargePointOK',  Yii::t('app', 'Points have been changed successfully.'));
                 $model = new ChargePointForm();
             }
         }
@@ -116,7 +116,7 @@ class UserController extends CommonController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的用户');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'User')]));
         }
     }
 

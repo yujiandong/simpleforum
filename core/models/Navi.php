@@ -14,13 +14,6 @@ use yii\helpers\ArrayHelper;
 
 class Navi extends ActiveRecord
 {
-/*	const TYPES = [
-		0 => '节点导航页',
-		1 => '首页头部',
-		2 => '首页尾部',
-	];
-*/
-	const TYPES = '{"0":"所有节点页","1":"首页头部", "2":"首页尾部"}';
 	const TYPE_ALLNODES = 0;
 	const TYPE_TOP = 1;
 	const TYPE_BOTTOM = 2;
@@ -58,10 +51,19 @@ class Navi extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => '导航名',
-            'ename' => '导航英文名',
-            'type' => '类型',
-            'sortid' => '排序',
+            'name' => Yii::t('app', 'Item Name'),
+            'ename' => Yii::t('app', 'Item ID'),
+            'type' => Yii::t('app', 'Type'),
+            'sortid' => Yii::t('app', 'Sort ID'),
+        ];
+    }
+
+    public static function getTypes()
+    {
+        return [
+            0 => Yii::t('app', 'All nodes navi'),
+            1 => Yii::t('app', 'Top navi'),
+            2 => Yii::t('app', 'Bottom navi'),
         ];
     }
 

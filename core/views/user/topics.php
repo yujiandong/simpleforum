@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\components\SfHtml;
 
-$this->title = Html::encode($user['username']).'的全部主题';
+$this->title = Yii::t('app', '{username}\'s All Topics', ['username'=>$user['username']]);
 $settings = Yii::$app->params['settings'];
 $formatter = Yii::$app->getFormatter();
 
@@ -20,7 +20,7 @@ $formatter = Yii::$app->getFormatter();
 
 <ul class="list-group sf-box">
 	<li class="list-group-item">
-		<?php echo Html::a('首页', ['topic/index']), '&nbsp;›&nbsp;', SfHtml::uLink($user['username']), '&nbsp;›&nbsp;全部主题'; ?>
+		<?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;›&nbsp;', SfHtml::uLink($user['username'], $user['name']), '&nbsp;›&nbsp;', Yii::t('app', 'All Topics'); ?>
 	</li>
 <?php
 foreach($topics as $topic){
@@ -42,7 +42,7 @@ foreach($topics as $topic){
 				echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
 				' •  ', $formatter->asRelativeTime($topic['replied_at']);
 	if ($topic['comment_count']>0) {
-				echo '<span class="item-lastreply"> •  最后回复者 ', SfHtml::uLink($topic['lastReply']['username']), '</span>';
+				echo '<span class="item-lastreply"> •  ' , Yii::t('app', 'by {username}', ['username'=>SfHtml::uLink($topic['lastReply']['username'])]) , '</span>';
 	}
 				echo '</div>';
 

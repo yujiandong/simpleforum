@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -24,17 +24,17 @@ class ChangePasswordForm extends \yii\base\Model
         return [
             [['old_password', 'password', 'password_repeat'], 'required'],
             ['password', 'string', 'length' => [6, 16]],
-            ['password', 'compare', 'compareAttribute'=>'old_password', 'operator' => '!=', 'message' => '[新密码]和[当前密码]不能相同'],
-            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => '[新密码]和[再次输入新密码]不一致'],
+            ['password', 'compare', 'compareAttribute'=>'old_password', 'operator' => '!=', 'message' => Yii::t('app', '{attribute} must not be equal to {compareAttribute}.', ['attribute' => Yii::t('app', 'New password'), 'compareAttribute' => Yii::t('app', 'Current password')])],
+            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => Yii::t('app', 'Password confirmation doesn\'t match the password.')],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'old_password' => '当前密码',
-            'password' => '新密码',
-            'password_repeat' => '再次输入新密码',
+            'old_password' => Yii::t('app', 'Current password'),
+            'password' => Yii::t('app', 'New password'),
+            'password_repeat' => Yii::t('app', 'Confirm password'),
         ];
     }
 
@@ -62,11 +62,11 @@ class ChangePasswordForm extends \yii\base\Model
         if ( !$this->validate() ) {
             $result = ['chgPwdNG', implode('<br />', $this->getFirstErrors())];
         } else if ( !$this->_user->validatePassword($this->old_password) ) {
-            $result = ['chgPwdNG', '[当前密码]错误'];
+            $result = ['chgPwdNG', Yii::t('app', '{attribute} is invalid.', ['attribute' => Yii::t('app', 'Current password')])];
         } else if ( !$this->savePassword() ) {
-            $result = ['chgPwdNG', '程序出错，请重试'];
+            $result = ['chgPwdNG', Yii::t('app', 'Error Occurred. Please try again.')];
         } else {
-            $result = ['chgPwdOK', '密码修改成功'];
+            $result = ['chgPwdOK', Yii::t('app', '{attribute} has been changed successfully.', ['attribute' => Yii::t('app', 'Password')])];
         }
         return $result;
     }

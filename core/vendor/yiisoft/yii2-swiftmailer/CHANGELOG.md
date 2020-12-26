@@ -1,6 +1,34 @@
 Yii Framework 2 swiftmailer extension Change Log
 ================================================
 
+2.1.2 September 24, 2018
+------------------------
+
+- Bug #67: If transport is gone, try to restart transport (mikk150)
+- Bug #67: Test if transport is gone each time someone tries to send email, not if connection is initially made (mikk150)
+- Enh #63: Added ability to specify the disposition of an attachment by supplying a `setDisposition` value when embedding content in a message (CorWatts)
+
+
+2.1.1 April 25, 2018
+--------------------
+
+- Bug #61: Fixed `yii\swiftmailer\Mailer::setTransport` has no effect after sending of first message (dmitry-kulikov)
+
+
+2.1.0 August 04, 2017
+---------------------
+
+- Enh #31: Added support for SwiftMailer 6.0.x (klimov-paul)
+
+
+2.0.7 May 01, 2017
+------------------
+
+- Bug #46: Fixed `yii\swiftmailer\Message` does not clones `$swiftMessage` during its own cloning (evpav, klimov-paul)
+- Enh #37: `yii\swiftmailer\Logger` now chooses logging level depending on incoming entry format (klimov-paul)
+- Enh #40: Added `yii\swiftmailer\Message::setHeaders()` allowing to setup custom headers in batch (klimov-paul)
+
+
 2.0.6 September 09, 2016
 ------------------------
 

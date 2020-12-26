@@ -111,7 +111,7 @@ class NaviController extends CommonController
         if (($model = Navi::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的链接');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Navigation')]));
         }
     }
 

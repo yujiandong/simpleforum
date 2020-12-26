@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -36,18 +36,18 @@ class SettingController extends CommonController
             return $item;
         }, 'block');
 
-        return $this->render('update', ['settings' => $newSettings]);
+        return $this->render('update', ['settings' => $newSettings, 'languages'=>self::getLanguages()]);
     }
 
     public function actionAuth()
     {
         $configs = [
-            'type'=>['label'=>'类型', 'key'=>'type', 'type'=>'select', 'value_type'=>'text', 'value'=>'', 'description'=>'', 'option'=>'{"":"", "qq":"QQ", "weibo":"微博", "weixin":"微信", "github":"Github"}'],
-            'sortid'=>['label'=>'排序', 'key'=>'sortid', 'type'=>'text', 'value_type'=>'integer', 'value'=>'1', 'description'=>''],
-            'show'=>['label'=>'显示', 'key'=>'show', 'type'=>'select', 'value_type'=>'integer', 'value'=>'0', 'description'=>'', 'option'=>'["0(登录页)", "1(登录页及所有页右侧)"]'],
+            'type'=>['label'=>Yii::t('app/admin', 'Type'), 'key'=>'type', 'type'=>'select', 'value_type'=>'text', 'value'=>'', 'description'=>'', 'option'=>'{"":"", "qq":"QQ", "weibo":"微博", "weixin":"微信", "github":"Github"}'],
+            'sortid'=>['label'=>Yii::t('app/admin', 'Sort ID'), 'key'=>'sortid', 'type'=>'text', 'value_type'=>'integer', 'value'=>'1', 'description'=>''],
+            'show'=>['label'=>Yii::t('app/admin', 'Show'), 'key'=>'show', 'type'=>'select', 'value_type'=>'integer', 'value'=>'0', 'description'=>'', 'option'=>'["0('.Yii::t('app', 'Login page').')", "1('.Yii::t('app', 'Login page and right of all pages').')"]'],
             'clientId'=>['label'=>'clientId', 'key'=>'clientId', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>''],
             'clientSecret'=>['label'=>'clientSecret', 'key'=>'clientSecret', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>''],
-            'title'=>['label'=>'标识文字', 'key'=>'title', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>'']
+            'title'=>['label'=>Yii::t('app/admin', 'Title'), 'key'=>'title', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>'']
         ];
         $titles = [
             'qq'=>'qq登录',
@@ -122,6 +122,17 @@ class SettingController extends CommonController
 
         return $this->render('auth', ['settings' => $settings]);
     }
+
+    public static function getLanguages()
+    {
+        $languageDir = Yii::getAlias('@app/messages');
+        $default = ['en-US'];
+        if (!file_exists($languageDir)) {
+            return $default;
+        }
+        return $default + array_diff(scandir($languageDir), ['.', '..']);
+    }
+
 
     public function actionAll()
     {
@@ -226,10 +237,17 @@ class SettingController extends CommonController
     {
         $model = new \app\models\admin\TestEmailForm();
         $rtnCd = 0;
+        $msg = '';
         if ( $model->load(Yii::$app->getRequest()->post()) && $model->validate() ) {
-            $rtnCd = $model->sendEmail() ? 1:9;
+		  try {
+            $model->sendEmail();
+            $rtnCd = 1;
+          } catch(\Exception $e) {
+            $rtnCd = 9;
+            $msg = $e->getMessage();
+          }
         }
-        return $this->render('testEmail', ['model' => $model, 'rtnCd'=>$rtnCd]);
+        return $this->render('testEmail', ['model' => $model, 'rtnCd'=>$rtnCd, 'msg'=>$msg]);
     }
 
     private function textAreaToArray($links)

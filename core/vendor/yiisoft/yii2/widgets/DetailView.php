@@ -9,13 +9,13 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Arrayable;
-use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\i18n\Formatter;
 
 /**
  * DetailView displays the detail of a single data [[model]].
@@ -44,6 +44,8 @@ use yii\helpers\Inflector;
  * ]);
  * ```
  *
+ * For more details and usage information on DetailView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -71,9 +73,17 @@ class DetailView extends Widget
      * - `label`: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
      * - `value`: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
      *   by calling [[ArrayHelper::getValue()]]. Note that this value will be formatted into a displayable text
-     *   according to the `format` option.
+     *   according to the `format` option. Since version 2.0.11 it can be defined as closure with the following
+     *   parameters:
+     *
+     *   ```php
+     *   function ($model, $widget)
+     *   ```
+     *
+     *   `$model` refers to displayed model and `$widget` is an instance of `DetailView` widget.
+     *
      * - `format`: the type of the value that determines how the value would be formatted into a displayable text.
-     *   Please refer to [[Formatter]] for supported types.
+     *   Please refer to [[Formatter]] for supported types and [[Formatter::format()]] on how to specify this value.
      * - `visible`: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
      * - `contentOptions`: the HTML attributes to customize value tag. For example: `['class' => 'bg-red']`.
      *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
@@ -117,6 +127,8 @@ class DetailView extends Widget
      */
     public function init()
     {
+        parent::init();
+
         if ($this->model === null) {
             throw new InvalidConfigException('Please specify the "model" property.');
         }
@@ -155,7 +167,7 @@ class DetailView extends Widget
     /**
      * Renders a single attribute.
      * @param array $attribute the specification of the attribute to be rendered.
-     * @param integer $index the zero-based index of the attribute in the [[attributes]] array
+     * @param int $index the zero-based index of the attribute in the [[attributes]] array
      * @return string the rendering result
      */
     protected function renderAttribute($attribute, $index)
@@ -167,11 +179,11 @@ class DetailView extends Widget
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
                 '{captionOptions}' => $captionOptions,
-                '{contentOptions}' =>  $contentOptions,
+                '{contentOptions}' => $contentOptions,
             ]);
-        } else {
-            return call_user_func($this->template, $attribute, $index, $this);
         }
+
+        return call_user_func($this->template, $attribute, $index, $this);
     }
 
     /**
@@ -195,7 +207,7 @@ class DetailView extends Widget
 
         foreach ($this->attributes as $i => $attribute) {
             if (is_string($attribute)) {
-                if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
+                if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
                     throw new InvalidConfigException('The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
                 }
                 $attribute = [
@@ -227,6 +239,10 @@ class DetailView extends Widget
                 }
             } elseif (!isset($attribute['label']) || !array_key_exists('value', $attribute)) {
                 throw new InvalidConfigException('The attribute configuration requires the "attribute" element to determine the value and display label.');
+            }
+
+            if ($attribute['value'] instanceof \Closure) {
+                $attribute['value'] = call_user_func($attribute['value'], $this->model, $this);
             }
 
             $this->attributes[$i] = $attribute;

@@ -1,37 +1,51 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 namespace app\models;
 
 use Yii;
+use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use app\lib\Util;
 
-class SendMsgForm extends \yii\base\Model
+class SendMsgForm extends Model
 {
     public $username;
     public $msg;
+    public $captcha;
     protected $_user;
 
     public function rules()
     {
-        return [
+        $rules = [
             [['username', 'msg'], 'trim'],
             [['username', 'msg'], 'required'],
             ['username', 'string', 'max'=>16],
             ['msg', 'string', 'max'=>255],
             ['username', 'validateUsername'],
         ];
+
+        $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
+        if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
+           $rule = $plugin['class']::captchaValidate('sms', $plugin);
+           if(!empty($rule)) {
+             $rules[] = $rule;
+           }
+        }
+
+        return $rules;
     }
 
     public function attributeLabels()
     {
         return [
-            'username' => '用户名',
-            'msg' => '消息',
+            'username' => Yii::t('app', 'Username'),
+            'msg' => Yii::t('app', 'Message'),
+            'captcha' => Yii::t('app', 'Enter code'),
         ];
     }
 
@@ -39,12 +53,12 @@ class SendMsgForm extends \yii\base\Model
     {
         $me = Yii::$app->getUser()->getIdentity();
       if( $me->username == $this->$attribute) {
-            $this->addError($attribute, '不能给自己发消息');
+            $this->addError($attribute, Yii::t('app', 'Can\'t send a message to yourself.'));
             return;
         }
         $this->_user = User::findOne(['username'=>$this->$attribute]);
         if ( !$this->_user ) {
-            $this->addError($attribute, '该会员不存在');
+            $this->addError($attribute, Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Username')]));
         }
     }
 

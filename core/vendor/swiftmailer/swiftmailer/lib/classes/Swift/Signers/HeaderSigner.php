@@ -20,41 +20,37 @@ interface Swift_Signers_HeaderSigner extends Swift_Signer, Swift_InputByteStream
      *
      * @param string $header_name
      *
-     * @return Swift_Signers_HeaderSigner
+     * @return self
      */
     public function ignoreHeader($header_name);
 
     /**
      * Prepare the Signer to get a new Body.
      *
-     * @return Swift_Signers_HeaderSigner
+     * @return self
      */
     public function startBody();
 
     /**
      * Give the signal that the body has finished streaming.
      *
-     * @return Swift_Signers_HeaderSigner
+     * @return self
      */
     public function endBody();
 
     /**
      * Give the headers already given.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
-     *
-     * @return Swift_Signers_HeaderSigner
+     * @return self
      */
-    public function setHeaders(Swift_Mime_HeaderSet $headers);
+    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers);
 
     /**
      * Add the header(s) to the headerSet.
      *
-     * @param Swift_Mime_HeaderSet $headers
-     *
-     * @return Swift_Signers_HeaderSigner
+     * @return self
      */
-    public function addSignature(Swift_Mime_HeaderSet $headers);
+    public function addSignature(Swift_Mime_SimpleHeaderSet $headers);
 
     /**
      * Return the list of header a signer might tamper.

@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -19,8 +19,8 @@ class SmdEditor extends Editor implements PluginInterface
     {
         return [
             'id' => 'SmdEditor',
-            'name' => 'Simple Markdown编辑器',
-            'description' => 'Simple Markdown编辑器',
+            'name' => 'Simple Markdown Editor',
+            'description' => 'Simple Markdown Editor',
             'author' => 'SimpleForum',
             'url' => 'http://simpleforum.org',
             'version' => '1.0',
@@ -32,10 +32,10 @@ class SmdEditor extends Editor implements PluginInterface
     {
         if ( ($setting = Setting::findOne(['key'=>'editor'])) ) {
             $option = json_decode($setting->option, true);
-            $option['SmdEditor']='Simple Markdown编辑器';
+            $option['SmdEditor']='Simple Markdown Editor';
             $setting->option = json_encode($option);
             $setting->save();
-    }
+        }
         return true;
     }
 
@@ -53,7 +53,8 @@ class SmdEditor extends Editor implements PluginInterface
     public function registerAsset($view)
     {
         SmdAsset::register($view);
-        $view->registerJs("var editor = new SimpleMarkdown({target: '#editor', lan:'zh-CN'});");
+        $lang = empty(Yii::$app->language)?'en-US':Yii::$app->language;
+        $view->registerJs("var editor = new SimpleMarkdown({target: '#editor', lan:'{$lang}'});");
     }
 
     public function parseEditor($text, $autoLink=false)

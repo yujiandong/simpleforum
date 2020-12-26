@@ -1,14 +1,14 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 
-$this->title = '可安装插件';
+$this->title = Yii::t('app/admin', 'Installable plugins');
 ?>
 
 <div class="row">
@@ -18,7 +18,7 @@ $this->title = '可安装插件';
 <ul class="list-group sf-box">
     <li class="list-group-item">
         <?php
-            echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('插件管理', ['admin/plugin']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Plugins'), ['index']), '&nbsp;/&nbsp;', $this->title;
         ?>
     </li>
     <li class="list-group-item list-group-item-info"><strong>插件</strong></li>
@@ -26,10 +26,10 @@ $this->title = '可安装插件';
     <table class="table table-bordered table-hover">
       <thead>
         <tr>
-          <th>插件ID</th>
-          <th>插件名</th>
-          <th>版本</th>
-          <th>操作</th>
+          <th><?php echo Yii::t('app/admin', 'Plugin id'); ?></th>
+          <th><?php echo Yii::t('app/admin', 'Plugin name'); ?></th>
+          <th><?php echo Yii::t('app', 'Version'); ?></th>
+          <th><?php echo Yii::t('app/admin', 'Operation'); ?></th>
         </tr>
       </thead>
       <tbody>
@@ -39,7 +39,7 @@ $this->title = '可安装插件';
             echo '<tr><td>', $plugin['pid'], '</td>
 				<td>', Html::a(Html::encode($plugin['name']), ['view', 'pid'=>$plugin['pid']]), '</td>
 				<td>', Html::encode($plugin['version']) ,'</td>
-				<td>', Html::a('安装', ['install', 'pid'=>$plugin['pid']]), '</td>
+				<td>', Html::a(Yii::t('app/admin', 'Install'), ['install', 'pid'=>$plugin['pid']]), '</td>
 			</tr>';
         }
     }

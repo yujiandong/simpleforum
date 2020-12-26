@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -62,24 +62,29 @@ class SfHtml
         return $result;
     }
 
-    public static function uLink($text, $ajaxLoad=false, $options=[])
+    public static function uLink($username, $name='', $sep=' ', $ajaxLoad=false, $options=[])
     {
-        $text = Html::encode($text);
-        $url = ['user/view', 'username'=>$text];
+        $username = Html::encode($username);
+        $url = ['user/view', 'username'=>$username];
         if( $ajaxLoad ) {
             $options['data-poload'] = Url::to($url);
+        }
+        if (empty($name)) {
+            $text = '@' . $username;
+        } else {
+            $text = Html::encode($name) . $sep . '<small class="gray">@' . $username . '</small>';
         }
         return Html::a($text, $url, $options);
     }
 
     public static function uImg($user, $size='normal', $options=[])
     {
-        return Html::img('@web/'.str_replace('{size}', $size, $user['avatar']), ['class'=>ArrayHelper::getValue(Yii::$app->params, 'settings.avatar_style', 'img-circle'),'alt'=> Html::encode($user['username'])]+$options);
+        return Html::img('@web/'.str_replace('{size}', $size, $user['avatar']), ['class'=>ArrayHelper::getValue(Yii::$app->params, 'settings.avatar_style', 'img-circle'),'alt'=> $user['username']]+$options);
     }
 
     public static function uImgLink($user, $size='normal', $options=['class'=>'media-left item-avatar'], $ajaxLoad=false)
     {
-        $url = ['user/view', 'username'=>Html::encode($user['username'])];
+        $url = ['user/view', 'username'=>$user['username']];
         if( $ajaxLoad ) {
             $options['data-poload'] = Url::to($url);
         }
@@ -93,8 +98,7 @@ class SfHtml
 
     public static function afterAllPosts($view)
     {
-        $hook = new SfHook();
-        $hook->bindEvents(SfHook::EVENT_AFTER_ALL_POSTS);
+        $hook = new SfHook(SfHook::EVENT_AFTER_ALL_POSTS);
         $event = new SfEvent(['render'=>$view]);
         $hook->trigger(SfHook::EVENT_AFTER_ALL_POSTS, $event);
         return;

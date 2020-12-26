@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -88,7 +88,6 @@ class SiteController extends AppController
         $sourceName = [
             'weibo'=>'微博',
             'weixin'=>'微信',
-            'baidu'=>'百度',
         ];
         $me = Yii::$app->getUser();
 
@@ -113,7 +112,7 @@ class SiteController extends AppController
                 return $this->redirect(['auth-bind-account']);
 
             }
-        } else { // user already logged in
+        } else { // user already signed in
             if (!$auth) { // add auth provider
                 $auth = new Auth([
                     'user_id' => Yii::$app->getUser()->id,
@@ -195,6 +194,22 @@ class SiteController extends AppController
 
     }
 
+    public function actionLanguage()
+    {
+		$language = Yii::$app->getRequest()->get('language');
+		if($language) {
+			//Yii::$app->language = $language;
+			$languageCookie = new yii\web\Cookie([
+			    'name' => 'language',
+			    'value' => $language,
+			    'expire' => time() + 60 * 60 * 24 * 30, // 30 days
+			]);
+			Yii::$app->getResponse()->getCookies()->add($languageCookie);
+		}
+		//$this->redirect(['topic/index']);
+		return $this->goBack();
+    }
+
     public function actionLogin()
     {
         if (! Yii::$app->getUser()->getIsGuest()) {
@@ -226,16 +241,16 @@ class SiteController extends AppController
     public function actionSignup()
     {
         if ( intval($this->settings['close_register']) === 1) {
-            return $this->render('opResult', ['title'=>'用户注册已关闭', 'status'=>'success', 'msg'=>'请使用'. \yii\helpers\Html::a('第三方帐号登录', ['site/login'])]);
+            return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Registration Closed'), 'status'=>'success', 'msg'=>Yii::t('app', 'Please use {url} to sign in.', ['url' => \yii\helpers\Html::a(Yii::t('app', 'Third-Party Accounts'), ['site/login'])])]);
         }
         $model = new SignupForm();
         if ($model->load(Yii::$app->getRequest()->post())) {
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
                     if ($user->status == User::STATUS_INACTIVE) {
-                        return $this->render('opResult', ['title'=>'帐号注册成功', 'status'=>'success', 'msg'=>'感谢您的注册，激活邮件已发送到您的注册邮箱。请去点击激活。']);
+                        return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Thank You For Your Registration'), 'status'=>'success', 'msg'=>Yii::t('app', 'An email has been sent to your email address containing an activation link. Please click on the link to activate your account. If you do not receive the email within a few minutes, please check your spam folder.')]);
                     } else if ($user->status == User::STATUS_ADMIN_VERIFY) {
-                        return $this->render('opResult', ['title'=>'帐号注册成功', 'status'=>'success', 'msg'=>'感谢您的注册，请等待管理员确认。']);
+                        return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Thank You For Your Registration'), 'status'=>'success', 'msg'=>Yii::t('app', 'Please wait for the admin approval.')]);
                     } else {
                         return $this->goHome();
                     }
@@ -253,12 +268,12 @@ class SiteController extends AppController
         try {
             $model = new ForgotPasswordForm();
         } catch (InvalidParamException $e) {
-            return $this->render('opResult', ['title'=>'密码重置申请', 'status'=>'warning', 'msg'=>$e->getMessage()]);
+            return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Reset Password'), 'status'=>'warning', 'msg'=>$e->getMessage()]);
         }
         if ($model->load(Yii::$app->getRequest()->post()) && $model->validate()) {
             try {
                 $model->apply();
-                return $this->render('opResult', ['title'=>'密码重置申请', 'status'=>'success', 'msg'=>'密码重置链接已发送到您的邮箱，请进邮箱确认。']);
+                return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Reset Password'), 'status'=>'success', 'msg'=>Yii::t('app', 'An email has been sent to your email address containing a verification link. Please click on the link to reset your password. If you do not receive the email within a few minutes, please check your spam folder.')]);
             } catch (InvalidParamException $e) {
                 Yii::$app->getSession()->setFlash('sendPwdNG', $e->getMessage());
             }
@@ -274,11 +289,11 @@ class SiteController extends AppController
         try {
             $model = new ResetPasswordForm($token);
         } catch (InvalidParamException $e) {
-            return $this->render('opResult', ['title'=>'密码重置失败', 'status'=>'warning', 'msg'=>$e->getMessage()]);
+            return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Password Reset Failed'), 'status'=>'warning', 'msg'=>$e->getMessage()]);
         }
 
         if ($model->load(Yii::$app->getRequest()->post()) && $model->validate() && $model->resetPassword()) {
-            return $this->render('opResult', ['title'=>'密码重置成功', 'status'=>'success', 'msg'=>'新密码已生效']);
+            return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Password Reset Successfully'), 'status'=>'success', 'msg'=>Yii::t('app', 'You can use new password to sign in.')]);
         }
 
         return $this->render('resetPassword', [
@@ -291,7 +306,7 @@ class SiteController extends AppController
         try {
             $token = Token::findByToken($token, Token::TYPE_EMAIL);
         } catch (InvalidParamException $e) {
-            return $this->render('opResult', ['title'=>'邮箱绑定失败', 'status'=>'warning', 'msg'=>$e->getMessage()]);
+            return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Email Change Failed'), 'status'=>'warning', 'msg'=>$e->getMessage()]);
         }
 
         if ( Yii::$app->getRequest()->getIsPost() ) {
@@ -300,28 +315,27 @@ class SiteController extends AppController
 
             $model = new ChangeEmailForm(['scenario' => ChangeEmailForm::SCENARIO_VERIFY_EMAIL, 'email'=>$token->ext]);
             if ( !$model->validate() ) {
-                 $result = ['title'=>'邮箱绑定失败', 'status'=>'warning', 'msg'=>'您申请绑定的邮箱['.$token->ext.']已被注册使用'];
+                 $result = ['title'=>Yii::t('app', 'Email Change Failed'), 'status'=>'warning', 'msg'=>Yii::t('app', '{attribute} is already in use.', ['attribute' => Yii::t('app', 'Email') . '(' . $token->ext . ')'])];
             } else {
-
                 $user = $token->user;
                 $user->email = $token->ext;
                 $user->save(false);
 
-                $result = ['title'=>'邮箱绑定成功', 'status'=>'success', 'msg'=>'新邮件绑定成功'];
+                $result = ['title'=>Yii::t('app', 'Email Change Successfully'), 'status'=>'success', 'msg'=>Yii::t('app', 'Your email address has been changed.')];
             }
         } else {
                 $result = [
-                    'title'=>'确认绑定邮箱',
+                    'title'=>Yii::t('app', 'Email Change Verification'),
                     'status'=>'info', 
-                    'msg'=>'请点击-> '.Html::a('确认您所绑定的邮箱', Yii::$app->getRequest()->url, [
-                        'title' => '确认绑定邮箱',
+                    'msg'=>Yii::t('app', 'Please click to {url} .', ['url' => Html::a('<i class="fa fa-link" aria-hidden="true"></i> '. Yii::t('app', 'verify your new email'), Yii::$app->getRequest()->url, [
+                        'title' => Yii::t('app', 'Email Change Verification'),
                         'data' => [
                             'method' => 'post',
-                        ]
+                        ]])
                     ])
                 ];
         }
-        return $this->render('opResult', $result);
+        return $this->render('@app/views/common/info', $result);
     }
 
     public function actionActivate($token)
@@ -329,7 +343,7 @@ class SiteController extends AppController
         try {
             $token = Token::findByToken($token, Token::TYPE_REG);
         } catch (InvalidParamException $e) {
-            return $this->render('opResult', ['title'=>'帐号激活失败', 'status'=>'warning', 'msg'=>$e->getMessage()]);
+            return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Account Activation Failed'), 'status'=>'warning', 'msg'=>$e->getMessage()]);
         }
 
         if ( Yii::$app->getRequest()->getIsPost() ) {
@@ -339,31 +353,31 @@ class SiteController extends AppController
             $token->save(false);
 
             if ( !empty($token->ext) && $user->email !== $token->ext && User::findOne(['email'=>$token->ext]) ) {
-                return $this->render('opResult', ['title'=>'帐号激活失败', 'status'=>'warning', 'msg'=>'申请绑定邮箱['.$token->ext.']已被注册使用']);
+                return $this->render('@app/views/common/info', ['title'=>Yii::t('app', 'Account Activation Failed'), 'status'=>'warning', 'msg'=> Yii::t('app', '{attribute} is already in use.', ['attribute' => Yii::t('app', 'Email') . '(' . $token->ext . ')'])]);
             }
             if (intval($this->settings['admin_verify']) === 1) {
                 $user->status = User::STATUS_ADMIN_VERIFY;
-                $result = ['title'=>'注册邮箱确认成功', 'status'=>'success', 'msg'=>'注册邮箱确认成功，请等待管理员验证。'];
+                $result = ['title'=>Yii::t('app', 'Email Verification Succeeded'), 'status'=>'success', 'msg'=>Yii::t('app', 'Your email address is now verified. Please wait for the admin approval.')];
             } else {
                 $user->status = User::STATUS_ACTIVE;
-                $result = ['title'=>'帐号激活成功', 'status'=>'success', 'msg'=>'帐号激活成功，现在可以 '. \yii\helpers\Html::a('登录', ['site/login']) .' 发贴和回帖了。'];
+                $result = ['title'=>Yii::t('app', 'Account Activation Succeeded'), 'status'=>'success', 'msg'=>Yii::t('app', 'Your account has been activated successfully. You can now {url}.', ['url' => \yii\helpers\Html::a(Yii::t('app', 'Sign in'), ['site/login'])])];
             }
             $user->email = $token->ext;
             $user->save(false);
 
         } else {
                 $result = [
-                    'title'=>'激活会员帐号',
+                    'title'=>Yii::t('app', 'Account Activation'),
                     'status'=>'info', 
-                    'msg'=>'请点击-> '.Html::a('激活会员帐号', Yii::$app->getRequest()->url, [
-                        'title' => '激活帐号',
+                    'msg'=>Yii::t('app', 'Please click to {url} .', ['url' => Html::a('<i class="fa fa-link" aria-hidden="true"></i>' . Yii::t('app', 'activate your account'), Yii::$app->getRequest()->url, [
+                        'title' => Yii::t('app', 'Account Activation'),
                         'data' => [
                             'method' => 'post',
-                        ]
+                        ]])
                     ])
                 ];
         }
-        return $this->render('opResult', $result);
+        return $this->render('@app/views/common/info', $result);
     }
 
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -35,9 +35,9 @@ class ChargePointForm extends \yii\base\Model
     public function attributeLabels()
     {
         return [
-            'username' => '用户名',
-            'point' => '积分',
-            'msg' => '附言',
+            'username' => Yii::t('app', 'Username'),
+            'point' => Yii::t('app', 'Charge Points'),
+            'msg' => Yii::t('app', 'Message'),
         ];
     }
 
@@ -45,7 +45,7 @@ class ChargePointForm extends \yii\base\Model
     {
         $this->_user = User::findOne(['username'=>$this->$attribute]);
         if ( !$this->_user ) {
-            $this->addError($attribute, '该会员不存在');
+            $this->addError($attribute, Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Username')]));
         }
     }
 
@@ -64,7 +64,7 @@ class ChargePointForm extends \yii\base\Model
             'target_id' => $this->_user->id,
             'source_id' => $me->id,
             'type' => Notice::TYPE_CHARGE_POINT,
-            'msg' => $this->point . '。附言：' .$this->msg,
+            'msg' => $this->point . '; ' . Yii::t('app', 'Message'). '：' .$this->msg,
         ]))->save(false);
         return true;
     }

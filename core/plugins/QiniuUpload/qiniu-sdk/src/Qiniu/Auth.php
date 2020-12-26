@@ -1,7 +1,7 @@
 <?php
 namespace Qiniu;
 
-use Qiniu;
+use Qiniu\Zone;
 
 final class Auth
 {
@@ -14,6 +14,11 @@ final class Auth
         $this->secretKey = $secretKey;
     }
 
+    public function getAccessKey()
+    {
+        return $this->accessKey;
+    }
+
     public function sign($data)
     {
         $hmac = hash_hmac('sha1', $data, $this->secretKey, true);
@@ -22,8 +27,8 @@ final class Auth
 
     public function signWithData($data)
     {
-        $data = \Qiniu\base64_urlSafeEncode($data);
-        return $this->sign($data) . ':' . $data;
+        $encodedData = \Qiniu\base64_urlSafeEncode($data);
+        return $this->sign($encodedData) . ':' . $encodedData;
     }
 
     public function signRequest($urlString, $body, $contentType = null)
@@ -66,22 +71,18 @@ final class Auth
         return "$baseUrl&token=$token";
     }
 
-    public function uploadToken(
-        $bucket,
-        $key = null,
-        $expires = 3600,
-        $policy = null,
-        $strictPolicy = true
-    ) {
+    public function uploadToken($bucket, $key = null, $expires = 3600, $policy = null, $strictPolicy = true)
+    {
         $deadline = time() + $expires;
         $scope = $bucket;
         if ($key !== null) {
             $scope .= ':' . $key;
         }
-        $args = array();
+
         $args = self::copyPolicy($args, $policy, $strictPolicy);
         $args['scope'] = $scope;
         $args['deadline'] = $deadline;
+
         $b = json_encode($args);
         return $this->signWithData($b);
     }
@@ -102,6 +103,7 @@ final class Auth
 
         'endUser',
         'saveKey',
+        'forceSaveKey',
         'insertOnly',
 
         'detectMime',
@@ -112,10 +114,10 @@ final class Auth
         'persistentOps',
         'persistentNotifyUrl',
         'persistentPipeline',
-    );
 
-    private static $deprecatedPolicyFields = array(
-        'asyncOps',
+        'deleteAfterDays',
+        'fileType',
+        'isPrefixalScope',
     );
 
     private static function copyPolicy(&$policy, $originPolicy, $strictPolicy)
@@ -124,10 +126,7 @@ final class Auth
             return array();
         }
         foreach ($originPolicy as $key => $value) {
-            if (in_array((string) $key, self::$deprecatedPolicyFields, true)) {
-                throw new \InvalidArgumentException("{$key} has deprecated");
-            }
-            if (!$strictPolicy || in_array((string) $key, self::$policyFields, true)) {
+            if (!$strictPolicy || in_array((string)$key, self::$policyFields, true)) {
                 $policy[$key] = $value;
             }
         }
@@ -138,5 +137,52 @@ final class Auth
     {
         $authorization = 'QBox ' . $this->signRequest($url, $body, $contentType);
         return array('Authorization' => $authorization);
+    }
+
+    public function authorizationV2($url, $method, $body = null, $contentType = null)
+    {
+        $urlItems = parse_url($url);
+        $host = $urlItems['host'];
+
+        if (isset($urlItems['port'])) {
+            $port = $urlItems['port'];
+        } else {
+            $port = '';
+        }
+
+        $path = $urlItems['path'];
+        if (isset($urlItems['query'])) {
+            $query = $urlItems['query'];
+        } else {
+            $query = '';
+        }
+
+        //write request uri
+        $toSignStr = $method . ' ' . $path;
+        if (!empty($query)) {
+            $toSignStr .= '?' . $query;
+        }
+
+        //write host and port
+        $toSignStr .= "\nHost: " . $host;
+        if (!empty($port)) {
+            $toSignStr .= ":" . $port;
+        }
+
+        //write content type
+        if (!empty($contentType)) {
+            $toSignStr .= "\nContent-Type: " . $contentType;
+        }
+
+        $toSignStr .= "\n\n";
+
+        //write body
+        if (!empty($body)) {
+            $toSignStr .= $body;
+        }
+
+        $sign = $this->sign($toSignStr);
+        $auth = 'Qiniu ' . $sign;
+        return array('Authorization' => $auth);
     }
 }

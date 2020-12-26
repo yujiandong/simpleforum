@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -51,9 +51,9 @@ class TopicController extends AppController
                 'denyCallback' => function ($rule, $action) {
                     $me = Yii::$app->getUser();
                     if( !$me->getIsGuest() && $me->getIdentity()->isInactive() ) {
-                        throw new ForbiddenHttpException('您的会员帐号还没有激活，请先激活');
+                        throw new ForbiddenHttpException(Yii::t('app', 'Your account is not activated. Please activate your account first.'));
                     } else {
-                        throw new ForbiddenHttpException('您没有执行此操作的权限。');
+                        throw new ForbiddenHttpException(Yii::t('app', 'You have no authority.'));
                     }
                 },
             ],
@@ -77,7 +77,7 @@ class TopicController extends AppController
     {
         $node = $this->findNodeModel($name);
         if (intval($node['access_auth']) === 1 && Yii::$app->getUser()->getIsGuest()) {
-            Yii::$app->getSession()->setFlash('accessNG', '您查看的页面需要先登录');
+            Yii::$app->getSession()->setFlash('accessNG', Yii::t('app', 'You need to sign in to view this page.'));
             return $this->redirect(['site/login']);
         }
         $pages = new Pagination([
@@ -114,7 +114,7 @@ class TopicController extends AppController
         return $this->render('index', [
              'topics' => Topic::getTopicsFromSearch($pages, $q),
              'pages' => $pages,
-             'title' => '搜索结果：'.$q,
+             'title' => Yii::t('app', 'Search result') . ': ' . $q,
         ]);
     }
 
@@ -124,7 +124,7 @@ class TopicController extends AppController
         if ( ( intval($topic['node']['access_auth']) === Topic::TOPIC_ACCESS_LOGIN || 
 				intval($topic->access_auth) !== Topic::TOPIC_ACCESS_NONE
 			 ) && Yii::$app->getUser()->getIsGuest()) {
-            Yii::$app->getSession()->setFlash('accessNG', '您查看的页面需要先登录');
+            Yii::$app->getSession()->setFlash('accessNG', Yii::t('app', 'You need to sign in to view this page.'));
             return $this->redirect(['site/login']);
         }
         $pages = new Pagination([
@@ -155,9 +155,9 @@ class TopicController extends AppController
         $me = Yii::$app->getUser()->getIdentity();
         if( !$me->checkActionCost('addTopic') ) {
             return $this->render('@app/views/common/info', [
-                'title' => '您的积分不足',
+                'title' => Yii::t('app', 'You don\'t have enough points.'),
                 'status' => 'warning',
-                'msg' => '您的积分不足，不能发表主题贴。每日签到可以获取10-50不等积分。',
+                'msg' => Yii::t('app', 'You don\'t have enough points. You can get points from daily bonus service.'),
             ]);
         }
 
@@ -168,7 +168,7 @@ class TopicController extends AppController
         if ( $topic->load($request->post()) && $topic->validate() && 
             $content->load($request->post()) && $content->validate() ) {
             if( !$me->canPost(History::ACTION_ADD_TOPIC) ) {
-                Yii::$app->getSession()->setFlash('postNG', '发帖间隔过小，请稍后再发表。');
+                Yii::$app->getSession()->setFlash('postNG', Yii::t('app', 'Post inverval warning: Please try again.'));
             } else {
 
     //          $topic->tags = Tag::getTags($topic->tags, $topic->title, $content->content);
@@ -191,9 +191,9 @@ class TopicController extends AppController
         $me = Yii::$app->getUser()->getIdentity();
         if( !$me->checkActionCost('addTopic') ) {
             return $this->render('@app/views/common/info', [
-                'title' => '您的积分不足',
+                'title' => Yii::t('app', 'You don\'t have enough points.'),
                 'status' => 'warning',
-                'msg' => '您的积分不足，不能发表主题贴。每日签到可以获取10-50不等积分。',
+                'msg' => Yii::t('app', 'You don\'t have enough points. You can get points from daily bonus service.'),
             ]);
         }
 
@@ -203,7 +203,7 @@ class TopicController extends AppController
         if ( $topic->load($request->post()) && $topic->validate() && 
             $content->load($request->post()) && $content->validate() ) {
             if( !$me->canPost(History::ACTION_ADD_TOPIC) ) {
-                Yii::$app->getSession()->setFlash('postNG', '发帖间隔过小，请稍后再发表。');
+                Yii::$app->getSession()->setFlash('postNG', Yii::t('app', 'Post inverval warning: Please try again.'));
             } else {
 
     //          $topic->tags = Tag::getTags($topic->tags, $topic->title, $content->content);
@@ -226,7 +226,7 @@ class TopicController extends AppController
 
         $model = $this->findTopicModel($id, ['content','node']);
         if( !$me->canEdit($model) ) {
-            throw new ForbiddenHttpException('您没有权限修改或已超过可修改时间。');
+            throw new ForbiddenHttpException(Yii::t('app', 'You have no authority to edit it or exceeded time limit.'));
         }
         if( $me->isAdmin() ) {
             $model->scenario = Topic::SCENARIO_ADMIN_EDIT;
@@ -269,7 +269,7 @@ class TopicController extends AppController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的主题');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Topic')]));
         }
     }
 
@@ -283,7 +283,7 @@ class TopicController extends AppController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到['.$name.']的节点');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Node')]));
         }
     }
 
@@ -297,7 +297,7 @@ class TopicController extends AppController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到['.$name.']的导航');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Navigation')]));
         }
     }
 }

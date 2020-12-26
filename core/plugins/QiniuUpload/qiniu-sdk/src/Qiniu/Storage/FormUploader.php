@@ -1,8 +1,9 @@
 <?php
+
 namespace Qiniu\Storage;
 
-use Qiniu\Http\Client;
 use Qiniu\Http\Error;
+use Qiniu\Http\Client;
 
 final class FormUploader
 {
@@ -10,13 +11,15 @@ final class FormUploader
     /**
      * 上传二进制流到七牛, 内部使用
      *
-     * @param $upToken    上传凭证
-     * @param $key        上传文件名
-     * @param $data       上传二进制流
-     * @param $params     自定义变量，规格参考
-     *                    http://developer.qiniu.com/docs/v6/api/overview/up/response/vars.html#xvar
-     * @param $mime       上传数据的mimeType
-     * @param $checkCrc   是否校验crc32
+     * @param string $upToken 上传凭证
+     * @param string $key 上传文件名
+     * @param string $data 上传二进制流
+     * @param string $config 上传配置
+     * @param string $params 自定义变量，规格参考
+     *                    https://developer.qiniu.com/kodo/manual/1235/vars#xvar
+     * @param string $mime 上传数据的mimeType
+     *
+     * @param string $fname
      *
      * @return array    包含已上传文件的信息，类似：
      *                                              [
@@ -31,27 +34,33 @@ final class FormUploader
         $config,
         $params,
         $mime,
-        $checkCrc
+        $fname
     ) {
         $fields = array('token' => $upToken);
         if ($key === null) {
-            $fname = 'filename';
         } else {
-            $fname = $key;
             $fields['key'] = $key;
         }
-        if ($checkCrc) {
-            $fields['crc32'] = \Qiniu\crc32_data($data);
-        }
+
+        //enable crc32 check by default
+        $fields['crc32'] = \Qiniu\crc32_data($data);
+
         if ($params) {
             foreach ($params as $k => $v) {
                 $fields[$k] = $v;
             }
         }
 
-        $response = Client::multipartPost($config->getUpHost(), $fields, 'file', $fname, $data, $mime);
+        list($accessKey, $bucket, $err) = \Qiniu\explodeUpToken($upToken);
+        if ($err != null) {
+            return array(null, $err);
+        }
+
+        $upHost = $config->getUpHost($accessKey, $bucket);
+
+        $response = Client::multipartPost($upHost, $fields, 'file', $fname, $data, $mime);
         if (!$response->ok()) {
-            return array(null, new Error($config->getUpHost(), $response));
+            return array(null, new Error($upHost, $response));
         }
         return array($response->json(), null);
     }
@@ -59,13 +68,13 @@ final class FormUploader
     /**
      * 上传文件到七牛，内部使用
      *
-     * @param $upToken    上传凭证
-     * @param $key        上传文件名
-     * @param $filePath   上传文件的路径
-     * @param $params     自定义变量，规格参考
-     *                    http://developer.qiniu.com/docs/v6/api/overview/up/response/vars.html#xvar
-     * @param $mime       上传数据的mimeType
-     * @param $checkCrc   是否校验crc32
+     * @param string $upToken 上传凭证
+     * @param string $key 上传文件名
+     * @param string $filePath 上传文件的路径
+     * @param string $config 上传配置
+     * @param string $params 自定义变量，规格参考
+     *                    https://developer.qiniu.com/kodo/manual/1235/vars#xvar
+     * @param string $mime 上传数据的mimeType
      *
      * @return array    包含已上传文件的信息，类似：
      *                                              [
@@ -79,27 +88,35 @@ final class FormUploader
         $filePath,
         $config,
         $params,
-        $mime,
-        $checkCrc
+        $mime
     ) {
+
 
         $fields = array('token' => $upToken, 'file' => self::createFile($filePath, $mime));
         if ($key !== null) {
             $fields['key'] = $key;
         }
-        if ($checkCrc) {
-            $fields['crc32'] = \Qiniu\crc32_file($filePath);
-        }
+
+        $fields['crc32'] = \Qiniu\crc32_file($filePath);
+
         if ($params) {
             foreach ($params as $k => $v) {
                 $fields[$k] = $v;
             }
         }
         $fields['key'] = $key;
-        $headers =array('Content-Type' => 'multipart/form-data');
-        $response = client::post($config->getUpHost(), $fields, $headers);
+        $headers = array('Content-Type' => 'multipart/form-data');
+
+        list($accessKey, $bucket, $err) = \Qiniu\explodeUpToken($upToken);
+        if ($err != null) {
+            return array(null, $err);
+        }
+
+        $upHost = $config->getUpHost($accessKey, $bucket);
+
+        $response = Client::post($upHost, $fields, $headers);
         if (!$response->ok()) {
-            return array(null, new Error($config->getUpHost(), $response));
+            return array(null, new Error($upHost, $response));
         }
         return array($response->json(), null);
     }

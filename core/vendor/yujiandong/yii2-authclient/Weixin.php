@@ -38,20 +38,20 @@ class Weixin extends OAuth2
 {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $authUrl = 'https://open.weixin.qq.com/connect/qrconnect';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $tokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $apiBaseUrl = 'https://api.weixin.qq.com';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -64,7 +64,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultNormalizeUserAttributeMap()
     {
@@ -75,7 +75,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildAuthUrl(array $params = [])
     {
@@ -84,7 +84,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function fetchAccessToken($authCode, array $params = [])
     {
@@ -94,17 +94,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
-    {
-        $params['access_token'] = $accessToken->getToken();
-        $params['openid'] = $accessToken->getParam('openid');
-        return $this->sendRequest($method, $url, $params, $headers);
-    }
-
-    /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function initUserAttributes()
     {
@@ -112,7 +102,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultReturnUrl()
     {
@@ -134,7 +124,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultName()
     {
@@ -142,7 +132,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultTitle()
     {
@@ -150,7 +140,7 @@ class Weixin extends OAuth2
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultViewOptions()
     {
@@ -158,6 +148,17 @@ class Weixin extends OAuth2
             'popupWidth' => 800,
             'popupHeight' => 500,
         ];
+    }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    public function applyAccessTokenToRequest($request, $accessToken)
+    {
+        $data = $request->getData();
+        $data['openid'] = $accessToken->getParam('openid');
+        $data['access_token'] = $accessToken->getToken();
+        $request->setData($data);
     }
 
 }

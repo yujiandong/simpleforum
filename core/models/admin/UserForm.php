@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -44,7 +44,6 @@ class UserForm extends Model
             ['username', 'required'],
             ['email', 'email'],
             ['password', 'string', 'length' => [6, 16]],
-//            ['email', 'unique', 'targetClass' => '\app\models\User', 'filter' => 'id != '. $this->_user->id, 'message' => '邮箱已存在'],
             ['email', 'validateEmail'],
         ];
     }
@@ -52,36 +51,36 @@ class UserForm extends Model
     public function attributeLabels()
     {
         return [
-            'username' => '用户名',
-            'status' => '权限',
-            'email' => '电子邮件',
-            'password' => '密码',
+            'username' => Yii::t('app', 'Username'),
+            'status' => Yii::t('app', 'Status'),
+            'email' => Yii::t('app', 'Email'),
+            'password' => Yii::t('app', 'Password'),
         ];
     }
 
     public function search()
-	{
+    {
 		$this->_user = User::find()->select(['id','username', 'status'])->where(['username'=>$this->username])->one();
 		return $this->_user;
-	}
+    }
 
     public function find($id)
-	{
-			$this->_user = User::findOne($id);
-			if($this->_user !== null) {
-				$this->attributes = $this->_user->attributes;
-				$this->username = $this->_user->username;
-				$this->id = $this->_user->id;
-			}
-			return ($this->_user !== null);
+    {
+    	$this->_user = User::findOne($id);
+	if($this->_user !== null) {
+		$this->attributes = $this->_user->attributes;
+		$this->username = $this->_user->username;
+		$this->id = $this->_user->id;
 	}
+	return ($this->_user !== null);
+    }
 
     public function validateEmail($attribute, $params)
     {
         $user = User::find()->where(['email'=>$this->$attribute])->one();
-		if($user && $user->id != $this->_user->id) {
-            $this->addError($attribute, '邮箱已存在');
-		}
+	if($user && $user->id != $this->_user->id) {
+            $this->addError($attribute, Yii::t('app', '{name} already exists.', ['name' => Yii::t('app', 'Email')]));
+	}
     }
 
     public function edit()

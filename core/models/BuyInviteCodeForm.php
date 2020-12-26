@@ -30,22 +30,22 @@ class BuyInviteCodeForm extends \yii\base\Model
     public function attributeLabels()
     {
         return [
-            'amount' => '购买数量',
-            'password' => '登录密码',
+            'amount' => Yii::t('app', 'Purchase amount'),
+            'password' => Yii::t('app', 'Password'),
         ];
     }
 
     public function validateCost($attribute, $params)
     {
-        if ( Yii::$app->getUser()->getIdentity()->score - 50*intval($this->$attribute) < 0 ) {
-            $this->addError($attribute, '您的积分不够');
+        if ( !Yii::$app->getUser()->getIdentity()->checkActionCost('buyInviteCode') ) {
+            $this->addError($attribute, Yii::t('app', 'You don\'t have enough points.'));
         }
     }
 
     public function validatePassword($attribute, $params)
     {
         if ( !Yii::$app->getUser()->getIdentity()->validatePassword($this->$attribute) ) {
-            $this->addError($attribute, '密码输入错误');
+            $this->addError($attribute, Yii::t('app', '{attribute} is invalid.', ['attribute'=>Yii::t('app', 'Password')]));
         }
     }
 
@@ -58,7 +58,7 @@ class BuyInviteCodeForm extends \yii\base\Model
                 'type' => Token::TYPE_INVITE_CODE,
                 'token' => Util::shorturl($user->id . '-' . $i . '-' . time() . '-' . Util::generateRandomString(32)),
                 'expires' => 0,
-                'ext' => json_encode(['source'=>'购买']),
+                'ext' => json_encode(['source'=>Yii::t('app', 'Buy')]),
             ]))->save(false);
         }
         $cost = User::getCost('buyInviteCode') * intval($this->amount);

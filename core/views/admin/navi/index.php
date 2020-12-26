@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use app\models\Navi;
 
-$this->title = '导航管理';
+$this->title = Yii::t('app/admin', 'Navigations');
 ?>
 
 <div class="row">
@@ -18,23 +18,23 @@ $this->title = '导航管理';
 
 <ul class="list-group sf-box">
 	<li class="list-group-item">
-		<p class='fr'><?php echo Html::a('添加新导航', ['add']); ?></p>
+		<p class='fr'><?php echo Html::a(Yii::t('app/admin', 'Add a item'), ['add']); ?></p>
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</li>
-	<li class="list-group-item list-group-item-info"><strong>导航</strong></li>
+	<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app/admin', 'Navigation Items'); ?></strong></li>
 	<li class="list-group-item">
 		<ul>
 		<?php
-			$naviTypes = json_decode(Navi::TYPES,true);
+			$naviTypes = Navi::getTypes();
 			foreach($models as $model) {
 				echo '<li> [', $naviTypes[$model['type']], '] ', $model['name'], '&nbsp;|&nbsp;', 
-					Html::a('所属节点设定', ['nodes', 'id'=>$model['id']]), '&nbsp;|&nbsp;', 
-					Html::a('修改', ['edit', 'id'=>$model['id']]), '&nbsp;|&nbsp;', 
-					Html::a('删除', ['delete', 'id'=>$model['id']], [
+					Html::a(Yii::t('app/admin', 'Set Nodes'), ['nodes', 'id'=>$model['id']]), '&nbsp;|&nbsp;', 
+					Html::a(Yii::t('app', 'Edit'), ['edit', 'id'=>$model['id']]), '&nbsp;|&nbsp;', 
+					Html::a(Yii::t('app', 'Delete'), ['delete', 'id'=>$model['id']], [
 					    'data' => [
-					        'confirm' => '注意：删除后将不会恢复！确认删除！',
+					        'confirm' => Yii::t('app', 'Are you sure you want to delete it? This operation cannot be undone.'),
 					        'method' => 'post',
 					]]), '</li>';
 			}

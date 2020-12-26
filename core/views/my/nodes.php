@@ -11,7 +11,7 @@ use yii\i18n\Formatter;
 use yii\widgets\LinkPager;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '我收藏的节点';
+$this->title = Yii::t('app', 'My favorite nodes');
 ?>
 
 <div class="row">
@@ -20,7 +20,7 @@ $this->title = '我收藏的节点';
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
 		<?php
-			echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
 	<div class="panel-body">

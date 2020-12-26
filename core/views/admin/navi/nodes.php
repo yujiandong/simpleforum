@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Node;
 
-$this->title = '导航节点设定';
+$this->title = Yii::t('app/admin', 'Set Nodes');
 ?>
 
 <div class="row">
@@ -19,7 +19,7 @@ $this->title = '导航节点设定';
 <div class="panel panel-default sf-box">
 	<div class="panel-heading">
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('导航管理', ['index']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Navigations'), ['index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
 	<div class="panel-body">
@@ -28,7 +28,7 @@ $this->title = '导航节点设定';
 		]); ?>
 	<table class="table table-bordered">
 	<thead>
-		<tr><th>节点</th><?php echo ($node['type']==1)?'<th>显示</th>':''; ?><th>排序</th><th>删除</th></tr>
+		<tr><th><?php echo Yii::t('app', 'Node'); ?></th><?php echo ($node['type']==1)?'<th>'.Yii::t('app/admin', 'Show').'</th>':''; ?><th><?php echo Yii::t('app/admin', 'Sort ID'); ?></th><th><?php echo Yii::t('app', 'Delete'); ?></th></tr>
 	</thead>
 	<tbody class="navi-nodes">
 <?php
@@ -53,7 +53,7 @@ $this->title = '导航节点设定';
 	</tbody>
 	</table>
 	<div class="form-group">
-			<?php echo Html::submitButton('确定', ['class' => 'btn btn-primary']); ?> <?php echo Html::button('添加', ['class' => 'btn btn-primary navi-nodes-add']); ?>
+		<?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?> <?php echo Html::button(Yii::t('app', 'Add'), ['class' => 'btn btn-primary navi-nodes-add']); ?>
 	</div>
 <?php ActiveForm::end(); ?>
 	</div>

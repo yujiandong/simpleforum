@@ -1,17 +1,17 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 namespace app\components;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\imagine\Image;
 
-class Upload extends Object implements UploadInterface
+class Upload extends BaseObject implements UploadInterface
 {
 	const TYPE_AVATAR = 'avatar';
 	const TYPE_COVER = 'cover';

@@ -34,7 +34,7 @@ class CommonController extends \app\controllers\AppController
                     ],
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    throw new \yii\web\NotFoundHttpException('该网页不存在');
+                    throw new \yii\web\NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Url')]));
                 }
             ],
         ];

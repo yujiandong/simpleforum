@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -11,7 +11,7 @@ use app\models\History;
 use app\models\Token;
 use app\components\SfHtml;
 
-$this->title = '我的邀请码';
+$this->title = Yii::t('app', 'My Invite Codes');
 $formatter = Yii::$app->getFormatter();
 $me = Yii::$app->getUser()->getIdentity();
 
@@ -22,19 +22,19 @@ $me = Yii::$app->getUser()->getIdentity();
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-    <span class="fr"><?php echo Html::a('购买邀请码', ['service/buy-invite-code']); ?></span>
-    <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+    <span class="fr"><?php echo Html::a(Yii::t('app', 'Buy Invite Codes'), ['service/buy-invite-code']); ?></span>
+    <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
     <li class="list-group-item">
-        <h4>当前账户余额： <?php echo SfHtml::uScore($me->score); ?></h4>
+        <h4><?php echo Yii::t('app', 'My Points'); ?>： <?php echo SfHtml::uScore($me->score); ?></h4>
     </li>
     <li class="list-group-item">
     <table class="table table-condensed table-bordered">
       <thead>
         <tr>
-          <th>邀请码</th>
-          <th>有效期</th>
-          <th>状态</th>
+          <th><?php echo Yii::t('app', 'Invite code'); ?></th>
+          <th><?php echo Yii::t('app', 'Expiry date'); ?></th>
+          <th><?php echo Yii::t('app', 'Status'); ?></th>
         </tr>
       </thead>
       <tbody>
@@ -43,8 +43,8 @@ foreach($records as $record) {
 //    $ext = unserialize($record['ext']);
     echo '<tr', ($record['status']==0)?'':' class="active"', '>',
             '<td>', ($record['status']==0)?$record['token']:'<del>'.$record['token'].'</del>', '</td>',
-            '<td>', ($record['expires'] == 0)?'永久有效':$formatter->asDateTime($record['expires'], 'y-MM-dd HH:mm:ss'), '</td>',
-            '<td>', ($record['status']==0)?'未使用':'已使用', '</td>',
+            '<td>', ($record['expires'] == 0)?Yii::t('app', 'Indefinite period'):$formatter->asDateTime($record['expires'], 'y-MM-dd HH:mm:ssZ'), '</td>',
+            '<td>', ($record['status']==0)?Yii::t('app', 'Unused'):Yii::t('app', 'Used'), '</td>',
          '</tr>';
 }
 ?>

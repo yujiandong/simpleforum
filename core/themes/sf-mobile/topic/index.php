@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -16,12 +16,12 @@ $currentPage = $pages->page+1;
 
 if( empty($title) ) {
     $this->title = Html::encode($settings['site_name']);
-    $title = '最近更新';
+    $title = Yii::t('app', 'Latest');
 } else {
     $this->title = Html::encode($title);
 }
 if($currentPage > 1) {
-    $this->title = $this->title . ' - 第' . $currentPage . '页';
+    $this->title = $this->title . ' - ' . Yii::t('app', 'Page {0,number}', $currentPage);
 }
 ?>
 
@@ -35,15 +35,15 @@ if($currentPage > 1) {
 ?>
     <li class="list-group-item">
 <?php
-    echo '<span class="fr">' . Html::a('<i class="fa fa-pencil"></i>发表', ['topic/new']) . '</span>';
-    echo Html::a('<i class="fa fa-bell'.($me->getNoticeCount()>0?'':'-o').'"></i>'.$me->getNoticeCount().' 条提醒', ['my/notifications']);
+    echo '<span class="fr">' . Html::a('<i class="fa fa-pencil"></i>'.Yii::t('app', 'Add Topic'), ['topic/new']) . '</span>';
+    echo Html::a('<i class="fa fa-bell'.($me->getNoticeCount()>0?'':'-o').'"></i>' . Yii::t('app', 'Notifications{n, plural, =0{} other{(+#)}}', ['n'=>$me->getNoticeCount()]), ['my/notifications']);
     echo ' ', Html::a(SfHtml::uScore($me->score), ['my/balance'], ['class'=>'btn btn-xs node']);
 ?>
     </li>
 <?php endif; ?>
     <li class="list-group-item navi-top-list">
 <?php
-    echo Html::a('全部', ['topic/index'], ['class'=>'btn btn-sm btn-primary current']);
+    echo Html::a(Yii::t('app', 'All Topics'), ['topic/index'], ['class'=>'btn btn-sm btn-primary current']);
     $navis = Navi::getHeadNaviNodes();
     foreach($navis as $current) {
         echo Html::a(Html::encode($current['name']), ['topic/navi', 'name'=>$current['ename']]);
@@ -61,9 +61,8 @@ if($currentPage > 1) {
                 SfHtml::uImgLink($topic['author']),
                 '<div class="media-body">
                     <div class="small gray">';
-                   echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-                    ' • <strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
-                    $topic['alltop']==1?' • <i class="fa fa-arrow-up"></i>置顶':'',
+                   echo '<strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
+                    $topic['alltop']==1?' • <i class="fa fa-arrow-up"></i>'.Yii::t('app', 'Top'):'',
                     '</div>
                     <h5 class="media-heading">';
          if($topic['comment_count'] > 0){
@@ -76,7 +75,7 @@ if($currentPage > 1) {
                     echo Html::a(Html::encode($topic['title']), $url),
                     '</h5>
                     <div class="small gray">';
-                    echo '<i class="fa fa-clock-o"></i>'.Yii::$app->formatter->asRelativeTime($topic['replied_at']);
+                    echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']), ' • <i class="fa fa-clock-o"></i>'.Yii::$app->formatter->asRelativeTime($topic['replied_at']);
         if ($topic['comment_count']>0) {
                     echo '<span> • <i class="fa fa-reply"></i>', Html::a(Html::encode($topic['lastReply']['username']), ['user/view', 'username'=>Html::encode($topic['lastReply']['username'])]), '</span>';
         }
@@ -101,8 +100,8 @@ if($currentPage > 1) {
 if ( intval($settings['cache_enabled'])===0 || $this->beginCache('f-bottom-nodes', ['duration' => intval($settings['cache_time'])*60])) :
 ?>
 <ul class="list-group sf-box bottom-navi">
-    <li class="list-group-item gray"><span class="fr"><?php echo Html::a('浏览全部节点', ['node/index']); ?></span>节点导航
-    </li>
+	<li class="list-group-item gray"><span class="fr"><?php echo Html::a(Yii::t('app', 'All Nodes'), ['node/index']); ?></span><?php echo Yii::t('app', 'Node Navi'); ?>
+	</li>
 <?php
     $bNavis = Navi::getBottomNaviNodes();
     foreach($bNavis as $cNavi) :

@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,7 +9,10 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use app\models\User;
+use app\components\SfHook;
+use app\components\SfEvent;
 
 /**
  * Signup form
@@ -20,6 +23,7 @@ class SignupForm extends Model
     const ACTION_AUTH_SIGNUP = 'auth-signup';
 
     public $username;
+    public $name;
     public $email;
     public $password;
     public $password_repeat;
@@ -34,37 +38,47 @@ class SignupForm extends Model
     public function rules()
     {
         $rules = [
-            [['username', 'email', 'invite_code'], 'trim'],
-            [['username', 'email', 'password', 'password_repeat'], 'required'],
-            ['username', 'match', 'pattern' => User::USERNAME_PATTERN, 'message' => '请使用字母(a-z),数字(0-9)或中文'],
-//            ['username', 'string', 'length' => [4, 20]],
-            ['username', 'validateMbString'],
-            ['username', 'validateFilter'],
+            [['username', 'email', 'name', 'invite_code'], 'trim'],
+            [['username', 'email', 'name', 'password', 'password_repeat'], 'required'],
+            [['username', 'email'], 'filter', 'filter' => 'strtolower'],
+            ['username', 'match', 'pattern' => User::USERNAME_PATTERN, 'message' => Yii::t('app', 'Your username can only contain letters, numbers and \'_\'.')],
+            ['username', 'string', 'length' => [4, 16]],
+//            ['username', 'validateMbString'],
+            ['username', 'usernameFilter'],
+            ['name', 'string', 'length' => [4, 40]],
+            ['name', 'nameFilter'],
             ['email', 'email'],
             ['password', 'string', 'length' => [6, 16]],
-            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => '两次密码输入不一致'],
-            ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => '用户名已存在'],
-            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => '邮箱已存在'],
+            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => Yii::t('app', 'Password confirmation doesn\'t match the password.')],
+            ['username', 'unique', 'targetClass' => '\app\models\User', 'message' => Yii::t('app', '{attribute} is already in use.', ['attribute' => Yii::t('app', 'Username')])],
+            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => Yii::t('app', '{attribute} is already in use.', ['attribute' => Yii::t('app', 'Email')])],
             ['invite_code', 'validateInviteCode'],
         ];
-        if($this->action !== self::ACTION_AUTH_SIGNUP && intval(Yii::$app->params['settings']['captcha_enabled']) === 1) {
-            $rules[] = ['captcha', 'captcha'];
-        }
+
         if(intval(Yii::$app->params['settings']['close_register']) === 2) {
             $rules[] = ['invite_code', 'required'];
         }
+
+        $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
+        if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
+           $rule = $plugin['class']::captchaValidate('signup', $plugin);
+           if(!empty($rule)) {
+             $rules[] = $rule;
+           }
+        }
+
         return $rules;
     }
 
     public function validateMbString($attribute, $params)
     {
         $len = strlen(preg_replace("/[\x{4e00}-\x{9fa5}]/u", '**', $this->$attribute));
-        if ($len<4 || $len>16) {
-            $this->addError($attribute, '用户名长度为4到16位，1个中文等于2位');
+        if ($len<6 || $len>16) {
+            $this->addError($attribute, Yii::t('app', 'Username should contain 6-16 characters.'));
         }
     }
 
-    public function validateFilter($attribute, $params)
+    public function usernameFilter($attribute, $params)
     {
         if( empty(Yii::$app->params['settings']['username_filter']) ) {
             return;
@@ -74,7 +88,23 @@ class SignupForm extends Model
             $pattern = str_replace('*', '.*', $filter);
             $result = preg_match('/^' . $pattern . '$/is', $this->$attribute);
             if ( !empty($result) ) {
-                $this->addError($attribute, '用户名不能包含'. str_replace('*', '', $filter));
+                $this->addError($attribute, Yii::t('app', '{attribute} cannot contain "{value}".', ['attribute'=>Yii::t('app', 'Username'), 'value'=>str_replace('*', '', $filter)]));
+                return;
+            }
+        }
+    }
+
+    public function nameFilter($attribute, $params)
+    {
+        if( empty(Yii::$app->params['settings']['name_filter']) ) {
+            return;
+        }
+        $filters = explode(',', Yii::$app->params['settings']['name_filter']);
+        foreach($filters as $filter) {
+            $pattern = str_replace('*', '.*', $filter);
+            $result = preg_match('/^' . $pattern . '$/is', $this->$attribute);
+            if ( !empty($result) ) {
+                $this->addError($attribute, Yii::t('app', '{attribute} cannot contain "{value}".', ['attribute'=>Yii::t('app', 'Name'), 'value'=>str_replace('*', '', $filter)]));
                 return;
             }
         }
@@ -86,23 +116,24 @@ class SignupForm extends Model
                     ->where(['token'=>$this->$attribute, 'type'=>Token::TYPE_INVITE_CODE])
                     ->one();
         if (!$this->_inviteCode) {
-            $this->addError($attribute, '邀请码不正确');
+            $this->addError($attribute, Yii::t('app', '{attribute} is invalid.', ['attribute' => Yii::t('app', 'Invite code')]));
         } else if ($this->_inviteCode->status != Token::STATUS_VALID) {
-            $this->addError($attribute, '此邀请码已被使用');
+            $this->addError($attribute, Yii::t('app', 'The invite code was used.'));
         } else if ($this->_inviteCode->expires > 0 && $this->_inviteCode->expires < time()) {
-            $this->addError($attribute, '此邀请码已过期');
+            $this->addError($attribute, Yii::t('app', 'The invite code has expired.'));
         }
     }
 
     public function attributeLabels()
     {
         return [
-            'username' => '用户名',
-            'email' => '电子邮件',
-            'password' => '密码',
-            'password_repeat' => '确认密码',
-            'invite_code' => '邀请码',
-            'captcha' => '验证码',
+            'username' => Yii::t('app', 'Username'),
+            'name' => Yii::t('app', 'Name'),
+            'email' => Yii::t('app', 'Email'),
+            'password' => Yii::t('app', 'Password'),
+            'password_repeat' => Yii::t('app', 'Confirm password'),
+            'invite_code' => Yii::t('app', 'Invite code'),
+            'captcha' => Yii::t('app', 'Enter code'),
         ];
     }
 
@@ -117,6 +148,7 @@ class SignupForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
+            $user->name = $this->name;
             $user->setPassword($this->password);
             $user->generateAuthKey();
             $user->score = User::getCost('reg');

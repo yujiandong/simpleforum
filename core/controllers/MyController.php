@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -40,7 +40,7 @@ class MyController extends AppController
     public function actionNotifications($type='sys')
     {
         if( !in_array($type, ['sys', 'sms']) ) {
-            throw new NotFoundHttpException('参数不正确');
+            throw new NotFoundHttpException(Yii::t('app', 'Parameter error'));
         }
 
         $me = Yii::$app->getUser()->getIdentity();

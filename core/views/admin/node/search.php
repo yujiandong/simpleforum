@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use yii\bootstrap\ActiveForm;
 
-$this->title = '节点搜索';
+$this->title = Yii::t('app/admin', 'Search nodes');
 ?>
 
 <div class="row">
@@ -19,19 +19,19 @@ $this->title = '节点搜索';
 <ul class="list-group sf-box">
 	<li class="list-group-item">
 		<?php
-			echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a('节点管理', ['admin/node/index']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Nodes'), ['admin/node/index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</li>
-	<li class="list-group-item list-group-item-info"><strong>检索</strong></li>
+	<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app', 'Search'); ?></strong></li>
 	<li class="list-group-item sf-box-form">
 <?php $form = ActiveForm::begin([
     'layout' => 'horizontal',
 	'id' => 'form-setting',
     'fieldConfig' => [
-//			        'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+//      'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
         'horizontalCssClasses' => [
             'label' => 'col-sm-2',
-//			            'offset' => 'col-sm-offset-4',
+//          'offset' => 'col-sm-offset-4',
             'wrapper' => 'col-sm-10',
             'error' => '',
             'hint' => 'col-sm-offset-2 col-sm-10',
@@ -43,21 +43,21 @@ $this->title = '节点搜索';
 ?>
         <div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-            <?php echo Html::submitButton('搜索', ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
+            <?php echo Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary', 'name' => 'login-button']); ?>
 			</div>
         </div>
 <?php
 ActiveForm::end();
 ?>
 	</li>
-	<li class="list-group-item list-group-item-info"><strong>节点</strong></li>
+	<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app', 'Node'); ?></strong></li>
 	<li class="list-group-item">
 		<ul>
 		<?php
 			if( !empty($node) ) {
-				echo '<li>[', $node['id'], ']&nbsp;', Html::encode($node['name']), '&nbsp;(', $node['ename'], ')&nbsp;|&nbsp;', Html::a('修改', ['admin/node/edit', 'id'=>$node['id']]), '</li>';
+				echo '<li>[', $node['id'], ']&nbsp;', Html::encode($node['name']), '&nbsp;(', $node['ename'], ')&nbsp;|&nbsp;', Html::a(Yii::t('app', 'Edit'), ['admin/node/edit', 'id'=>$node['id']]), '</li>';
 			} else {
-				echo '检索的节点不存在';
+				echo Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Node')]);
 			}
 		?>
 		</ul>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -20,27 +20,32 @@ $settings = Yii::$app->params['settings'];
 ?>
 <ul class="list-group sf-box">
   <li class="list-group-item">
+    <div class="media">
+      <div class="media-left"><?php echo SfHtml::uImg($me); ?></div>
+      <div class="media-body">
         <?php
-            echo SfHtml::uImg($me) . ' ' . SfHtml::uLink($me->username);
+            echo '<h5 class="media-heading">', SfHtml::uLink($me->username, $me->name, '<br />'), '</h5>';
             if ($me->isWatingActivation()) {
-                echo ' <small class="red">[ ', Html::a('未激活', ['my/settings']), ' ]</small>';
+                echo ' <small class="red">[ ', Html::a(Yii::t('app', 'Inactive'), ['my/settings']), ' ]</small>';
             } else if ($me->isWatingVerification()) {
-                echo ' <small class="red">[ 管理员验证中 ]</small>';
+                echo ' <small class="red">[ ' , Yii::t('app', 'Awating verification') , ' ]</small>';
             } else {
                 echo SfHtml::uGroup($me->score);
             }
         ?>
+      </div>
+    </div>
         <ul class="list-inline text-center favorite-list">
-          <li><?php echo Html::a($myInfo->favorite_node_count.'<br /><span class="gray">节点收藏</span>', ['my/nodes']); ?></li>
-          <li><?php echo Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">主题收藏</span>', ['my/topics']); ?></li>
-          <li><?php echo Html::a($myInfo->favorite_user_count.'<br /><span class="gray">特别关注</span>', ['my/following']); ?></li>
+          <li><?php echo Html::a($myInfo->favorite_node_count.'<br /><span class="gray">'.Yii::t('app', 'nodes').'</span>', ['my/nodes']); ?></li>
+          <li><?php echo Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">'.Yii::t('app', 'topics').'</span>', ['my/topics']); ?></li>
+          <li><?php echo Html::a($myInfo->following_count.'<br /><span class="gray">'.Yii::t('app', 'following').'</span>', ['my/following']); ?></li>
         </ul>
   </li>
-  <li class="list-group-item"><?php echo Html::a('<i class="fa fa-pencil"></i>发表新主题', ['topic/new']),' ',Html::a('<i class="fa fa-envelope"></i>发送私信', ['service/sms']); ?></li>
+  <li class="list-group-item"><?php echo Html::a('<i class="fa fa-pencil"></i>'.Yii::t('app', 'Add Topic'), ['topic/new']),' ',Html::a('<i class="fa fa-envelope"></i>'.Yii::t('app', 'SMS'), ['service/sms']); ?></li>
   <li class="list-group-item"><span class="fr"><?php echo Html::a(SfHtml::uScore($me->score), ['my/balance'], ['class'=>'btn btn-xs node']); ?></span>
-<?php echo Html::a('<i class="fa fa-bell'.($me->getNoticeCount()>0?'':'-o').'"></i>'.$me->getNoticeCount().' 条提醒', ['my/notifications']);
+<?php echo Html::a('<i class="fa fa-bell'.($me->getNoticeCount()>0?'':'-o').'"></i>'.Yii::t('app', 'Notifications{n, plural, =0{} other{(+#)}}', ['n'=>$me->getNoticeCount()]), ['my/notifications']);
 if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
-    echo ' ', Html::a('<i class="fa fa-ticket" aria-hidden="true"></i>邀请码', ['my/invite-codes'], ['title'=>'我的邀请码']);
+    echo ' ', Html::a('<i class="fa fa-ticket" aria-hidden="true"></i>'. Yii::t('app', 'Invite Codes'), ['my/invite-codes'], ['title'=>Yii::t('app', 'My Invite Codes')]);
 }
 ?>
   </li>
@@ -53,8 +58,8 @@ if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
     </li>
   <li class="list-group-item">
         <div class="text-center">
-        <p><?php echo Html::a('<i class="fa fa-user-plus"></i>现在注册', ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
-        已注册用户请  <?php echo Html::a('<i class="fa fa-sign-in"></i>登录', ['site/login']); ?>
+        <p><?php echo Html::a('<i class="fa fa-user-plus"></i>'. Yii::t('app', 'Sign up'), ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
+        <?php echo Yii::t('app', 'Already have an account?'), ' ', Html::a('<i class="fa fa-sign-in"></i>'. Yii::t('app', 'Sign in'), ['site/login']); ?>
 <?php
 $auths = [];
 foreach (Yii::$app->authClientCollection->getClients() as $client){

@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -10,7 +10,7 @@ use app\models\Navi;
 use app\models\Node;
 
 $settings = Yii::$app->params['settings'];
-$this->title = '全部节点';
+$this->title = Yii::t('app', 'All Nodes');
 ?>
 
 <div class="row">
@@ -22,7 +22,7 @@ if ( intval($settings['cache_enabled']) ===0 || $this->beginCache('f-all-nodes',
 ?>
 <div class="panel panel-default sf-box">
     <div class="panel-heading">
-    <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+    <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
 </div>
 <?php
@@ -31,7 +31,7 @@ if ( intval($settings['cache_enabled']) ===0 || $this->beginCache('f-all-nodes',
 ?>
 <div class="panel panel-default sf-box">
     <div class="panel-heading">
-    <span class="fr gray"><?php echo count($cNavi['naviNodes']); ?>个节点</span>
+    <span class="fr gray"><?php echo Yii::t('app', '{n, plural, =0{no nodes} =1{# node} other{# nodes}}', ['n'=>count($cNavi['naviNodes'])]); ?></span>
     <?php echo Html::encode($cNavi['name']); ?>
     </div>
     <div class="panel-body hot-nodes sf-btn">
@@ -49,7 +49,7 @@ if ( intval($settings['cache_enabled']) ===0 || $this->beginCache('f-all-nodes',
 ?>
 <div class="panel panel-default sf-box">
     <div class="panel-heading">
-        <span class="fr gray"><?php echo count($nodes); ?>个节点</span>未分类节点
+        <span class="fr gray"><?php echo Yii::t('app', '{n, plural, =0{no nodes} =1{# node} other{# nodes}}', ['n' => count($nodes)]); ?></span><?php echo Yii::t('app', 'Default navi'); ?>
     </div>
     <div class="panel-body hot-nodes sf-btn">
 <?php

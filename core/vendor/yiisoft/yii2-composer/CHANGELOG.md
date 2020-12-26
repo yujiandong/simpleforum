@@ -1,6 +1,37 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
+2.0.10 June 24, 2020
+--------------------
+
+- Enh #31: Add Composer 2 parallel unzip compatibility (samdark)
+
+
+2.0.9 April 20, 2020
+--------------------
+
+- Bug #30: Fix PHP error when upgrading/downgrading a Yii2 extension (brandonkelly)
+- Enh #27: Support for Composer 2 (brandonkelly, cebe)
+
+
+2.0.8 July 16, 2019
+-------------------
+
+- Bug #23: Fixed another an error that would occur if the Zend OPcache extension was installed, but its "restrict_api" setting was enabled (Lachee)
+
+
+2.0.7 July 05, 2018
+-------------------
+
+- Bug #18: Fixed an error that would occur if the Zend OPcache extension was installed, but its "restrict_api" setting was enabled (angrybrad)
+
+
+2.0.6 March 21, 2018
+--------------------
+
+- Bug #16: Upgrade notes were not shown when upgrading from a patch version (cebe)
+
+
 2.0.5 December 20, 2016
 -----------------------
 

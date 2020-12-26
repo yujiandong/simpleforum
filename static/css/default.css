@@ -1,9 +1,10 @@
 body {
-font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+font-family: Roboto, "Segoe UI", "Helvetica Neue", "Noto Sans JP", "Hiragino Sans" , "Hiragino Kaku Gothic ProN", Meiryo, "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 background-color: #f6f6f6;
 }
 
 /* bootstrap reset start */
+
 h1,h2,h3,h4,h5,h6 {line-height:1.2;}
 h1 {font-size:1.6em;}
 h2 {font-size:1.5em;}
@@ -11,6 +12,7 @@ h3 {font-size:1.4em;}
 h4 {font-size:1.3em;}
 h5 {font-size:1.14285714em;}
 h6 {font-size:1.1em;}
+
 
 a:link, a:visited, a:active {
     color: #555;
@@ -122,11 +124,13 @@ a.count-info:link, a.count-info:visited, a.count-info:active {
     transition: transform 0.6s ease-out;
     -moz-transition: -moz-transform 0.6s ease-out;   
 }
+/*
 .item-avatar img:hover{
     transform: rotateZ(360deg);
     -webkit-transform: rotateZ(360deg);   
     -moz-transform: rotateZ(360deg);   
 }
+*/
 
 .item-commentcount {float:right;}
 
@@ -247,7 +251,7 @@ form .form-group {
     clear:both;
     float:left;
     display:block;
-    width: 70px;
+    width: 80px;
     color: #999;
     text-align:right;
 }
@@ -410,4 +414,10 @@ ul.auth-clients li.auth-client a.auth-link, .auth-client a.auth-link {
     .container {width: 970px;}
     .sf-left {width:680px; padding-right:0;}
     .sf-right {display:block; width:290px;}
+}
+
+@media (min-width: 1200px) {
+    .container {width: 1170px;}
+    .sf-left {width:820px; padding-right:0;}
+    .sf-right {display:block; width:350px;}
 }

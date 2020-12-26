@@ -1,14 +1,14 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 
-$this->title = '插件管理';
+$this->title = Yii::t('app/admin', 'Plugins');
 ?>
 
 <div class="row">
@@ -17,19 +17,19 @@ $this->title = '插件管理';
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-        <p class='fr'><?php echo Html::a('可安装插件', ['installable']); ?></p>
+        <p class='fr'><?php echo Html::a(Yii::t('app/admin', 'Installable plugins'), ['installable']); ?></p>
         <?php
-            echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
         ?>
     </li>
     <li class="list-group-item">
     <table class="table table-bordered table-hover">
       <thead>
         <tr>
-          <th>插件ID</th>
-          <th>插件名</th>
-          <th>版本</th>
-          <th>操作</th>
+          <th><?php echo Yii::t('app/admin', 'Plugin id'); ?></th>
+          <th><?php echo Yii::t('app/admin', 'Plugin name'); ?></th>
+          <th><?php echo Yii::t('app', 'Version'); ?></th>
+          <th><?php echo Yii::t('app/admin', 'Operation'); ?></th>
         </tr>
       </thead>
       <tbody>
@@ -38,10 +38,10 @@ $this->title = '插件管理';
         echo '<tr><td>', $plugin['pid'], '</td>
 			<td>', Html::a(Html::encode($plugin['name']), ['view', 'pid'=>$plugin['pid']]), '</td>
 			<td>', Html::encode($plugin['version']) ,'</td><td>', 
-            empty($plugin['settings'])?'':Html::a('配置', ['settings', 'pid'=>$plugin['pid']]).'&nbsp;|&nbsp;', 
-            Html::a('卸载', ['uninstall', 'pid'=>$plugin['pid']], [
+            empty($plugin['settings'])?'':Html::a(Yii::t('app/admin', 'Setting'), ['settings', 'pid'=>$plugin['pid']]).'&nbsp;|&nbsp;', 
+            Html::a(Yii::t('app/admin', 'Uninstall'), ['uninstall', 'pid'=>$plugin['pid']], [
                 'data' => [
-                    'confirm' => '注意：请确认已经修改与此插件相关联的论坛配置！'."\n".'否则有可能会造成论坛出错。',
+                    'confirm' => Yii::t('app/admin', 'Please change forum settings of this plugin befor uninstalling!'),
                     'method' => 'post',
             ]]), '</td>
 		</tr>';

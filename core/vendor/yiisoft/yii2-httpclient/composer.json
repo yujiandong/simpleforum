@@ -18,10 +18,19 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0.0"
+        "yiisoft/yii2": "~2.0.13"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.27|~5.7.21|^6.2"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "autoload": {
-        "psr-4": { "yii\\httpclient\\": "" }
+        "psr-4": { "yii\\httpclient\\": "src" }
     },
     "extra": {
         "branch-alias": {

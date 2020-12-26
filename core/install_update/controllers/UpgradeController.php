@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -38,7 +38,7 @@ class UpgradeController extends \yii\web\Controller
     {
         if (file_exists(Yii::getAlias('@runtime/upv1.1.5to1.2.0.lock'))) {
             header("Content-Type: text/html; charset=UTF-8");
-            echo '您已升级完成';
+            echo Yii::t('app/admin', 'Upgrade completed successfully.');
             exit;
         }
         $error = false;
@@ -50,7 +50,7 @@ class UpgradeController extends \yii\web\Controller
             return $this->render('completed');
         } catch (\yii\db\Exception $e) {
             header("Content-Type: text/html; charset=UTF-8");
-            echo '数据库连接出错，请确认数据库连接信息：<br />' . $e->getMessage();
+            echo Yii::t('app/admin', 'Error establishing a database connection: Please confirm database settings.') . '<br />' . $e->getMessage();
             exit;
         }
     }

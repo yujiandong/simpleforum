@@ -20,6 +20,6 @@ use yii\widgets\ActiveForm;
     echo $form->field($model, 'about')->textarea(['rows' => 3, 'maxlength' => 255]);
  ?>
     <div class="form-group">
-        <?php echo Html::submitButton($model->isNewRecord ? '创建' : '修改', ['class' => 'btn btn-primary']); ?>
+        <?php echo Html::submitButton($model->isNewRecord ? Yii::t('app', 'Add') : Yii::t('app', 'Edit'), ['class' => 'btn btn-primary']); ?>
     </div>
 <?php ActiveForm::end(); ?>

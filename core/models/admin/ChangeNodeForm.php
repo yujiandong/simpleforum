@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -22,7 +22,7 @@ class ChangeNodeForm extends Model
     public function attributeLabels()
     {
         return [
-            'name' => '节点名',
+            'name' => Yii::t('app', 'Node name'),
         ];
     }
 

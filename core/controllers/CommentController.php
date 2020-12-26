@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -44,9 +44,9 @@ class CommentController extends AppController
                 'denyCallback' => function ($rule, $action) {
                     $me = Yii::$app->getUser();
                     if( !$me->getIsGuest() && $me->getIdentity()->isInactive() ) {
-                        throw new ForbiddenHttpException('您的会员帐号还没有激活，请先去激活');
+                        throw new ForbiddenHttpException(Yii::t('app', 'Your account is not activated. Please activate your account first.'));
                     } else {
-                        throw new ForbiddenHttpException('您没有执行此操作的权限。');
+                        throw new ForbiddenHttpException(Yii::t('app', 'You have no authority.'));
                     }
                 },
             ],
@@ -61,7 +61,7 @@ class CommentController extends AppController
         $model = $this->findCommentModel($id, ['topic.node', 'topic.author']);
 
         if( !$me->canEdit($model, $model->topic->comment_closed) ) {
-            throw new ForbiddenHttpException('您没有权限修改或已超过可修改时间。');
+            throw new ForbiddenHttpException(Yii::t('app', 'You have no authority to edit it or exceeded time limit.'));
         }
 
         if( $me->isAdmin() ) {
@@ -91,24 +91,24 @@ class CommentController extends AppController
     {
         $request = Yii::$app->getRequest();
         $me = Yii::$app->getUser()->getIdentity();
-        if( !$me->checkActionCost('addTopic') ) {
+        if( !$me->checkActionCost('addComment') ) {
             return $this->render('@app/views/common/info', [
-                'title' => '您的积分不足',
+                'title' => Yii::t('app', 'You don\'t have enough points.'),
                 'status' => 'warning',
-                'msg' => '您的积分不足，不能发表回复。每日签到可以获取10-50不等积分。',
+                'msg' => Yii::t('app', 'You don\'t have enough points. You can get points from daily bonus service.'),
             ]);
         }
 
         $topic = $this->findTopicModel($id, ['node', 'author']);
 
         if( !$me->canReply($topic) ) {
-            throw new ForbiddenHttpException('您没有权限回复或此主题已关闭回复。');
+            throw new ForbiddenHttpException(Yii::t('app', 'You have no authority to comment on the topic or the topic was closed.'));
         }
 
         $model = new Comment();
         if ( $model->load($request->post()) && $model->validate()) {
             if( !$me->canPost(History::ACTION_ADD_COMMENT) ) {
-                Yii::$app->getSession()->setFlash('postNG', '发帖间隔过小，请稍后再发表。');
+                Yii::$app->getSession()->setFlash('postNG', Yii::t('app', 'Post inverval time warning: Please try again.'));
             } else {
                 $model->user_id = $me->id;
                 $cid = new \app\models\Commentid(['id'=>null]);
@@ -136,7 +136,7 @@ class CommentController extends AppController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的回复');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Comment')]));
         }
     }
 
@@ -150,7 +150,7 @@ class CommentController extends AppController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的主题');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app', 'Topic')]));
         }
     }
 

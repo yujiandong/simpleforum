@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -106,7 +106,7 @@ class QiniuUpload extends Upload implements PluginInterface
         foreach(self::$sizes[$type] as $key=>$resize) {
         $filePath = str_replace('{size}', $key, $target);
             list($width, $height) = explode('x', $resize);
-            $token = $this->_auth->uploadToken($this->bucketName.':'.$filePath);
+            $token = $this->_auth->uploadToken($this->bucketName, $filePath);
             list($ret, $err) = $this->_handler->put($token, $filePath, Image::thumbnail($source, $width, $height)->get($format));
             if ($err !== null) {
                 Yii::error($err);

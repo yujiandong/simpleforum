@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -19,12 +19,12 @@ if ( !($isGuest = Yii::$app->getUser()->getIsGuest()) ) {
 }
 
 if (!$isGuest && $me->isActive()) {
-/*    $follow = Favorite::checkFollow(Yii::$app->getUser()->id, Favorite::TYPE_NODE, $node['id'])?Html::a('取消收藏', ['service/unfavorite', 'type'=>'node', 'id'=>$node['id']], [
+/*    $follow = Favorite::checkFollow(Yii::$app->getUser()->id, Favorite::TYPE_NODE, $node['id'])?Html::a(Yii::t('app', 'Cancle Favorite'), ['service/unfavorite', 'type'=>'node', 'id'=>$node['id']], [
         'data' => [
             'method' => 'post',
-        ]]):Html::a('加入收藏', ['service/favorite', 'type'=>'node', 'id'=>$node['id']]);
+        ]]):Html::a(Yii::t('app', 'Favorite'), ['service/favorite', 'type'=>'node', 'id'=>$node['id']]);
 */
-    $follow = Favorite::checkFollow($me->id, Favorite::TYPE_NODE, $node['id'])?Html::a('<i class="fa fa-star fa-lg aria-hidden="true""></i><span class="favorite-num">' . ($node['favorite_count']>0?$node['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>'取消收藏', 'href' => 'javascript:void(0);', 'params'=>'unfavorite node '. $node['id']]):Html::a('<i class="fa fa-star-o fa-lg" aria-hidden="true"></i><span class="favorite-num">' . ($node['favorite_count']>0?$node['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>'收藏', 'href' => 'javascript:void(0);', 'params'=>'favorite node '. $node['id']]);
+    $follow = Favorite::checkFollow($me->id, Favorite::TYPE_NODE, $node['id'])?Html::a('<i class="fa fa-star fa-lg aria-hidden="true""></i><span class="favorite-num">' . ($node['favorite_count']>0?$node['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>Yii::t('app', 'Cancle Favorite'), 'href' => 'javascript:void(0);', 'params'=>'unfavorite node '. $node['id']]):Html::a('<i class="fa fa-star-o fa-lg" aria-hidden="true"></i><span class="favorite-num">' . ($node['favorite_count']>0?$node['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>Yii::t('app', 'Favorite'), 'href' => 'javascript:void(0);', 'params'=>'favorite node '. $node['id']]);
     $follow = '  •  '.$follow;
 } else {
     $follow = '';
@@ -40,12 +40,12 @@ $this->title = Html::encode($node['name']);
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-        <span class="fr gray small">主题总数 <?php echo $node['topic_count'], $follow; ?></span>
-        <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+        <span class="fr gray small"><?php echo Yii::t('app', '{n, plural, =0{no topics} =1{# topic} other{# topics}}', ['n'=>intval($node['topic_count'])]), $follow; ?></span>
+        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
         <p class="gray"><?php echo Html::encode($node['about']); ?></p>
         <?php
             if (!$isGuest && $me->isActive() ) {
-                echo Html::a('<i class="fa fa-pencil"></i>发表新主题', ['topic/add', 'node'=>$node['ename']], ['class'=>'btn btn-primary']);
+                echo Html::a('<i class="fa fa-pencil"></i>'.Yii::t('app', 'Add Topic'), ['topic/add', 'node'=>$node['ename']], ['class'=>'btn btn-primary']);
             }
         ?>
     </li>
@@ -70,10 +70,10 @@ $this->title = Html::encode($node['name']);
             }
             echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
         }
-                    echo '<strong><i class="fa fa-user" aria-hidden="true"></i>', SfHtml::uLink($topic['author']['username']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
-                    ' •  ', $topic['top']==1?'<i class="fa fa-arrow-up" aria-hidden="true"></i>置顶':'<i class="fa fa-clock-o" aria-hidden="true"></i>'.Yii::$app->formatter->asRelativeTime($topic['replied_at']);
+                    echo '<strong><i class="fa fa-user" aria-hidden="true"></i>', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), SfHtml::uGroupRank($topic['author']['score']), '</strong>',
+                    ' •  ', $topic['top']==1?'<i class="fa fa-arrow-up" aria-hidden="true"></i>'.Yii::t('app', 'Top'):'<i class="fa fa-clock-o" aria-hidden="true"></i>'.Yii::$app->formatter->asRelativeTime($topic['replied_at']);
         if ($topic['comment_count']>0) {
-                    echo '<span class="item-lastreply"> • <i class="fa fa-reply" aria-hidden="true"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';
+                    echo '<span class="item-lastreply"> • <i class="fa fa-comment" aria-hidden="true"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';
         }
                     echo '</div>
                 </div>';

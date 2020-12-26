@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -11,7 +11,7 @@ use yii\bootstrap\Alert;
 use app\components\SfHtml;
 
 $session = Yii::$app->getSession();
-$this->title = '积分充值';
+$this->title = Yii::t('app', 'Charge Points');
 ?>
 
 <div class="row">
@@ -20,19 +20,19 @@ $this->title = '积分充值';
 
 <div class="panel panel-default sf-box">
     <div class="panel-heading">
-        <?php echo Html::a('论坛管理', ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
+        <?php echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
     <div class="panel-body sf-box-form">
 <?php
 if ( $session->hasFlash('ChargePointNG') ) {
     echo Alert::widget([
            'options' => ['class' => 'alert-warning'],
-           'body' => $session->getFlash('ChargePointNG'),
+           'body' => Yii::t('app', $session->getFlash('ChargePointNG')),
         ]);
 } else if ( $session->hasFlash('ChargePointOK') ) {
     echo Alert::widget([
            'options' => ['class' => 'alert-success'],
-           'body' => $session->getFlash('ChargePointOK'),
+           'body' => Yii::t('app', $session->getFlash('ChargePointOK')),
         ]);
 }
 ?>
@@ -45,7 +45,7 @@ if ( $session->hasFlash('ChargePointNG') ) {
             <?php echo $form->field($model, 'msg')->textarea(['rows' => 3, 'maxlength'=>255]); ?>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-9">
-                <?php echo Html::submitButton('确定', ['class' => 'btn btn-primary']); ?>
+                <?php echo Html::submitButton(Yii::t('app/admin', 'Submit'), ['class' => 'btn btn-primary']); ?>
                 </div>
             </div>
         <?php ActiveForm::end(); ?>
@@ -57,7 +57,7 @@ if ( $session->hasFlash('ChargePointNG') ) {
 
 <!-- sf-right start -->
 <div class="col-md-4 sf-right">
-<?php echo $this->render('@app/views/common/_right'); ?>
+<?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->
 

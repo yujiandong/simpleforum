@@ -26,7 +26,7 @@ class AppController extends Controller
             return Yii::$app->getResponse()->redirect(['site/offline']);
         }
         if ( $this->needLogin($action, $user) ) {
-            Yii::$app->getSession()->setFlash('accessNG', '您查看的页面需要先登录');
+            Yii::$app->getSession()->setFlash('accessNG', 'You need to sign in to view this page.');
             return Yii::$app->getResponse()->redirect(['site/login']);
         }
 //      Yii::$app->getUser()->setReturnUrl(Util::getReferrer());
@@ -51,6 +51,7 @@ class AppController extends Controller
             'site/verify-email',
             'site/activate',
             'site/auth-bind-account',
+	    'site/language',
             'admin/user/activate',
             'admin/user/reset-password',
             'service/favorite',
@@ -77,6 +78,7 @@ class AppController extends Controller
             'offline',
             'login',
             'logout',
+            'language',
         ];
         return ( isset($this->settings['offline']) && intval($this->settings['offline']) === 1  //offline
                  && !($controllerId == "site" && in_array($actionId, $actions)) //except actions
@@ -102,6 +104,7 @@ class AppController extends Controller
             'activate',
             'auth-signup',
             'auth-bind-account',
+            'language',
         ];
 
         return ( isset($this->settings['access_auth']) && intval($this->settings['access_auth']) === 1  //offline

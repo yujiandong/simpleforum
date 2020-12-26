@@ -1,11 +1,13 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 namespace app\models;
+
+use Yii;
 
 class UserInfo extends \yii\db\ActiveRecord
 {
@@ -23,24 +25,6 @@ class UserInfo extends \yii\db\ActiveRecord
         return [self::SCENARIO_EDIT => ['website', 'about']];
     }
 
-    public function rules()
-    {
-        return [
-			[['website', 'about'], 'trim'],
-            ['website', 'url', 'defaultScheme' => 'http'],
-            ['website', 'string', 'max' => 100],
-            ['about', 'string', 'max' => 255],
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return [
-            'website' => '个人网站',
-            'about' => '个人简介',
-        ];
-    }
-
 	public static function updateCounterInfo($action, $user_id)
 	{
 		$upd = [
@@ -52,10 +36,10 @@ class UserInfo extends \yii\db\ActiveRecord
 			'unfollowNode' => ['favorite_node_count'=>-1],
 			'followTopic' => ['favorite_topic_count'=>1],
 			'unfollowTopic' => ['favorite_topic_count'=>-1],
-			'followUser' => ['favorite_user_count'=>1],
-			'unfollowUser' => ['favorite_user_count'=>-1],
-			'followed' => ['favorite_count'=>1],
-			'unfollowed' => ['favorite_count'=>-1],
+			'followUser' => ['following_count'=>1],
+			'unfollowUser' => ['following_count'=>-1],
+			'followed' => ['follower_count'=>1],
+			'unfollowed' => ['follower_count'=>-1],
 		];
 
 		if( !isset($upd[$action]) ) {

@@ -14,7 +14,7 @@ use app\components\SfHtml;
 
 $settings = Yii::$app->params['settings'];
 $formatter = Yii::$app->getFormatter();
-$this->title = '我收藏的主题';
+$this->title = Yii::t('app', 'My favorite topics');
 ?>
 
 <div class="row">
@@ -23,7 +23,7 @@ $this->title = '我收藏的主题';
 <ul class="list-group sf-box">
 	<li class="list-group-item">
 		<?php
-			echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</li>
 <?php
@@ -46,7 +46,7 @@ foreach($topics as $topic){
 		echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
 	}
 				echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-				'  •  <strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username']), '</strong>',
+				'  •  <strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), '</strong>',
 				' • <i class="fa fa-clock-o"></i>', $formatter->asRelativeTime($topic['replied_at']);
 	if ($topic['comment_count']>0) {
 				echo '<span class="item-lastreply"> • <i class="fa fa-reply"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';

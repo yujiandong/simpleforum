@@ -1,4 +1,5 @@
 <?php
+
 namespace Qiniu\Storage;
 
 use Qiniu\Config;
@@ -28,12 +29,13 @@ final class ResumeUploader
     /**
      * 上传二进制流到七牛
      *
-     * @param $upToken    上传凭证
-     * @param $key        上传文件名
-     * @param $inputStream 上传二进制流
-     * @param $size       上传流的大小
-     * @param $params     自定义变量
-     * @param $mime       上传数据的mimeType
+     * @param string $upToken 上传凭证
+     * @param string $key 上传文件名
+     * @param string $inputStream 上传二进制流
+     * @param string $size 上传流的大小
+     * @param string $params 自定义变量
+     * @param string $mime 上传数据的mimeType
+     * @param string $config
      *
      * @link http://developer.qiniu.com/docs/v6/api/overview/up/response/vars.html#xvar
      */
@@ -46,6 +48,7 @@ final class ResumeUploader
         $mime,
         $config
     ) {
+
         $this->upToken = $upToken;
         $this->key = $key;
         $this->inputStream = $inputStream;
@@ -54,13 +57,23 @@ final class ResumeUploader
         $this->mime = $mime;
         $this->contexts = array();
         $this->config = $config;
-        $this->host = $config->getUpHost();
+
+        list($accessKey, $bucket, $err) = \Qiniu\explodeUpToken($upToken);
+        if ($err != null) {
+            return array(null, $err);
+        }
+
+        $upHost = $config->getUpHost($accessKey, $bucket);
+        if ($err != null) {
+            throw new \Exception($err->message(), 1);
+        }
+        $this->host = $upHost;
     }
 
     /**
      * 上传操作
      */
-    public function upload()
+    public function upload($fname)
     {
         $uploaded = 0;
         while ($uploaded < $this->size) {
@@ -76,20 +89,26 @@ final class ResumeUploader
                 $ret = $response->json();
             }
             if ($response->statusCode < 0) {
-                $this->host = $this->config->getUpHostBackup();
+                list($accessKey, $bucket, $err) = \Qiniu\explodeUpToken($this->upToken);
+                if ($err != null) {
+                    return array(null, $err);
+                }
+
+                $upHostBackup = $this->config->getUpBackupHost($accessKey, $bucket);
+                $this->host = $upHostBackup;
             }
             if ($response->needRetry() || !isset($ret['crc32']) || $crc != $ret['crc32']) {
                 $response = $this->makeBlock($data, $blockSize);
                 $ret = $response->json();
             }
 
-            if (! $response->ok() || !isset($ret['crc32'])|| $crc != $ret['crc32']) {
+            if (!$response->ok() || !isset($ret['crc32']) || $crc != $ret['crc32']) {
                 return array(null, new Error($this->currentUrl, $response));
             }
             array_push($this->contexts, $ret['ctx']);
             $uploaded += $blockSize;
         }
-        return $this->makeFile();
+        return $this->makeFile($fname);
     }
 
     /**
@@ -101,16 +120,17 @@ final class ResumeUploader
         return $this->post($url, $block);
     }
 
-    private function fileUrl()
+    private function fileUrl($fname)
     {
         $url = $this->host . '/mkfile/' . $this->size;
         $url .= '/mimeType/' . \Qiniu\base64_urlSafeEncode($this->mime);
         if ($this->key != null) {
             $url .= '/key/' . \Qiniu\base64_urlSafeEncode($this->key);
         }
+        $url .= '/fname/' . \Qiniu\base64_urlSafeEncode($fname);
         if (!empty($this->params)) {
             foreach ($this->params as $key => $value) {
-                $val =  \Qiniu\base64_urlSafeEncode($value);
+                $val = \Qiniu\base64_urlSafeEncode($value);
                 $url .= "/$key/$val";
             }
         }
@@ -120,15 +140,15 @@ final class ResumeUploader
     /**
      * 创建文件
      */
-    private function makeFile()
+    private function makeFile($fname)
     {
-        $url = $this->fileUrl();
+        $url = $this->fileUrl($fname);
         $body = implode(',', $this->contexts);
         $response = $this->post($url, $body);
         if ($response->needRetry()) {
             $response = $this->post($url, $body);
         }
-        if (! $response->ok()) {
+        if (!$response->ok()) {
             return array(null, new Error($this->currentUrl, $response));
         }
         return array($response->json(), null);
@@ -146,6 +166,6 @@ final class ResumeUploader
         if ($this->size < $uploaded + Config::BLOCK_SIZE) {
             return $this->size - $uploaded;
         }
-        return  Config::BLOCK_SIZE;
+        return Config::BLOCK_SIZE;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -77,7 +77,7 @@ class TopicController extends CommonController
         if ($model !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到id为['.$id.']的主题');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t found.', ['attribute' => Yii::t('app', 'Topic')]));
         }
     }
 }

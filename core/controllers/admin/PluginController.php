@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -55,14 +55,14 @@ class PluginController extends CommonController
     public function actionInstall($pid)
     {
         if( Plugin::findOne(['pid'=>$pid]) ) {
-            throw new NotFoundHttpException('插件['.$pid.']已经安装，不能重复安装。');
+            throw new NotFoundHttpException(Yii::t('app/admin', 'Plugin({plugin}) was installed already.', ['plugin'=>$pid]));
         }
         $plugin = self::getInstallablePlugin($pid);
         if ( !is_callable([$plugin['handlerClass'], 'install']) ) {
-            throw new NotFoundHttpException('插件['.$pid.']不存在install方法。');
+            throw new NotFoundHttpException(Yii::t('app/admin', 'Plugin({plugin}) does not have a method \'install\'.', ['plugin'=>$pid]));
         }
         if ( !$plugin['handlerClass']::install() ) {
-            throw new NotFoundHttpException('插件['.$pid.']安装出错。');
+            throw new NotFoundHttpException(Yii::t('app/admin', 'Failed to install Plugin({plugin}).', ['plugin'=>$pid]));
         }
         $plugin += ['config'=>'', 'events'=>'', 'settings'=>''];
         $flgConfig = false;
@@ -83,7 +83,7 @@ class PluginController extends CommonController
                 return $this->redirect(['index']);
             }
         } else {
-            throw new NotFoundHttpException('插件['.$pid.']安装出错: '.$model->getFirstErrors());
+            throw new NotFoundHttpException(Yii::t('app/admin', 'Failed to install Plugin({plugin}).', ['plugin'=>$pid]) . implode('<br />', $model->getFirstErrors()));
         }
         return $this->render('view', [
             'plugin' => $plugin
@@ -95,10 +95,10 @@ class PluginController extends CommonController
         $plugin = $this->findModel($pid);
         $handlerClass = 'app\plugins\\'.$plugin->pid.'\\'.$plugin->pid;
         if ( !is_callable([$handlerClass, 'uninstall']) ) {
-            throw new NotFoundHttpException('插件['.$pid.']不存在uninstall方法。');
+            throw new NotFoundHttpException(Yii::t('app/admin', 'Plugin({plugin}) does not have a method \'uninstall\'.', ['plugin'=>$pid]));
         }
         if ( !$handlerClass::uninstall() ) {
-            throw new NotFoundHttpException('插件['.$pid.']卸载出错。');
+            throw new NotFoundHttpException(Yii::t('app/admin', 'Failed to uninstall Plugin({plugin}).', ['plugin'=>$pid]));
         }
         $plugin->delete();
         self::createPluginsFile();
@@ -109,7 +109,7 @@ class PluginController extends CommonController
     {
         $plugin = $this->findModel($pid);
         if( empty($plugin->config) ) {
-            throw new NotFoundHttpException('插件['.$pid.']没有配置设定。');
+            throw new NotFoundHttpException(Yii::t('app/admin', 'Plugin({plugin}) does not have an attribute \'config\'.', ['plugin'=>$pid]));
         }
         $settings = json_decode($plugin->settings, true);
         $configs = json_decode($plugin->config, true);
@@ -137,14 +137,13 @@ class PluginController extends CommonController
             if( !empty($plugin->settings) ) {
                 $settings = json_decode($plugin->settings, true);
             }
-			$handlerClass = 'app\plugins\\'.$plugin->pid.'\\'.$plugin->pid;
+            $handlerClass = 'app\plugins\\'.$plugin->pid.'\\'.$plugin->pid;
+            $result['plugins'][$plugin->pid] = ['class'=>$handlerClass]+$settings;
             if( !empty($plugin->events) ) {
                 $events = json_decode($plugin->events, true);
                 foreach($events as $type=>$event) {
                     $result['events'][$type][] = [ [$handlerClass, $event], $settings];
                 }
-            } else {
-                $result['plugins'][$plugin->pid] = ['class'=>$handlerClass]+$settings;
             }
         }
         self::createFile($result);
@@ -207,12 +206,13 @@ class PluginController extends CommonController
             }
         }
     }
+
     protected function findModel($pid)
     {
         if (($model = Plugin::findOne(['pid'=>$pid])) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('未找到['.$pid.']插件');
+            throw new NotFoundHttpException(Yii::t('app', '{attribute} doesn\'t exist.', ['attribute'=>Yii::t('app/admin', 'Plugin')]));
         }
     }
 

@@ -1,7 +1,7 @@
 <?php
 /**
- * @link http://www.simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @link http://simpleforum.org/
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -43,15 +43,15 @@ class ResetPasswordForm extends Model
         return [
             [['password', 'password_repeat'], 'required'],
             ['password', 'string', 'length' => [6, 16]],
-            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => '[新密码]和[再次输入新密码]不一致'],
+            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => Yii::t('app', 'Password confirmation doesn\'t match the password.'),
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'password' => '新密码',
-            'password_repeat' => '再次输入新密码',
+            'password' => Yii::t('app', 'New password'),
+            'password_repeat' => Yii::t('app', 'Confirm password'),
         ];
     }
 

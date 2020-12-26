@@ -13,7 +13,7 @@ use app\components\SfHtml;
 $settings = Yii::$app->params['settings'];
 $formatter = Yii::$app->getFormatter();
 
-$this->title = '我关注的人的最新主题';
+$this->title = Yii::t('app', 'Topics of my following');;
 ?>
 
 <div class="row">
@@ -22,7 +22,7 @@ $this->title = '我关注的人的最新主题';
 <ul class="list-group sf-box">
 	<li class="list-group-item">
 		<?php
-			echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', $this->title;
+			echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</li>
 <?php
@@ -30,12 +30,12 @@ foreach($topics as $topic){
 	$topic = $topic['topic'];
 
 	echo '<li class="list-group-item media">',
-				SfHtml::uImgLink($topic['author']),
-			'<div class="media-body">
-				<h5 class="media-heading">',
+		SfHtml::uImgLink($topic['author']),
+		'<div class="media-body">
+			<h5 class="media-heading">',
 				Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]),
-				'</h5>
-				<div class="small gray">';
+			'</h5>
+			<div class="small gray">';
 	if($topic['comment_count'] > 0){
 	    $gotopage = ceil($topic['comment_count']/$settings['comment_pagesize']);
 		$url = ['topic/view', 'id'=>$topic['id']];
@@ -45,7 +45,7 @@ foreach($topics as $topic){
 		echo Html::a($topic['comment_count'], $url, ['class'=>'badge fr count-info']);
 	}
 				echo Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']], ['class'=>'btn btn-xs node small']),
-				'  •  <strong><i class="fa fa-user" aria-hidden="true"></i>', SfHtml::uLink($topic['author']['username']), '</strong>',
+				'  •  <strong><i class="fa fa-user" aria-hidden="true"></i>', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), '</strong>',
 				' • <i class="fa fa-clock-o" aria-hidden="true"></i>', $formatter->asRelativeTime($topic['replied_at']);
 	if ($topic['comment_count']>0) {
 				echo '<span class="item-lastreply"> • <i class="fa fa-reply" aria-hidden="true"></i>', SfHtml::uLink($topic['lastReply']['username']), '</span>';

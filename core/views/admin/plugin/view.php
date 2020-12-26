@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2015 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Alert;
 
-$this->title = '插件['.$plugin['pid'].']详细介绍';
+$this->title = Yii::t('app/admin', 'Abount Plugin[{pid}]', ['pid' => $plugin['pid']]);
 $session = Yii::$app->getSession();
 $me = Yii::$app->getUser()->getIdentity();
 
@@ -21,23 +21,25 @@ $me = Yii::$app->getUser()->getIdentity();
 
 <ul class="list-group sf-box">
     <li class="list-group-item">
-        <?php echo Html::a('首页', ['topic/index']), '&nbsp;/&nbsp;', Html::a('插件管理', ['admin/plugin']), '&nbsp;›&nbsp;', $this->title; ?>
+        <?php
+			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Plugins'), ['index']), '&nbsp;/&nbsp;', $this->title;
+        ?>
     </li>
     <li class="list-group-item">
 		<dl class="dl-horizontal">
-		  <dt>插件ID</dt><dd><?php echo $plugin['pid']; ?></dd>
-		  <dt>插件名</dt><dd><?php echo $plugin['name']; ?></dd>
-		  <dt>版本</dt><dd><?php echo $plugin['version']; ?></dd>
-		  <dt>作者</dt><dd><?php echo $plugin['author']; ?></dd>
-		  <dt>网址</dt><dd><?php echo $plugin['url']; ?></dd>
-		  <dt>描述</dt><dd><?php echo $plugin['description']; ?></dd>
+		  <dt><?php echo Yii::t('app/admin', 'Plugin id'); ?></dt><dd><?php echo $plugin['pid']; ?></dd>
+		  <dt><?php echo Yii::t('app/admin', 'Plugin name'); ?></dt><dd><?php echo $plugin['name']; ?></dd>
+		  <dt><?php echo Yii::t('app', 'Version'); ?></dt><dd><?php echo $plugin['version']; ?></dd>
+		  <dt><?php echo Yii::t('app', 'Author'); ?></dt><dd><?php echo $plugin['author']; ?></dd>
+		  <dt><?php echo Yii::t('app', 'Homepage'); ?></dt><dd><?php echo $plugin['url']; ?></dd>
+		  <dt><?php echo Yii::t('app', 'Description'); ?></dt><dd><?php echo $plugin['description']; ?></dd>
 		  <dt></dt><dd>
 <?php
 	if( $plugin['installed'] == false ) {
-		echo Html::a('安装', ['install', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
+		echo Html::a(Yii::t('app/admin', 'Install'), ['install', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
 	} else {
-		echo Html::a('设定', ['settings', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
-		echo Html::a('卸载', ['uninstall', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
+		echo Html::a(Yii::t('app/admin', 'Setting'), ['settings', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
+		echo ' ', Html::a(Yii::t('app/admin', 'Uninstall'), ['uninstall', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
 	}
 ?>
 		  </dd>
