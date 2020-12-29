@@ -152,8 +152,6 @@ return [
     'The results will be sorted from smallest to largest. Default value is {n}.' => '数字昇順でソート、デフォルト値：{n}',
 /* controllers/userController */
     'Points have been changed successfully.' => 'ポイントチャージしました。',
-    'Login page' => 'ログインページ',
-    'Login page and right of all pages' => 'ログインページとすべてのページの右側',
 /* Setting */
     'Website name' => 'サイト名称',
     'Slogan' => 'サブタイトル',
@@ -222,6 +220,8 @@ return [
     '0(Open)' => '0(会員登録可)',
     '1(Close)' => '1(会員登録不可)',
     '2(Invite to register)' => '2(招待必須)',
+    '0(Login page)' => '0(ログインページ)',
+    '1(Login page and right of all pages)' => '1(ログインページとすべてのページの右側)',
     'Circle' => '丸形',
     'Rounded' => '角丸四角形',
     'Website storage' => '当サイトのサーバー',

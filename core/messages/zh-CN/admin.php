@@ -161,8 +161,6 @@ return [
     'The results will be sorted from smallest to largest. Default value is {n}.' => '从小到大排序，默认{n}',
 /* controllers/userController */
     'Points have been changed successfully.' => '积分充值成功',
-    'Login page' => '登录页',
-    'Login page and right of all pages' => '登录页及所有页右侧',
 /* Setting */
     'Website name' => '网站名称',
     'Slogan' => '网站副标题',
@@ -231,6 +229,8 @@ return [
     '0(Open)' => '0(开启注册)',
     '1(Close)' => '1(关闭注册)',
     '2(Invite to register)' => '2(只开放邀请码注册)',
+    '0(Login page)' => '0(登录页)',
+    '1(Login page and right of all pages)' => '1(登录页及所有页右侧)',
     'Circle' => '圆形',
     'Rounded' => '圆角方形',
     'Website storage' => '网站所在空间',

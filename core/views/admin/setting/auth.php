@@ -21,14 +21,17 @@ function showSettingForm($settings, $form, $parentKey='')
         echo $form->field($setting, $parentKey.'['.$key.']key', ['enableError'=>false,])->hiddenInput(['class'=>'form-control auth-key'])->label(false);
         if ($setting->type === 'select') {
             $options = json_decode($setting->option,true);
+            foreach ($options as $k=>$v) {
+              $options[$k] = Yii::t('app/admin', $v);
+            }
             echo $form->field($setting, $parentKey.'['.$key.']value', ['enableError'=>false,])
-                    ->dropDownList($options, ['class'=>'form-control auth-value auth-'.$setting->key])->label($setting->label)->hint($setting->description);
+                    ->dropDownList($options, ['class'=>'form-control auth-value auth-'.$setting->key])->label(Yii::t('app/admin', $setting->label))->hint(Yii::t('app/admin', $setting->description));
         } else if ($setting->type === 'textarea') {
             echo $form->field($setting, $parentKey.'['.$key.']value', ['enableError'=>false,])
-                    ->textArea(['class'=>'form-control auth-value auth-'.$setting->key])->label($setting->label)->hint($setting->description);
+                    ->textArea(['class'=>'form-control auth-value auth-'.$setting->key])->label(Yii::t('app/admin', $setting->label))->hint(Yii::t('app/admin', $setting->description));
         } else  {
             echo $form->field($setting, $parentKey.'['.$key.']value', ['enableError'=>false,])->input($setting->type, ['class'=>'form-control auth-value auth-'.$setting->key])
-                    ->label($setting->label)->hint($setting->description);
+                    ->label(Yii::t('app/admin', $setting->label))->hint(Yii::t('app/admin', $setting->description));
         }
         $key++;
     endforeach;

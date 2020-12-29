@@ -240,7 +240,7 @@ $(function(){
         authItem = $(this).closest('.auth-item');
 
         $('.auth-item-id', authItem).text(type);
-        $('.auth-title', authItem).val( authInfo['title'][type]===undefined?type+'ログイン':authInfo['title'][type] );
+        $('.auth-title', authItem).val( authInfo['title'][type]===undefined?'Login with '+type:authInfo['title'][type] );
         $('.auth-clientId', authItem).closest('div').siblings('label').text( authInfo['clientId'][type]===undefined?'clientId':authInfo['clientId'][type] );
         $('.auth-clientSecret', authItem).closest('div').siblings('label').text( authInfo['clientSecret'][type]===undefined?'clientSecret':authInfo['clientSecret'][type] );
     });
@@ -276,8 +276,8 @@ $(function(){
 $(function(){
     $('body').on('click', '.favorite', function(e) {
         var title = {
-            'favorite':{'user':'フォロー解除', 'topic':'お気に入り削除', 'node':'お気に入り削除'},
-            'unfavorite':{user:'フォロー', topic:'お気に入り', node:'お気に入り'}
+            'favorite':{'user':'Unfollow', 'topic':'Cancel Favorite', 'node':'Cancel Favorite'},
+            'unfavorite':{user:'Follow', topic:'Favorite', node:'Favorite'}
         };
         self = $(this);
         params = self.attr('params').split(' ');
