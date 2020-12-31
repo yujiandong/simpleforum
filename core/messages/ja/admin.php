@@ -226,4 +226,6 @@ return [
     'Rounded' => '角丸四角形',
     'Website storage' => '当サイトのサーバー',
     'Disable upload' => 'アップロードクローズ',
+
+    'settings_desc_footer_links' => 'フォーマット： リンク文字|http://url<br />例：Contact|https://simpleforum.org/t/47',
 ];

@@ -259,7 +259,7 @@ return [
     'settings_desc_groups' => '一行一个组，格式为:最大积分 用户组名',
     'settings_desc_head_meta' => '示例:<br/>&lt;meta property="qc:admins" content="331146677212163161xxxxxxx" /&gt;<br/>&lt;meta name="cpalead-verification" content="ymEun344mP9vt-B2idFRxxxxxxx" /&gt;',
     'settings_desc_analytics_code' => '示例： 直接粘贴google 或 百度统计代码',
-    'settings_desc_footer_links' => '一行一个链接，格式： 描述 http://url<br />如：关于本站 http://simpleforum.org/t/1',
+    'settings_desc_footer_links' => '一行一个链接，格式： 描述|http://url<br />如：联系我们|https://simpleforum.org/t/47',
     'settings_desc_editor' => '普通论坛推荐Wysibb编辑器(BBCode)，技术类论坛推荐SimpleMarkdown编辑器。注意：换编辑器可能会使以前发的帖子格式混乱。',
     'settings_desc_cache_enabled' => '默认:0（不开启）',
     'settings_desc_cache_servers' => '缓存类型设为MemCache时设置<br/>一个服务器一行，格式为：IP 端口 权重<br />示例：<br />127.0.0.1 11211 100<br />127.0.0.2 11211 200',

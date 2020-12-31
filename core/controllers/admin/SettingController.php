@@ -151,7 +151,7 @@ class SettingController extends CommonController
         $settings = ArrayHelper::map($settings, 'key', 'value');
 
         $settings = self::getCacheInfo($settings);
-        $settings['footer_links'] = self::getFootLinks($settings['footer_links']);
+        $settings['footer_links'] = self::getFootLinks($settings['footer_links'], '|');
         $settings['autolink_filter'] = self::textAreaToArray($settings['autolink_filter']);
         $settings['groups'] = self::getFootLinks($settings['groups']);
         $settings['auth_setting'] = json_decode($settings['auth_setting'], true);
@@ -170,7 +170,7 @@ class SettingController extends CommonController
         return in_array($timeZone, \DateTimeZone::listIdentifiers());
     }
 
-    private function getFootLinks($links)
+    private function getFootLinks($links, $separator=' ')
     {
         $result = [];
         if( !empty($links) ) {
@@ -180,7 +180,7 @@ class SettingController extends CommonController
                 if( empty($link) ) {
                     continue;
                 }
-                $result[] = explode(' ', $link);
+                $result[] = explode($separator, $link, 2);
             }
         }
         return $result;
