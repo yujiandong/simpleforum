@@ -165,8 +165,8 @@ class TopicController extends AppController
 
         $topic = new Topic(['scenario' => Topic::SCENARIO_ADD, 'node_id' => $node['id'], 'user_id' => $me->id]);
         $content = new TopicContent();
-        if ( $topic->load($request->post()) && $topic->validate() && 
-            $content->load($request->post()) && $content->validate() ) {
+        if ( $topic->load($request->post()) && $content->load($request->post()) 
+             && $topic->validate() && $content->validate() ) {
             if( !$me->canPost(History::ACTION_ADD_TOPIC) ) {
                 Yii::$app->getSession()->setFlash('postNG', Yii::t('app', 'Post inverval warning: Please try again.'));
             } else {
@@ -200,8 +200,8 @@ class TopicController extends AppController
         $topic = new Topic(['scenario' => Topic::SCENARIO_NEW, 'user_id' => $me->id]);
         $content = new TopicContent();
 
-        if ( $topic->load($request->post()) && $topic->validate() && 
-            $content->load($request->post()) && $content->validate() ) {
+        if ( $topic->load($request->post()) &&$content->load($request->post()) 
+            && $topic->validate() && $content->validate() ) {
             if( !$me->canPost(History::ACTION_ADD_TOPIC) ) {
                 Yii::$app->getSession()->setFlash('postNG', Yii::t('app', 'Post inverval warning: Please try again.'));
             } else {
