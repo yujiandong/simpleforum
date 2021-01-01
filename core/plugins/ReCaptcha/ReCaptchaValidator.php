@@ -14,7 +14,7 @@ class ReCaptchaValidator extends Validator
     public $secret;
     public $action;
     public $threshold = 0.5;
-    public $apiSiteVerify = 'https://www.google.com/recaptcha/api/siteverify';
+    public $apiSiteVerify = 'https://www.recaptcha.net/recaptcha/api/siteverify';
 
     public function init()
     {
