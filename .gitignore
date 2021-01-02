@@ -1,4 +1,5 @@
 !assets/.gitignore
+!static/assets/*
 protected/runtime/*
 !protected/runtime/.gitignore
 protected/data/*.db
@@ -57,7 +58,7 @@ $RECYCLE.BIN/
 .settings
 
 # data
-assets
+#assets
 avatar
 runtime
 
