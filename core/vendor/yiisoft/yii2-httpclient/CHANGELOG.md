@@ -1,6 +1,12 @@
 Yii Framework 2 HTTP client extension Change Log
 ================================================
 
+2.0.13 December 23, 2020
+------------------------
+
+- Bug #209: Fixed error code, thrown by Exception in `CurlTransport` (kwazaro)
+
+
 2.0.12 October 08, 2019
 -----------------------
 

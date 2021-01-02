@@ -42,7 +42,7 @@ class SettingController extends CommonController
     public function actionAuth()
     {
         $configs = [
-            'type'=>['label'=>Yii::t('app/admin', 'Type'), 'key'=>'type', 'type'=>'select', 'value_type'=>'text', 'value'=>'', 'description'=>'', 'option'=>'{"":"", "qq":"QQ", "weibo":"微博", "weixin":"微信", "github":"Github"}'],
+            'type'=>['label'=>Yii::t('app/admin', 'Type'), 'key'=>'type', 'type'=>'select', 'value_type'=>'text', 'value'=>'', 'description'=>'', 'option'=>'{"":"", "github":"Github", "google":"Google", "facebook":"Facebook", "qq":"QQ", "weibo":"微博", "weixin":"微信"}'],
             'sortid'=>['label'=>Yii::t('app/admin', 'Sort ID'), 'key'=>'sortid', 'type'=>'text', 'value_type'=>'integer', 'value'=>'1', 'description'=>''],
             'show'=>['label'=>Yii::t('app/admin', 'Show'), 'key'=>'show', 'type'=>'select', 'value_type'=>'integer', 'value'=>'0', 'description'=>'', 'option'=>'["0('.Yii::t('app', 'Login page').')", "1('.Yii::t('app', 'Login page and right of all pages').')"]'],
             'clientId'=>['label'=>'clientId', 'key'=>'clientId', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>''],

@@ -32,8 +32,8 @@ if( !$isGuest ) {
     <title><?php echo Html::encode($this->title), $this->title==$settings['site_name']?'':' - '.Html::encode($settings['site_name']); ?></title>
     <?php $this->head(); ?>
     <!--[if lt IE 9]>
-      <script src="<?php echo $baseUrl; ?>/static/assets/bootstrap/html5shiv.min.js"></script>
-      <script src="<?php echo $baseUrl; ?>/static/assets/bootstrap/respond.min.js"></script>
+      <script src="<?php echo $baseUrl; ?>/static/js/html5shiv.min.js"></script>
+      <script src="<?php echo $baseUrl; ?>/static/js/respond.min.js"></script>
     <![endif]-->
 </head>
 <body>

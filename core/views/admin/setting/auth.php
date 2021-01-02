@@ -69,7 +69,7 @@ unset($settings['auth_enabled']);
 $key = 0;
 foreach($settings as $type=>$part) {
     $key++;
-    echo '<div id=auth_',$key,' class="auth-item"><p class="login-three-home"><strong><span class="auth-item-id">', $type===1?'Account'.$type:$type, '</span> <span class="auth-item-del">' . Yii::t('app', 'Delete') . '</span></strong></p>';
+    echo '<div id=auth_',$key,' class="auth-item"><p class="third-party-login-msg"><strong><span class="auth-item-id">', $type===1?'Account'.$type:$type, '</span> <span class="auth-item-del">' . Yii::t('app', 'Delete') . '</span></strong></p>';
     showSettingForm($part, $form, '['.$key.']');
     echo '</div>';
 }

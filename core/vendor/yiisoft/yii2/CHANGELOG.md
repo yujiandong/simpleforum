@@ -1,6 +1,29 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.40 December 23, 2020
+------------------------
+
+- Bug #16492: Fix eager loading Active Record relations when relation key is a subject to a type-casting behavior (bizley)
+- Bug #18199: Fix content body response on 304 HTTP status code, according to RFC 7232 (rad8329)
+- Bug #18287: Fix the OUTPUT got SQL syntax error if the column name is MSSQL keyword e.g. key (darkdef)
+- Bug #18339: Fix migrate controller actions to return exit codes (haohetao, bizley)
+- Bug #18365: Move quoting of table names to upper level to function `getSchemaMetadata()` in MSSQL driver to get clean names from the schema (darkdef)
+- Bug #18383: RBAC's generated file made PSR-12 compliant (perlexed)
+- Bug #18386: Fix `assets/yii.activeForm.js` incorrect target selector for `validatingCssClass` (brussens)
+- Bug #18393: Fix `ActiveRecord::refresh()` to load data from the database even if cache is enabled (hooman-mirghasemi)
+- Bug #18395: Fix regression in `yii\helpers\BaseArrayHelper::filter()` (allowing filtering arrays with numeric keys) (bizley)
+- Bug #18400: Set parent module of the newly attached child module by `Module::setModule()` and `Module::setModules()` (sup-ham)
+- Bug #18406: Fix PDO exception when committing or rolling back an autocommitted transaction in PHP 8 (brandonkelly)
+- Bug #18414: Fix `AssetManager::appendTimestamp()` not appending timestamp for website root in sub-directory (Isitar)
+- Bug #18426: Fix check for route's leading slash in `yii\widgets\Menu` (stevekr)
+- Bug #18435: Fix ensuring Active Record relation links' keys to be strings (bizley)
+- Bug #18435: Change the check order whether an object is an implementation of `Arrayable` or `JsonSerializable` in `\yii\base\ArrayableTrait::toArray()` and `\yii\rest\Serializer::serialize()` (spell6inder)
+- Bug #18442: Fix calls with array access to string (bizley)
+- Enh #18381: The `yii\web\AssetManager` `$basePath` readable and writeable check has been moved to the `checkBasePathPermission()`. This check will run once before `publishFile()` and `publishDirectory()` (nadar)
+- Enh #18394: Add support for setting `yii\web\Response::$stream` to a callable (brandonkelly)
+
+
 2.0.39.3 November 23, 2020
 --------------------------
 
@@ -1382,7 +1405,7 @@ Yii Framework 2 Change Log
 - Enh #8329: Added support of options for `message` console command (vchenin)
 - Enh #8613: `yii\widgets\FragmentCache` will not store empty content anymore which fixes some problems related to `yii\filters\PageCache` (kidol)
 - Enh #8649: Added total applied migrations to final report (vernik91)
-- Enh #8687: Added support for non-gregorian calendars, e.g. persian, taiwan, islamic to `yii\i18n\Formatter` (cebe, z-avanes, hooman-pro)
+- Enh #8687: Added support for non-gregorian calendars, e.g. persian, taiwan, islamic to `yii\i18n\Formatter` (cebe, z-avanes, hooman-mirghasemi)
 - Enh #8824: Allow passing a `yii\db\Expression` to `Query::groupBy()` (cebe)
 - Enh #8995: `yii\validators\FileValidator::maxFiles` can be set to `0` to allow unlimited count of files (PowerGamer1, silverfire)
 - Enh #9282: Improved JSON error handling to support PHP 5.5 error codes (freezy-sk)

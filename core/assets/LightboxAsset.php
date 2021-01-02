@@ -12,7 +12,7 @@ use yii\web\AssetBundle;
 class LightboxAsset extends AssetBundle
 {
 //    public $basePath = '@webroot';
-    public $baseUrl = '@web/static/assets/lightbox2/dist';
+    public $baseUrl = '@web/static/assets/lightbox2';
     public $css = [
         'css/lightbox.min.css',
     ];

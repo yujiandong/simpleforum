@@ -425,7 +425,7 @@ class Module extends ServiceLocator
                 Yii::debug("Loading module: $id", __METHOD__);
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
-                $module->setInstance($module);
+                $module::setInstance($module);
                 return $this->_modules[$id] = $module;
             }
         }
@@ -450,6 +450,9 @@ class Module extends ServiceLocator
             unset($this->_modules[$id]);
         } else {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
@@ -504,6 +507,9 @@ class Module extends ServiceLocator
     {
         foreach ($modules as $id => $module) {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 

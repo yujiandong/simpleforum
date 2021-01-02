@@ -9,7 +9,7 @@ use yii\widgets\InputWidget;
 class ReCaptchaWidget extends InputWidget
 {
     public $siteKey;
-    public $jsApiUrl = 'https://www.google.com/recaptcha/api.js';
+    public $jsApiUrl = 'https://www.recaptcha.net/recaptcha/api.js';
     public $action;
     public $jsCallback;
 

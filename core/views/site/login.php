@@ -56,20 +56,18 @@ echo Alert::widget([
         </div>
         <?php ActiveForm::end(); ?>
 <?php if ( intval(Yii::$app->params['settings']['auth_enabled']) === 1 ) : ?>
-        <h6 class="login-three-home"><strong><?php echo Yii::t('app', 'Third-party login'); ?></strong></h6><div class="auth-client">
-        <?php //echo
-/*        \yii\authclient\widgets\AuthChoice::widget([
-            'baseAuthUrl' => ['site/auth'],
-            'popupMode' => false,
-        ]);*/
+        <h6 class="third-party-login-msg"><strong><?php echo Yii::t('app', 'Third-party login'); ?></strong></h6><ul class="third-party-login">
+        <?php
 foreach (Yii::$app->authClientCollection->getClients() as $client){
+    echo '<li class="' .$client->getId() . '">';
     if ($client->getId() == 'weixin' && $client->type == 'mp') {
-        echo Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', 'javascript:void(0);', ['class'=>'auth-link '. $client->getId(), 'id'=>'weixinmp', 'link'=>Url::to(['site/auth', 'authclient'=>$client->getId()], true)]);
+        echo Html::a('<i class="fa fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', 'javascript:void(0);', ['class'=>'btn auth-link '. $client->getId(), 'id'=>'weixinmp', 'link'=>Url::to(['site/auth', 'authclient'=>$client->getId()], true)]);
     } else {
-        echo Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId()], ['class'=>'auth-link '. $client->getId(), 'title'=>Html::encode($client->getTitle())]);
+        echo Html::a('<i class="fa fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId()], ['class'=>'btn auth-link '. $client->getId(), 'title'=>Html::encode($client->getTitle())]);
     }
+    echo '</li>';
 }
-        ?></div>
+        ?></ul>
 <?php endif; ?>
     </div>
 </div>

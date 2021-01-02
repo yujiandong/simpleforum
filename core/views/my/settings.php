@@ -205,19 +205,19 @@ if ( intval(Yii::$app->params['settings']['auth_enabled']) === 1 ) :
 $authed = $unauthed = [];
 foreach (Yii::$app->authClientCollection->getClients() as $client){
     if( in_array($client->getId(), $auths) ) {
-        $authed[] = Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', ['service/unbind-account', 'source'=>$client->getId()], ['class'=>'auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Unbind')]);
+        $authed[] = '<li class="' .$client->getId() . '">' . Html::a('<i class="fa fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', ['service/unbind-account', 'source'=>$client->getId()], ['class'=>'btn auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Unbind')]) . '</li>';
     } else {
-        $unauthed[] = Html::a('<span class="auth-icon '.$client->getId().'"></span><span class="auth-title">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId(), 'action'=>'bind'], ['class'=>'auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Bind')]);
+        $unauthed[] = '<li class="' .$client->getId() . '">' . Html::a('<i class="fa fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId(), 'action'=>'bind'], ['class'=>'btn auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Bind')]) . '</li>';
     }
 }
 ?>
-        <div class="row">
-        <div class="col-sm-3 user-auth-label"><strong><?php echo Yii::t('app', 'Bound account'); ?></strong></div>
-        <div class="col-sm-9 auth-client">&nbsp;<?php echo implode('', $authed); ?></div>
+        <div class="clearfix">
+          <h6 class="third-party-login-msg"><strong><?php echo Yii::t('app', 'Bound account'); ?></strong></h6>
+          <ul class="third-party-login"><?php echo implode('', $authed); ?></ul>
         </div>
-        <div class="row" style="padding-top:7px;">
-        <div class="col-sm-3 user-auth-label"><strong><?php echo Yii::t('app', 'Bind account'); ?></strong></div>
-        <div class="col-sm-9 auth-client"><?php echo implode('', $unauthed); ?>
+        <div class="clearfix">
+          <h6 class="third-party-login-msg"><strong><?php echo Yii::t('app', 'Bind account'); ?></strong></h6>
+          <ul class="third-party-login"><?php echo implode('', $unauthed); ?></ul>
         </div>
     </li>
 <?php endif; ?>

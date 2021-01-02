@@ -69,21 +69,21 @@ $config = [
                     'sourcePath' => null,
                     'baseUrl' => '@web/static',
                     'js' => [
-                    'js/jquery-1.12.2.min.js',
+                    'js/jquery-1.12.4.min.js',
                     ]
                 ],
                 'yii\bootstrap\BootstrapAsset' => [
                     'sourcePath' => null,
                     'baseUrl' => '@web/static',
                     'css' => [
-                        'assets/bootstrap/bootstrap.min.css',
+                        'assets/bootstrap-3.4.1/css/bootstrap.min.css',
                     ]
                 ],
                 'yii\bootstrap\BootstrapPluginAsset' => [
                     'sourcePath' => null,
                     'baseUrl' => '@web/static',
                     'js' => [
-                        'assets/bootstrap/bootstrap.min.js',
+                        'assets/bootstrap-3.4.1/js/bootstrap.min.js',
                     ]
                 ],
             ],
@@ -136,8 +136,8 @@ if ( intval($setting['auth_enabled']) !== 0 && !empty($setting['auth_setting']) 
         'weixin' => 'yujiandong\authclient\Weixin',
         'weixinmp' => 'yujiandong\authclient\Weixin',
         'github' => 'yujiandong\authclient\GitHub',
-        'facebook' => 'yii\authclient\clients\Facebook',
-        'twitter' => 'yii\authclient\clients\Twitter',
+        'google' => 'yujiandong\authclient\Google',
+        'facebook' => 'yujiandong\authclient\Facebook',
     ];
 
     foreach($setting['auth_setting'] as $type=>$auth) {

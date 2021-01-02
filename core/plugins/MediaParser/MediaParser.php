@@ -120,55 +120,6 @@ class MediaParser implements PluginInterface
                 }
             }
         }
-
-/*
-        // youku
-        if(strpos($text, 'player.youku.com')){
-            $text = preg_replace('/([ \t\n\>]+|^)http:\/\/player\.youku\.com\/player\.php\/.*?sid\/([a-zA-Z0-9\=]+)\/v\.swf/', '\1<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="http://player.youku.com/embed/\2" allowfullscreen></iframe></div>', $text);
-        }
-        if(strpos($text, 'v.youku.com')){
-            $text = preg_replace('/([ \t\n\>]+|^)http:\/\/v\.youku\.com\/v_show\/id_([a-zA-Z0-9\=]+)(\/|\.html?)?/', '\1<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="http://player.youku.com/embed/\2" allowfullscreen></iframe></div>', $text);
-        }
-        // tudou
-        if(strpos($text, 'www.tudou.com')){
-            $text = preg_replace('/([ \t\n\>]+|^)(http:\/\/www\.tudou\.com\/[a-z]\/[a-zA-Z0-9\=]+\/(\&amp;resourceId\=[0-9\_]+|\&amp;iid\=[0-9\_]+)*(\/v\.swf)?)/', '\1<div class="embed-responsive embed-responsive-16by9"><embed class="embed-responsive-item" src="\2" quality="high" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed></div>', $text);
-            $text = preg_replace('/([ \t\n\>]+|^)http:\/\/www\.tudou\.com\/(programs\/view|listplay)\/([a-zA-Z0-9\=\_\-]+)\/([a-zA-Z0-9\=\_\-]+)(\/|\.html)?/', '\1<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="http://www.tudou.com/programs/view/html5embed.action?type=1&code=\4&lcode=\3&resourceId=0_06_05_99" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"></iframe></div>', $text);
-            $text = preg_replace('/([ \t\n\>]+|^)http:\/\/www\.tudou\.com\/albumplay\/([a-zA-Z0-9\=\_\-]+)\/([a-zA-Z0-9\=\_\-]+)(\/|\.html)?/', '\1<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="http://www.tudou.com/programs/view/html5embed.action?type=2&code=\3&lcode=\2&resourceId=0_06_05_99" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"></iframe></div>', $text);
-        }
-        // qq
-        if(strpos($text, 'v.qq.com')){
-            $text = preg_replace('/([ \t\n\>]+|^)http:\/\/v\.qq\.com\/[a-zA-Z0-9\/]+\.html\?vid=([a-zA-Z0-9]{8,})/', '\1<div class="embed-responsive embed-responsive-16by9"><embed class="embed-responsive-item" src="http://static.video.qq.com/TPout.swf?vid=\2&auto=0" allowFullScreen="true" quality="high" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed></div>', $text);
-            $text = preg_replace('/([ \t\n\>]+|^)http:\/\/v\.qq\.com\/[a-zA-Z0-9\/]+\/([a-zA-Z0-9]{8,})\.html/', '\1<div class="embed-responsive embed-responsive-16by9"><embed  class="embed-responsive-item" src="http://static.video.qq.com/TPout.swf?vid=\2&auto=0" allowFullScreen="true" quality="high" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed></div>', $text);
-        }
-        if(strpos($text, 'film.qq.com')){
-            $text = preg_replace('/([ \t\n\>]+|^)http:\/\/film\.qq\.com\/[a-zA-Z0-9\/]+\/([a-zA-Z0-9]{8,})\.html/', '\1<div class="embed-responsive embed-responsive-16by9"><embed  class="embed-responsive-item" src="http://static.video.qq.com/TPout.swf?vid=\2&auto=0" allowFullScreen="true" quality="high" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed></div>', $text);
-        }
-        // youtube
-        if(strpos($text, 'youtu.be')){
-            $text = preg_replace('/([ \t\n\>]+|^)https?:\/\/youtu\.be\/([a-zA-Z0-9\=\_\-]+)/', '\1<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/\2" allowfullscreen></iframe></div>', $text);
-        }
-        if(strpos($text, 'www.youtube.com')){
-            $text = preg_replace('/([ \t\n\>]+|^)https?:\/\/www\.youtube\.com\/watch\?v\=([a-zA-Z0-9\=\_\-]+)/', '\1<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="https://www.youtube.com/embed/\2" allowfullscreen></iframe></div>', $text);
-        }
-//      if(strpos($text, 'www.miaopai.com')){
-//          $text = preg_replace('/http:\/\/www\.miaopai\.com\/show\/([a-zA-Z0-9\~\=\_\-]+)(\.htm)?/', '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="http://bsyqncdn.miaopai.com/stream/\1__.mp4" allowfullscreen></iframe></div>', $text);
-//        } 
- if(strpos($text, 'www.miaopai.com')){
-
-             $text = preg_replace('/([ \t\n\>]+|^)http:\/\/www\.miaopai\.com\/show\/([a-zA-Z0-9\~\=\_\-]+)(\.htm)?/', 
-                '\1<div class="embed-responsive embed-responsive-16by9">
-                    <object class="embed-responsive-item" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">
-                        <param name="src" value="http://wscdn.miaopai.com/splayer2.1.5.swf?scid=\2&token=&autopause=false&fromweibo=false"> 
-                        <param name="wmode" value="transparent">  
-                        <param name="wmode" value="opaque">   
-                        <param name="quality" value="high">   
-                        <param name="allowfullscreen" value="true">   
-                        <param name="allowscriptaccess" value="always">   
-                    <embed class="embed-responsive-item" id=em src="http://wscdn.miaopai.com/splayer2.1.5.swf?scid=\2&token=&autopause=false&fromweibo=false" type="application/x-shockwave-flash" autostart=false quality="high" allowfullscreen="true" wmode="transparent" allowscriptaccess="always" pluginspage="http://www.macromedia.com/go/getflashplayer">    
-                    </object>  </div>
-', $text);
-          }
-*/
         $event->output = $text;
         return true;
     }

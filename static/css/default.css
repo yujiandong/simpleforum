@@ -269,98 +269,6 @@ li.navi-top-list {padding-top:5px; padding-bottom:5px;}
 .navi-top-list a.current {}
 .navi-top-list .fr {margin-top:3px;}
 
-/* auth login start */
-.login-three-home {
-  color: #666;
-  text-align: center;
-  padding: 5px 0 5px 0;
-  background: url("img/line.jpg") left center repeat-x;
-}
-.login-three-home strong {background-color:#fff; padding: 0 5px;}
-.auth-clients {
-    margin: 0 0 0.5em;
-}
-
-ul.auth-clients {
-  margin: 0 0 0 0;
-}
-
-ul.auth-clients li.auth-client a.auth-link, .auth-client a.auth-link {
-  height: 32px;
-  float: left;
-  line-height: 32px;
-  border-radius: 2px;
-  margin-right:10px;
-}
-
-.auth-client {
-  float: left;
-  margin: 0 0 0 0;
-}
-
-.auth-client .auth-link .auth-title {
-  float: left;
-  margin-top: 0;
-  padding-left: 5px;
-  height: 32px;
-}
-
-.auth-icon {
-  float: left;
-  width: 32px;
-  height: 100%;
-  background: url(img/authicons.png) no-repeat;
-}
-
-.auth-icon.google, 
-.auth-icon.google_openid,
-.auth-icon.google_oauth {
-    background-position: 0 -34px;
-}
-.auth-icon.twitter {
-    background-position: 0 -68px;
-}
-.auth-icon.yandex,
-.auth-icon.yandex_openid,
-.auth-icon.yandex_oauth {
-    background-position: 0 -102px;
-}
-.auth-icon.vkontakte {
-    background-position: 0 -136px;
-}
-.auth-icon.facebook {
-    background-position: 0 -170px;
-}
-.auth-icon.mailru {
-    background-position: 0 -204px;
-}
-.auth-icon.moikrug {
-    background-position: 0 -238px;
-}
-.auth-icon.odnoklassniki {
-    background-position: 0 -272px;
-}
-.auth-icon.linkedin {
-    background-position: 0 -306px;
-}
-.auth-icon.github {
-    background-position: 0 -339px;
-}
-.auth-icon.live {
-    background-position: 0 -372px;
-}
-.auth-icon.qq {
-    background-position: 0 -405px
-}
-.auth-icon.weibo {
-    background-position: 0 -439px
-}
-.auth-icon.weixin {
-    background-position: 0 -473px
-}
-
-/* auth login end */
-
 .btn-circle {
     width: 40px;
     height: 40px;
@@ -384,14 +292,128 @@ ul.auth-clients li.auth-client a.auth-link, .auth-client a.auth-link {
 
 .btn-circle.btn-sm {padding:5px 0;}
 
-
 .popover{
     max-width: 100%; /* Max Width of the popover (depending on the container!) */
 }
 
+.clearfix {
+    zoom: 1;
+}
+
+.clearfix:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+/* auth login start */
+.third-party-login-msg {
+  color: #666;
+  text-align: center;
+  padding: 5px 0 5px 0;
+  background: url("img/line.jpg") left center repeat-x;
+}
+.third-party-login-msg strong {background-color:#fff; padding: 0 5px;}
+
+.third-party-login{
+	width:100%;
+	margin:0 auto;
+	padding:0 0 20px;
+}
+
+.third-party-login li {
+	float:left;
+	list-style:none;
+	width:100%;
+	padding: 5px;
+}
+
+.third-party-login a.auth-link {
+	font-size:15px;
+	min-width: 200px;
+	width: 100%;
+	position:relative;
+	padding:5px;
+	color:#fff;
+	border-radius:3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	text-decoration: none;
+	cursor:pointer;
+	vertical-align: middle;
+	line-height:25px;
+}
+
+.third-party-login .fa {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    right: 5px;
+    bottom: 5px;
+    font-size: 1.6em;
+
+    width: 40px;
+    text-align: center;
+    padding-left:0;
+    border-right: 1px solid rgba(0,0,0,0.2);
+}
+
+.third-party-login .snstext{
+	padding-left:30px;
+    line-height: 34px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.third-party-login a {
+	background:#55acee;
+}
+.third-party-login a:hover {
+	background:#4892cb;
+}
+
+.third-party-login .twitter a {
+	background:#55acee;
+}
+.third-party-login .twitter a:hover {
+	background:#4892cb;
+}
+
+.third-party-login .facebook a {
+	background:#3b5998;
+}
+.third-party-login .facebook a:hover {
+	background:#324c81;
+}
+
+.third-party-login .google a {
+	background:#dd4e41;
+}
+.third-party-login .google a:hover {
+	background:#c9453a;
+}
+
+.third-party-login .github a {
+	background:#4a4646;
+}
+.third-party-login .github a:hover {
+	background:#191717;
+}
+
+.third-party-login .qq a {
+	background:#00a5de;
+}
+
+.third-party-login .qq a:hover {
+	background:#008cbd;
+}
+
+/* auth login end */
+
 @media (min-width: 480px) {
     .item-lastreply {display: inline;}
     .video-link {width:430px;height:358px;}
+    .third-party-login li {width: 50%;}
 }
 
 @media (max-width: 767px) {
@@ -408,12 +430,15 @@ ul.auth-clients li.auth-client a.auth-link, .auth-client a.auth-link {
     .item-avatar img{width:48px;height:48px;}
     .video-link {width:480px;height:400px;}
     .user-auth-label {text-align:right;}
+    .third-party-login li {width: 33%;}
 }
 
 @media (min-width: 992px) {
     .container {width: 970px;}
     .sf-left {width:680px; padding-right:0;}
     .sf-right {display:block; width:290px;}
+    .third-party-login {width:90%;}
+
 }
 
 @media (min-width: 1200px) {

@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.39.3';
+        return '2.0.40';
     }
 
     /**
@@ -130,7 +130,7 @@ class BaseYii
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strncmp($alias, '@', 1)) {
+        if (strpos($alias, '@') !== 0) {
             // not an alias
             return $alias;
         }
@@ -278,7 +278,7 @@ class BaseYii
     {
         if (isset(static::$classMap[$className])) {
             $classFile = static::$classMap[$className];
-            if ($classFile[0] === '@') {
+            if (strpos($classFile, '@') === 0) {
                 $classFile = static::getAlias($classFile);
             }
         } elseif (strpos($className, '\\') !== false) {

@@ -99,12 +99,12 @@ private static $installed = array (
     ),
     'egulias/email-validator' => 
     array (
-      'pretty_version' => '2.1.24',
-      'version' => '2.1.24.0',
+      'pretty_version' => '2.1.25',
+      'version' => '2.1.25.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ca90a3291eee1538cd48ff25163240695bd95448',
+      'reference' => '0dbf5d78455d4d6a41d186da50adc1122ec066f4',
     ),
     'erusev/parsedown' => 
     array (
@@ -198,12 +198,12 @@ private static $installed = array (
     ),
     'yiisoft/yii2' => 
     array (
-      'pretty_version' => '2.0.39.3',
-      'version' => '2.0.39.3',
+      'pretty_version' => '2.0.40',
+      'version' => '2.0.40.0',
       'aliases' => 
       array (
       ),
-      'reference' => '7c3b93b57e568509a7cb5cef826d8c424a779f3f',
+      'reference' => 'debb520c1d72a2c97c09d70a2a2a4f600ef3958e',
     ),
     'yiisoft/yii2-app-basic' => 
     array (
@@ -243,12 +243,12 @@ private static $installed = array (
     ),
     'yiisoft/yii2-httpclient' => 
     array (
-      'pretty_version' => '2.0.12',
-      'version' => '2.0.12.0',
+      'pretty_version' => '2.0.13',
+      'version' => '2.0.13.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a66a2de6d7dd6d068da3f85a12589fedd0d76855',
+      'reference' => '470e9066ae780f0ca20827d3f6f84eca6bbb0991',
     ),
     'yiisoft/yii2-imagine' => 
     array (

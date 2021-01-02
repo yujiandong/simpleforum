@@ -178,7 +178,7 @@ return [
     'Resend activation email' => '重发激活邮件',
     'Reset Password' => '密码重置申请',
     'Reset your password' => '重置密码',
-    'SMS' => '私信Ta',
+    'SMS' => '发送私信',
     'Save' => '保存',
     'Search' => '搜索',
     'Search result' => '搜索结果',

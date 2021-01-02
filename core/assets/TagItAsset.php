@@ -14,11 +14,11 @@ class TagItAsset extends AssetBundle
 //    public $basePath = '@webroot';
     public $baseUrl = '@web/static';
     public $css = [
-        'assets/jquery-ui-1.11.4/jquery-ui.min.css',
+        'assets/jquery-ui-1.12.1/jquery-ui.min.css',
         'assets/tag-it/jquery.tagit.css',
     ];
     public $js = [
-        'assets/jquery-ui-1.11.4/jquery-ui.min.js',
+        'assets/jquery-ui-1.12.1/jquery-ui.min.js',
         'assets/tag-it/tag-it.min.js',
     ];
     public $depends = [
