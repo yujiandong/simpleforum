@@ -43,7 +43,7 @@ class ResetPasswordForm extends Model
         return [
             [['password', 'password_repeat'], 'required'],
             ['password', 'string', 'length' => [6, 16]],
-            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => Yii::t('app', 'Password confirmation doesn\'t match the password.'),
+            ['password_repeat', 'compare', 'skipOnEmpty'=>false, 'compareAttribute'=>'password', 'message' => Yii::t('app', 'Password confirmation doesn\'t match the password.')],
         ];
     }
 
