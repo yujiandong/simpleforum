@@ -62,7 +62,7 @@ return [
     'Create an account and bind a third-party account' => '创建帐号并绑定第三方帐号',
     'Create an account and bind it' => '创建帐号并绑定',
     'Current avatar' => '当前头像',
-    'Current email' => '新邮箱',
+    'Current email' => '当前邮箱',
     'Current password' => '当前密码',
     'Daily Bonus' => '每日登录奖励',
     'Default navi' => '未分类节点',
