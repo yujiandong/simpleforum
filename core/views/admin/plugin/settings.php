@@ -74,7 +74,7 @@ if ( !empty($settings) ) {
 ?>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton(Yii::t('app/admin', 'Submit'), ['class' => 'btn btn-primary']); ?>
+            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
             </div>
         </div>
     </li>
