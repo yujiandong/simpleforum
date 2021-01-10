@@ -29,8 +29,8 @@ $formatter = Yii::$app->getFormatter();
         <tr>
           <th>ID</th>
           <th><?php echo Yii::t('app', 'Tag'); ?></th>
-          <th><?php echo Yii::t('app', 'Create time'); ?></th>
-          <th><?php echo Yii::t('app', 'Operation'); ?></th>
+          <th><?php echo Yii::t('app/admin', 'Create time'); ?></th>
+          <th><?php echo Yii::t('app/admin', 'Operation'); ?></th>
         </tr>
       </thead>
       <tbody>
@@ -40,7 +40,7 @@ $formatter = Yii::$app->getFormatter();
 			<td>', Html::a(Html::encode($tag['name']), ['tag/index', 'name'=>$tag['name']], ['target'=>'_blank']), '</td>
 			<td>', $formatter->asDateTime($tag['created_at'], 'y-MM-dd HH:mmZ') ,'</td>
 			<td>', Html::a(Yii::t('app', 'Edit'), ['edit', 'id'=>$tag['id']]).'&nbsp;|&nbsp;', 
-	            Html::a(Yii::t('app', 'Edit'), ['delete', 'id'=>$tag['id']], [
+	            Html::a(Yii::t('app', 'Delete'), ['delete', 'id'=>$tag['id']], [
 	                'data' => [
 	                    'confirm' => Yii::t('app', 'Are you sure you want to delete it? This operation cannot be undone.'),
 	                    'method' => 'post',
