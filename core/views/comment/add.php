@@ -59,7 +59,7 @@ echo Alert::widget([
 <?php
         $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
         if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
-            $plugin['class']::captchaWidget('addcomment', $form, $comment, null, $plugin);
+            $plugin['class']::captchaWidget('newcomment', $form, $comment, null, $plugin);
         }
 ?>
     <div class="form-group">
