@@ -77,18 +77,23 @@ class SfHtml
         return Html::a($text, $url, $options);
     }
 
-    public static function uImg($user, $size='normal', $options=[])
+    public static function uImg($user, $size='normal', $options=['class'=>['item-avatar']])
     {
-        return Html::img('@web/'.str_replace('{size}', $size, $user['avatar']), ['class'=>ArrayHelper::getValue(Yii::$app->params, 'settings.avatar_style', 'img-circle'),'alt'=> $user['username']]+$options);
+        $styles = [
+            'img-rounded' => 'rounded',
+            'img-circle' => 'rounded-circle',
+        ];
+        $avatarStyle = ArrayHelper::getValue(Yii::$app->params, 'settings.avatar_style', 'rounded');
+        return Html::img('@web/'.str_replace('{size}', $size, $user['avatar']), ArrayHelper::merge(['class'=>[ArrayHelper::getValue($styles, $avatarStyle, $avatarStyle)],'alt'=> $user['username']], $options));
     }
 
-    public static function uImgLink($user, $size='normal', $options=['class'=>'media-left item-avatar'], $ajaxLoad=false)
+    public static function uImgLink($user, $size='normal', $options=['class'=>'item-avatar'], $ajaxLoad=false)
     {
         $url = ['user/view', 'username'=>$user['username']];
         if( $ajaxLoad ) {
             $options['data-poload'] = Url::to($url);
         }
-        return Html::a(self::uimg($user, $size), $url, $options);
+        return Html::a(self::uImg($user, $size, []), $url, $options);
     }
 
     public static function faIcon($classes)

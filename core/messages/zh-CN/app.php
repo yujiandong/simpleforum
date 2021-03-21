@@ -217,6 +217,7 @@ return [
     'Time' => '时间',
     'Title' => '标题',
     'Top' => '置顶',
+    'Topic' => '主题',
     'Topic Commented' => '主题回复收益',
     'Topic Content' => '主题内容',
     'Topic Thanked' => '主题收到谢意',

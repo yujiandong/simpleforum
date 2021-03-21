@@ -21,19 +21,19 @@ $config = [
         'request' => [
             'cookieValidationKey' => 'hwdn8-iyIh5LylPLpD1PoplqjUka98Ba',
         ],
-	    'i18n' => [
-	        'translations' => [
-	            'app*' => [
-	                'class' => 'yii\i18n\PhpMessageSource',
-	                //'basePath' => '@app/messages',
-	                //'sourceLanguage' => 'en-US',
-	                'fileMap' => [
-	                    'app' => 'app.php',
-	                    'app/admin' => 'admin.php',
-	                ],
-	            ],
-	        ],
-	    ],
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    //'basePath' => '@app/messages',
+                    //'sourceLanguage' => 'en-US',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                        'app/admin' => 'admin.php',
+                    ],
+                ],
+            ],
+        ],
         'cache' =>  [
             'class' => 'yii\caching\FileCache',
         ],
@@ -69,21 +69,22 @@ $config = [
                     'sourcePath' => null,
                     'baseUrl' => '@web/static',
                     'js' => [
-                    'js/jquery-1.12.4.min.js',
+                    'js/jquery-3.5.1.min.js',
                     ]
                 ],
-                'yii\bootstrap\BootstrapAsset' => [
+                'yii\bootstrap4\BootstrapAsset' => [
                     'sourcePath' => null,
                     'baseUrl' => '@web/static',
                     'css' => [
-                        'assets/bootstrap-3.4.1/css/bootstrap.min.css',
+                        'assets/bootstrap-4.6.0/css/bootstrap.min.css',
                     ]
                 ],
-                'yii\bootstrap\BootstrapPluginAsset' => [
+                'yii\bootstrap4\BootstrapPluginAsset' => [
                     'sourcePath' => null,
                     'baseUrl' => '@web/static',
                     'js' => [
-                        'assets/bootstrap-3.4.1/js/bootstrap.min.js',
+                        'assets/popper-1.16.1/popper.min.js',
+                        'assets/bootstrap-4.6.0/js/bootstrap.min.js',
                     ]
                 ],
             ],
@@ -91,8 +92,16 @@ $config = [
         'authClientCollection' => [
             'class' => 'yii\authclient\Collection',
         ],
-
     ],
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+'container' => [
+   'definitions' => [
+      \yii\widgets\LinkPager::class => \app\components\LinkPager::class,
+   ],
+],
     'params' => $params,
 ];
 

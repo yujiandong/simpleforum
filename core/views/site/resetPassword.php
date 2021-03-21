@@ -6,20 +6,20 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use yii\bootstrap4\ActiveForm;
 
 $this->title = Yii::t('app', 'Reset your password');
 ?>
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading">
+<div class="card sf-box">
+    <div class="card-header sf-box-header sf-navi">
         <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
-    <div class="panel-body sf-box-form">
+    <div class="card-body sf-box-form">
         <?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
             'id' => 'form-reset-password'
@@ -27,8 +27,8 @@ $this->title = Yii::t('app', 'Reset your password');
             <?php echo $form->field($model, 'password')->passwordInput(['maxlength'=>20]); ?>
             <?php echo $form->field($model, 'password_repeat')->passwordInput(['maxlength'=>20]); ?>
             <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
-                <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+                <div class="offset-sm-3 col-sm-9">
+                <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
                 </div>
             </div>
         <?php ActiveForm::end(); ?>
@@ -39,7 +39,7 @@ $this->title = Yii::t('app', 'Reset your password');
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->

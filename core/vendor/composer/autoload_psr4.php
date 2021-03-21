@@ -11,7 +11,7 @@ return array(
     'yii\\imagine\\' => array($vendorDir . '/yiisoft/yii2-imagine/src'),
     'yii\\httpclient\\' => array($vendorDir . '/yiisoft/yii2-httpclient/src'),
     'yii\\composer\\' => array($vendorDir . '/yiisoft/yii2-composer'),
-    'yii\\bootstrap\\' => array($vendorDir . '/yiisoft/yii2-bootstrap/src'),
+    'yii\\bootstrap4\\' => array($vendorDir . '/yiisoft/yii2-bootstrap4/src'),
     'yii\\authclient\\' => array($vendorDir . '/yiisoft/yii2-authclient/src'),
     'yii\\' => array($vendorDir . '/yiisoft/yii2'),
     'Symfony\\Polyfill\\Php72\\' => array($vendorDir . '/symfony/polyfill-php72'),

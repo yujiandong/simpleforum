@@ -7,16 +7,14 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Alert;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Alert;
 use yii\authclient\Collection;
 use app\components\SfHtml;
-use app\models\UserInfo;
 use app\models\UploadForm;
 use app\models\ChangePasswordForm;
 use app\models\ChangeEmailForm;
 use app\models\EditProfileForm;
-use app\models\Auth;
 
 $this->title = Yii::t('app', 'Account Settings');
 $session = Yii::$app->getSession();
@@ -28,10 +26,10 @@ $ceModel = new ChangeEmailForm();
 ?>
 
 <div class="row">
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
 <ul class="list-group sf-box">
-    <li class="list-group-item">
+    <li class="list-group-item sf-box-header sf-navi">
         <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;›&nbsp;', $this->title; ?>
     </li>
 <?php if ($me->isWatingActivation()) : ?>
@@ -72,25 +70,31 @@ if ( $session->hasFlash('editProfileNG') ) {
 <?php $form = ActiveForm::begin([
         'action' => ['service/edit-profile'],
         'layout' => 'horizontal',
-        ]); ?>
-        <div class="form-group">
-            <label class="control-label col-sm-3 username-label"><?php echo Yii::t('app', 'Username'); ?></label>
-            <div class="col-sm-6">
-				<p class="form-control-static"><strong><?php echo $me->username; ?></strong></p>
+        'fieldConfig' => [
+            'horizontalCssClasses' => [
+                'label' => 'col-form-label col-sm-3 text-sm-right',
+                'wrapper' => 'col-sm-9',
+            ],
+        ],
+      ]); ?>
+        <div class="form-group row">
+            <label class="col-form-label col-sm-3 text-sm-right"><?php echo Yii::t('app', 'Username'); ?></label>
+            <div class="col-sm-9">
+                <strong class="form-control bg-light"><?php echo $me->username; ?></strong>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-sm-3 status-label"><?php echo Yii::t('app', 'Status'); ?></label>
-            <div class="col-sm-6">
-				<p class="form-control-static"><?php echo $me->getStatus(); ?></p>
+        <div class="form-group row">
+            <label class="col-form-label col-sm-3 text-sm-right"><?php echo Yii::t('app', 'Status'); ?></label>
+            <div class="col-sm-9">
+                <strong class="form-control bg-light"><?php echo $me->getStatus(); ?></strong>
             </div>
         </div>
         <?php echo $form->field($epModel, 'name')->textInput(['maxlength'=>40, 'value'=>$me->name]); ?>
         <?php echo $form->field($epModel, 'website')->textInput(['maxlength'=>100, 'value'=>$me->userInfo->website]); ?>
         <?php echo $form->field($epModel, 'about')->textArea(['maxlength'=>255, 'value'=>$me->userInfo->about]); ?>
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+            <div class="offset-sm-3 col-sm-9">
+            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
             </div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -114,18 +118,24 @@ if ( $session->hasFlash('setAvatarNG') ) {
         'action' => ['service/avatar'],
         'options' => ['enctype' => 'multipart/form-data'],
         'layout' => 'horizontal',
+            'fieldConfig' => [
+                'horizontalCssClasses' => [
+                    'label' => 'col-form-label col-sm-3 text-sm-right',
+                    'wrapper' => 'col-sm-9',
+                ],
+            ],
         ]); ?>
-        <div class="form-group">
-            <label class="control-label col-sm-3 avatar-label"><?php echo Yii::t('app', 'Current avatar'); ?></label>
-            <div class="col-sm-6">
+        <div class="form-group row">
+            <label class="col-form-label col-sm-3 text-sm-right py-4"><?php echo Yii::t('app', 'Current avatar'); ?></label>
+            <div class="col-sm-9">
             <?php echo SfHtml::uimg($me, 'large', []), ' ', SfHtml::uImg($me, 'normal', []), ' ', SfHtml::uImg($me, 'small', []); ?>
             </div>
         </div>
         <?php echo $form->field((new UploadForm(Yii::$container->get('avatarUploader'))), 'file')->fileInput(); ?>
 
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton(Yii::t('app', 'Upload'), ['class' => 'btn btn-primary']); ?>
+            <div class="offset-sm-3 col-sm-9">
+            <?php echo Html::submitButton(Yii::t('app', 'Upload'), ['class' => 'btn sf-btn']); ?>
             </div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -148,19 +158,25 @@ if ( $session->hasFlash('chgEmailNG') ) {
 <?php $form = ActiveForm::begin([
         'action' => ['service/change-email'],
         'layout' => 'horizontal',
+            'fieldConfig' => [
+                'horizontalCssClasses' => [
+                    'label' => 'col-form-label col-sm-3 text-sm-right',
+                    'wrapper' => 'col-sm-9',
+                ],
+            ],
         ]);
 ?>
-        <div class="form-group">
-            <label class="control-label col-sm-3 username-label"><?php echo Yii::t('app', 'Current email'); ?></label>
-            <div class="col-sm-6">
-				<p class="form-control-static"><strong><?php echo $me->email; ?></strong></p>
+        <div class="form-group row">
+            <label class="col-form-label col-sm-3 text-sm-right"><?php echo Yii::t('app', 'Current email'); ?></label>
+            <div class="col-sm-9">
+                <strong class="form-control bg-light"><?php echo $me->email; ?></strong>
             </div>
         </div>
         <?php echo $form->field($ceModel, 'email')->textInput(['maxlength'=>50]); ?>
         <?php echo $form->field($ceModel, 'password')->passwordInput(['maxlength'=>20, 'autocomplete'=>'new-password']); ?>
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+            <div class="offset-sm-3 col-sm-9">
+            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
             </div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -183,14 +199,20 @@ if ( $session->hasFlash('chgPwdNG') ) {
 <?php $form = ActiveForm::begin([
         'action' => ['service/change-password'],
         'layout' => 'horizontal',
+            'fieldConfig' => [
+                'horizontalCssClasses' => [
+                    'label' => 'col-form-label col-sm-3 text-sm-right',
+                    'wrapper' => 'col-sm-9',
+                ],
+            ],
         ]);
 ?>
         <?php echo $form->field($cpModel, 'old_password')->passwordInput(['maxlength'=>20]); ?>
         <?php echo $form->field($cpModel, 'password')->passwordInput(['maxlength'=>20]); ?>
         <?php echo $form->field($cpModel, 'password_repeat')->passwordInput(['maxlength'=>20]); ?>
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+            <div class="offset-sm-3 col-sm-9">
+            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
             </div>
         </div>
 <?php ActiveForm::end(); ?>
@@ -205,19 +227,23 @@ if ( intval(Yii::$app->params['settings']['auth_enabled']) === 1 ) :
 $authed = $unauthed = [];
 foreach (Yii::$app->authClientCollection->getClients() as $client){
     if( in_array($client->getId(), $auths) ) {
-        $authed[] = '<li class="' .$client->getId() . '">' . Html::a('<i class="fa fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', ['service/unbind-account', 'source'=>$client->getId()], ['class'=>'btn auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Unbind')]) . '</li>';
+        $authed[] = '<div class="col ' .$client->getId() . '">' . Html::a('<i class="fab fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', ['service/unbind-account', 'source'=>$client->getId()], ['class'=>'btn auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Unbind')]) . '</div>';
     } else {
-        $unauthed[] = '<li class="' .$client->getId() . '">' . Html::a('<i class="fa fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId(), 'action'=>'bind'], ['class'=>'btn auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Bind')]) . '</li>';
+        $unauthed[] = '<div class="col ' .$client->getId() . '">' . Html::a('<i class="fab fa-'.$client->getId().'"></i><span class="snstext">'. Html::encode($client->getTitle()) . '</span>', ['site/auth', 'authclient'=>$client->getId(), 'action'=>'bind'], ['class'=>'btn auth-link '. $client->getId(), 'title'=>Yii::t('app', 'Bind')]) . '</div>';
     }
 }
 ?>
         <div class="clearfix">
           <h6 class="third-party-login-msg"><strong><?php echo Yii::t('app', 'Bound account'); ?></strong></h6>
-          <ul class="third-party-login"><?php echo implode('', $authed); ?></ul>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 third-party-login">
+              <?php echo implode('', $authed); ?>
+          </div>
         </div>
         <div class="clearfix">
           <h6 class="third-party-login-msg"><strong><?php echo Yii::t('app', 'Bind account'); ?></strong></h6>
-          <ul class="third-party-login"><?php echo implode('', $unauthed); ?></ul>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 third-party-login">
+              <?php echo implode('', $unauthed); ?>
+          </div>
         </div>
     </li>
 <?php endif; ?>
@@ -225,7 +251,7 @@ foreach (Yii::$app->authClientCollection->getClients() as $client){
 
 </div>
 
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 

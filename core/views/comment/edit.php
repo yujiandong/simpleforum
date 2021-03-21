@@ -6,7 +6,7 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use yii\bootstrap4\ActiveForm;
 use app\components\SfHtml;
 
 $settings = Yii::$app->params['settings'];
@@ -21,10 +21,10 @@ $this->title = Yii::t('app', 'Edit {attribute}', ['attribute'=>Yii::t('app', 'Co
 ?>
 
 <div class="row">
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-	<div class="panel-body">
+<div class="card sf-box">
+	<div class="card-body">
 		<?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
 		<h3><?php echo Html::encode($topic['title']); ?></h3>
 		<small class="gray">
@@ -34,9 +34,9 @@ $this->title = Yii::t('app', 'Edit {attribute}', ['attribute'=>Yii::t('app', 'Co
 	</div>
 </div>
 
-<div class="panel panel-default sf-box">
-	<div class="panel-heading"><?php echo $this->title; ?></div>
-	<div class="panel-body">
+<div class="card sf-box">
+	<div class="card-header sf-box-header sf-navi"><?php echo $this->title; ?></div>
+	<div class="card-body">
 <?php $form = ActiveForm::begin(); ?>
 <?php
 	if($me->isAdmin()) {
@@ -49,7 +49,7 @@ $this->title = Yii::t('app', 'Edit {attribute}', ['attribute'=>Yii::t('app', 'Co
 	}
 ?>
     <div class="form-group">
-        <?php echo Html::submitButton('<i class="fa fa-pencil-square-o"></i>'.Yii::t('app', 'Edit'), ['class' => 'btn btn-primary']); ?>
+        <?php echo Html::submitButton('<i class="fas fa-edit"></i>'.Yii::t('app', 'Edit'), ['class' => 'btn sf-btn']); ?>
     </div>
 
 <?php ActiveForm::end(); ?>	</div>
@@ -57,7 +57,7 @@ $this->title = Yii::t('app', 'Edit {attribute}', ['attribute'=>Yii::t('app', 'Co
 
 </div>
 
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 

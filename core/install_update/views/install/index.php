@@ -6,7 +6,6 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 
 extract($check->result);
 
@@ -15,7 +14,7 @@ $this->title = Yii::t('app/admin', 'Check server\'s environment');
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 	<ul class="list-group sf-box">
 		<li class="list-group-item">
 			<?php echo Html::a(Yii::t('app/admin', 'Install SimpleForum'), ['index']), '&nbsp;/&nbsp;', $this->title; ?>
@@ -49,9 +48,9 @@ $this->title = Yii::t('app/admin', 'Check server\'s environment');
 		<li class="list-group-item list-group-item-info"><strong><?php echo Yii::t('app/admin', 'Check list'); ?></strong></li>
 		<li class="list-group-item">
 	        <table class="table table-bordered">
-	            <tr><th><?php echo Yii::t('app/admin', 'Requirement'); ?></th><th><?php echo Yii::t('app/admin', 'Result'); ?></th><th><?php echo Yii::t('app/admin', 'Comment'); ?></th></tr>
+	            <tr><th style="min-width:200px;"><?php echo Yii::t('app/admin', 'Requirement'); ?></th><th style="min-width:50px;"><?php echo Yii::t('app/admin', 'Result'); ?></th><th><?php echo Yii::t('app/admin', 'Comment'); ?></th></tr>
 	            <?php foreach ($requirements as $requirement): ?>
-	            <tr class="<?php echo $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'danger' : 'warning') ?>">
+	            <tr class="alert alert-<?php echo $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'danger' : 'warning') ?>" role="alert">
 	                <td>
 	                <?php echo $requirement['name'] ?>
 	                </td>

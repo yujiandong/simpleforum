@@ -6,14 +6,13 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 
 $this->title = Yii::t('app/admin', 'Upgrade SimpleForum');
 ?>
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 <ul class="list-group sf-box">
     <li class="list-group-item">
         <?php echo $this->title; ?>

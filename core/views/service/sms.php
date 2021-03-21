@@ -7,8 +7,8 @@
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Alert;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Alert;
 use app\components\SfHtml;
 
 $formatter = Yii::$app->getFormatter();
@@ -22,13 +22,13 @@ if( $sms ) {
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading">
+<div class="card sf-box">
+    <div class="card-header sf-box-header sf-navi">
         <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
-    <div class="panel-body sf-box-form">
+    <div class="card-body sf-box-form">
 <?php if( $sms ): ?>
 <dl class="well">
   <dt><?php echo Yii::t('app', 'Message'); ?></dt>
@@ -52,10 +52,16 @@ if ( $session->hasFlash('SendMsgNG') ) {
         ]);
 }
 ?>
-        <?php $form = ActiveForm::begin([
+<?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
-            'id' => 'form-sms'
-        ]); ?>
+            'id' => 'form-sms',
+            'fieldConfig' => [
+                'horizontalCssClasses' => [
+                    'label' => 'col-form-label col-sm-3 text-sm-right',
+                    'wrapper' => 'col-sm-9',
+                ],
+            ],
+      ]); ?>
             <?php echo $form->field($model, 'username')->textInput(['maxlength'=>16]); ?>
             <?php echo $form->field($model, 'msg')->textarea(['rows' => 3, 'maxlength'=>255]); ?>
         <?php
@@ -65,8 +71,8 @@ if ( $session->hasFlash('SendMsgNG') ) {
         }
         ?>
             <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
-                <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+                <div class="offset-sm-3 col-sm-9">
+                <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
                 </div>
             </div>
         <?php ActiveForm::end(); ?>
@@ -77,7 +83,7 @@ if ( $session->hasFlash('SendMsgNG') ) {
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->

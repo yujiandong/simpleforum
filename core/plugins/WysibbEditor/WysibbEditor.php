@@ -55,7 +55,8 @@ class WysibbEditor extends Editor implements PluginInterface
     public function registerAsset($view)
     {
         WysibbAsset::register($view);
-        $view->registerJs("$('#editor').wysibb({lang:'ja', buttons: 'bold,italic,underline,fontcolor,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,img,link,|,code,quote'});");
+        $lang = empty(Yii::$app->language)?'en-US':Yii::$app->language;
+        $view->registerJs("$('#editor').wysibb({lang:'{$lang}', buttons: 'bold,italic,underline,fontcolor,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,img,link,|,code,quote'});");
     }
 
     public function parseEditor($text)

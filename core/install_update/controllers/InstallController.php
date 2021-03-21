@@ -11,11 +11,13 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\ServerErrorHttpException;
 use yii\web\ForbiddenHttpException;
+use app\components\Util;
+use app\controllers\AppController;
 use app\install_update\lib\RequirementChecker;
 use app\install_update\models\DatabaseForm;
 use app\install_update\models\AdminSignupForm;
 
-class InstallController extends \yii\web\Controller
+class InstallController extends AppController
 {
     public function behaviors()
     {
@@ -57,8 +59,9 @@ class InstallController extends \yii\web\Controller
     {
         if (version_compare(PHP_VERSION, '5.4', '<')) {
             echo Yii::t('app/admin', 'PHP 5.4.0 or higher is required.');
-            exist;
+            exit;
         }
+        $this->createConfigFile();
 
         $requirementsChecker = new RequirementChecker();
 
@@ -129,6 +132,13 @@ class InstallController extends \yii\web\Controller
                 'condition' => is_writeable(Yii::getAlias('@webroot/upload')),
                 'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
                 'memo' => Yii::t('app/admin', 'Write permissions is required.'),
+            ),
+            array(
+                'name' => Yii::t('app/admin', '\'scandir\' function'),
+                'mandatory' => false,
+                'condition' => function_exists('scandir'),
+                'by' => '<a href="http://simpleforum.org">Simple Forum</a>',
+                'memo' => Yii::t('app/admin', '\'scandir\' function is required for plugins installation.'),
             ),
             // Database :
             array(
@@ -294,6 +304,23 @@ class InstallController extends \yii\web\Controller
     private function createInstallLockFile()
     {
         return file_put_contents(Yii::getAlias('@runtime/install.lock'), '');
+    }
+
+    private function createConfigFile()
+    {
+        if (!file_exists(Yii::getAlias('@app/config/web.php.default'))){
+            echo Yii::t('app', '{attribute} doesn\'t exist.', ['attribute' => Yii::getAlias('@app/config/web.php.default')]);
+            exit;
+        } else if (!is_writeable(Yii::getAlias('@app/config'))) {
+            echo Yii::t('app/admin', '\'{attribute}\' is not writable', ['attribute' => Yii::getAlias('@app/config')]);
+            exit;
+        } else if (!is_writeable(Yii::getAlias('@app/config/web.php'))) {
+            echo Yii::t('app/admin', '\'{attribute}\' is not writable', ['attribute' => Yii::getAlias('@app/config/web.php')]);
+            exit;
+        }
+        $config = file_get_contents(Yii::getAlias('@app/config/web.php.default'));
+        $config = str_replace('{cookieValidationKey}', Util::shorturl(microtime(true)).'-'.Util::shorturl(microtime(true)+1000), $config);
+        return file_put_contents(Yii::getAlias('@app/config/web.php'), $config);
     }
 
 }

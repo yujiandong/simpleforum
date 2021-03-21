@@ -18,7 +18,7 @@ class WysibbAsset extends AssetBundle
     ];
     public $js = [
         'jquery.wysibb.min.js',
-        'lang/cn.js',
+        'lang/zh-CN.js',
         'wysibb-for-simpleforum.js',
     ];
     public $depends = [

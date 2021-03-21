@@ -9,6 +9,7 @@ namespace app\components;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\web\Request;
 
 class Util
 {
@@ -188,5 +189,30 @@ class Util
             $str = preg_replace('/<{img}>/', $link, $str, 1); 
         }
          return $str;
+    }
+    
+    public static function parseReferrer()
+    {
+        if (empty($referrer = self::getReferrer())) {
+           return false;
+        }
+
+        $url = parse_url($referrer);
+        if ( empty($url['query']) ) {
+            return false;
+        }
+        $request = new Request(['url' => $url['path']]);
+        $referrer = Yii::$app->urlManager->parseRequest($request);
+        list($controller, $action) = explode('/', $referrer[0]);
+        parse_str($url['query'], $query);
+        $p = @intval(ArrayHelper::getValue($query, 'p', 0));
+        if($controller === 'topic' && $p>1) {
+            if('action' === 'index') {
+                return ['index' => $p];
+            } else if('action' === 'node') {
+                return ['node' => $p];
+            }
+        }
+        return false;
     }
 }

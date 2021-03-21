@@ -16,7 +16,7 @@ $settings = Yii::$app->params['settings'];
 ?>
 
 
-<?php if(!Yii::$app->getUser()->getIsGuest()): 
+<?php if(!Yii::$app->getUser()->getIsGuest()):
 
     $me = Yii::$app->getUser()->getIdentity();
     $myInfo = $me->userInfo;
@@ -24,10 +24,10 @@ $settings = Yii::$app->params['settings'];
 <ul class="list-group sf-box">
   <li class="list-group-item">
     <div class="media">
-      <div class="media-left"><?php echo SfHtml::uImg($me); ?></div>
+      <?php echo SfHtml::uImg($me); ?>
       <div class="media-body">
         <?php
-            echo '<h5 class="media-heading">', SfHtml::uLink($me->username, $me->name, '<br />'), '</h5>';
+            echo '<h5 class="mt-0">', SfHtml::uLink($me->username, $me->name, '<br />'), '</h5>';
             if ($me->isWatingActivation()) {
                 echo ' <small class="red">[ ', Html::a(Yii::t('app', 'Inactive'), ['my/settings']), ' ]</small>';
             } else if ($me->isWatingVerification()) {
@@ -39,16 +39,16 @@ $settings = Yii::$app->params['settings'];
       </div>
     </div>
         <ul class="list-inline text-center favorite-list">
-          <li><?php echo Html::a($myInfo->favorite_node_count.'<br /><span class="gray">'.Yii::t('app', 'nodes').'</span>', ['my/nodes']); ?></li>
-          <li><?php echo Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">'.Yii::t('app', 'topics').'</span>', ['my/topics']); ?></li>
-          <li><?php echo Html::a($myInfo->following_count.'<br /><span class="gray">'.Yii::t('app', 'following').'</span>', ['my/following']); ?></li>
+          <li class="list-inline-item"><?php echo Html::a($myInfo->favorite_node_count.'<br /><span class="gray">'.Yii::t('app', 'nodes').'</span>', ['my/nodes']); ?></li>
+          <li class="list-inline-item"><?php echo Html::a($myInfo->favorite_topic_count.'<br /><span class="gray">'.Yii::t('app', 'topics').'</span>', ['my/topics']); ?></li>
+          <li class="list-inline-item"><?php echo Html::a($myInfo->following_count.'<br /><span class="gray">'.Yii::t('app', 'following').'</span>', ['my/following']); ?></li>
         </ul>
   </li>
-  <li class="list-group-item"><?php echo Html::a('<i class="fa fa-pencil"></i>'.Yii::t('app', 'Add Topic'), ['topic/new']),' ',Html::a('<i class="fa fa-envelope"></i>'.Yii::t('app', 'SMS'), ['service/sms']); ?></li>
-  <li class="list-group-item"><span class="fr"><?php echo Html::a(SfHtml::uScore($me->score), ['my/balance'], ['class'=>'btn btn-xs node']); ?></span>
-<?php echo Html::a('<i class="fa fa-bell'.($me->getNoticeCount()>0?'':'-o').'"></i>' . Yii::t('app', 'Notifications{n, plural, =0{} other{(+#)}}', ['n'=>$me->getNoticeCount()]), ['my/notifications']);
+  <li class="list-group-item py-2"><?php echo Html::a('<i class="fas fa-pencil-alt"></i>'.Yii::t('app', 'Add Topic'), ['topic/new']),' ',Html::a('<i class="fa fa-envelope"></i>'.Yii::t('app', 'SMS'), ['service/sms']); ?></li>
+  <li class="list-group-item py-2"><span class="fr"><?php echo Html::a(SfHtml::uScore($me->score), ['my/balance'], ['class'=>'btn btn-sm btn-light']); ?></span>
+<?php echo Html::a('<i class="fa'.($me->getNoticeCount()>0?'s':'r').' fa-bell"></i>' . Yii::t('app', 'Notifications{n, plural, =0{} other{(+#)}}', ['n'=>$me->getNoticeCount()]), ['my/notifications']);
 if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
-    echo ' ', Html::a('<i class="fa fa-ticket" aria-hidden="true"></i>' . Yii::t('app', 'Invite Codes') , ['my/invite-codes'], ['title'=>Yii::t('app', 'My Invite Codes')]);
+    echo ' ', Html::a('<i class="fas fa-ticket-alt" aria-hidden="true"></i>' . Yii::t('app', 'Invite Codes') , ['my/invite-codes'], ['title'=>Yii::t('app', 'My Invite Codes')]);
 }
 ?>
   </li>
@@ -57,7 +57,7 @@ if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
     if( $me->checkTodaySigned() === false ) :
 ?>
 <ul class="list-group sf-box">
-  <li class="list-group-item"><?php echo Html::a('<i class="fa fa-gift" aria-hidden="true"></i>' . Yii::t('app', 'Daily Bonus'), ['service/signin']); ?></li>
+  <li class="list-group-item py-2"><?php echo Html::a('<i class="fa fa-gift" aria-hidden="true"></i>' . Yii::t('app', 'Daily Bonus'), ['service/signin']); ?></li>
 </ul>
 <?php endif; ?>
 
@@ -69,8 +69,8 @@ if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
     </li>
   <li class="list-group-item">
         <div class="text-center">
-        <p><?php echo Html::a('<i class="fa fa-user-plus"></i>'. Yii::t('app', 'Sign up'), ['site/signup'], ['class' => 'btn btn-primary btn-sm']); ?></p>
-        <?php echo Yii::t('app', 'Already have an account?'), ' ', Html::a('<i class="fa fa-sign-in"></i>'. Yii::t('app', 'Sign in'), ['site/login']); ?>
+        <p><?php echo Html::a('<i class="fa fa-user-plus"></i>'. Yii::t('app', 'Sign up'), ['site/signup'], ['class' => 'btn sf-btn btn-sm']); ?></p>
+        <?php echo Yii::t('app', 'Already have an account?'), ' ', Html::a('<i class="fas fa-sign-in-alt"></i>'. Yii::t('app', 'Sign in'), ['site/login']); ?>
 <?php
 $auths = [];
 foreach (Yii::$app->authClientCollection->getClients() as $client){
@@ -78,9 +78,9 @@ foreach (Yii::$app->authClientCollection->getClients() as $client){
         continue;
     }
     if ($client->getId() == 'weixinmp' && $client->type == 'mp') {
-        $auths[] = Html::a('<i class="fa fa-lg fa-'.$client->getId().'" aria-hidden="true"></i>', 'javascript:void(0);', ['id'=>'weixinmp', 'link'=>Url::to(['site/auth', 'authclient'=>$client->getId()], true)]);
+        $auths[] = Html::a('<i class="fab fa-lg fa-'.$client->getId().'" aria-hidden="true"></i>', '#', ['onclick'=>'return false;', 'id'=>'weixinmp', 'link'=>Url::to(['site/auth', 'authclient'=>$client->getId()], true)]);
     } else {
-        $auths[] = Html::a('<i class="fa fa-lg fa-'.$client->getId().'" aria-hidden="true"></i>', ['site/auth', 'authclient'=>$client->getId()], ['title'=>$client->getTitle()]);
+        $auths[] = Html::a('<i class="fab fa-lg fa-'.$client->getId().'" aria-hidden="true"></i>', ['site/auth', 'authclient'=>$client->getId()], ['title'=>$client->getTitle()]);
     }
 }
         echo ' '.implode(' ', $auths);
@@ -97,7 +97,7 @@ $hotTopics = Topic::getHotTopics();
 if( !empty($hotTopics) ):
 ?>
 <ul class="list-group sf-box">
-  <li class="list-group-item gray"><?php echo Yii::t('app', 'Hot Topics'); ?></li>
+  <li class="list-group-item sf-box-header"><?php echo Yii::t('app', 'Hot Topics'); ?></li>
 <?php
     foreach($hotTopics as $ht) {
         echo '<li class="list-group-item">', Html::a(Html::encode($ht['title']), ['topic/view', 'id'=>$ht['id']]), '</li>';
@@ -111,9 +111,9 @@ if( !empty($hotTopics) ):
 $siteinfo = Siteinfo::getSiteInfo();
 if( !empty($siteinfo) ):
 ?>
-<div class="panel panel-default sf-box">
-  <div class="panel-heading gray"><?php echo Yii::t('app', 'Forum\'s Information'); ?></div>
-  <div class="panel-body">
+<div class="card sf-box">
+  <div class="card-header sf-box-header"><?php echo Yii::t('app', 'Forum\'s Information'); ?></div>
+  <div class="card-body">
         <span class="si-label"><?php echo Yii::t('app', 'Members'); ?>:</span><span class="si-info"><?php echo $siteinfo['users']; ?></span>
         <span class="si-label"><?php echo Yii::t('app', 'Nodes'); ?>:</span><span class="si-info"><?php echo $siteinfo['nodes']; ?></span>
         <span class="si-label"><?php echo Yii::t('app', 'Topics'); ?>:</span><span class="si-info"><?php echo $siteinfo['topics']; ?></span>
@@ -127,12 +127,12 @@ if( !empty($siteinfo) ):
 $links = Link::getLinks();
 if( !empty($links) ):
 ?>
-<div class="panel panel-default sf-box">
-  <div class="panel-heading gray"><?php echo Yii::t('app', 'Links'); ?></div>
-  <div class="panel-body sf-btn">
+<div class="card sf-box">
+  <div class="card-header sf-box-header"><?php echo Yii::t('app', 'Links'); ?></div>
+  <div class="card-body sf-links">
 <?php
     foreach($links as $link) {
-        echo Html::a(Html::encode($link['name']), $link['url'], ['class'=>'btn btn-default btn-sm', 'target'=>'_blank', 'rel' => 'external']);
+        echo Html::a(Html::encode($link['name']), $link['url'], ['class'=>'btn btn-sm', 'target'=>'_blank', 'rel' => 'external']);
     }
 ?>
   </div>

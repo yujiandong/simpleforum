@@ -73,10 +73,10 @@ function getCostName($cost) {
 ?>
 
 <div class="row">
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
 <ul class="list-group sf-box">
-    <li class="list-group-item">
+    <li class="list-group-item sf-box-header sf-navi">
     <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
     <li class="list-group-item">
@@ -85,33 +85,35 @@ function getCostName($cost) {
     <li class="list-group-item">
     <table class="table table-condensed table-bordered small">
       <thead>
-        <tr class="row">
-          <th class="col-md-auto"><?php echo Yii::t('app', 'Type/Time'); ?></th>
-          <th class="col-md-auto"><?php echo Yii::t('app', 'Points'); ?></th>
-          <th class="col-md-auto"><?php echo Yii::t('app', 'Total'); ?></th>
-          <th class="col-md-8"><?php echo Yii::t('app', 'Description'); ?></th>
+        <tr>
+          <th style="min-width:90px;"><?php echo Yii::t('app', 'Type/Time'); ?></th>
+          <th style="min-width:50px;"><?php echo Yii::t('app', 'Points'); ?></th>
+          <th style="min-width:50px;"><?php echo Yii::t('app', 'Total'); ?></th>
+          <th><?php echo Yii::t('app', 'Description'); ?></th>
         </tr>
       </thead>
       <tbody>
 <?php
 foreach($records as $record) {
     $ext = json_decode($record['ext'], true);
-    echo '<tr class="row">',
-            '<td class="col-md-auto">', $types[$record['action']], '<br />', $formatter->asDateTime($record['action_time'], 'y-MM-dd HH:mmZ'), '</td>',
-            '<td class="col-md-auto text-right"><strong>', getCostName($ext['cost']), '</strong></td>',
-            '<td class="col-md-auto text-right">', $ext['score'], '</td>',
-            '<td class="col-md-8">', getComment($record['action'], $ext), '</td>',
+    echo '<tr>',
+            '<td>', $types[$record['action']], '<br />', $formatter->asDateTime($record['action_time'], 'y-MM-dd HH:mmZ'), '</td>',
+            '<td class="text-right"><strong>', getCostName($ext['cost']), '</strong></td>',
+            '<td class="text-right">', $ext['score'], '</td>',
+            '<td>', getComment($record['action'], $ext), '</td>',
          '</tr>';
 }
 ?>
       </tbody>
     </table>
     </li>
-    <li class="list-group-item item-pagination">
+    <li class="list-group-item sf-pagination">
     <?php
     echo LinkPager::widget([
         'pagination' => $pages,
         'maxButtonCount'=>5,
+        'listOptions' => ['class'=>'pagination justify-content-center my-2'],
+        'activeLinkCssClass' => ['sf-btn'],
     ]);
     ?>
     </li>
@@ -119,7 +121,7 @@ foreach($records as $record) {
 </ul>
 </div>
 
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 

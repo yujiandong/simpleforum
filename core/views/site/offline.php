@@ -6,20 +6,20 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\Alert;
+use yii\bootstrap4\Alert;
 
 $this->title = Yii::t('app', 'Forum under maintenance');
 ?>
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-	<div class="panel-heading">
+<div class="card sf-box">
+	<div class="card-header sf-box-header sf-navi">
 		<?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 <?php echo Alert::widget([
    'options' => ['class' => 'alert-danger'],
    'closeButton'=>false,
@@ -33,7 +33,7 @@ $this->title = Yii::t('app', 'Forum under maintenance');
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->

@@ -6,9 +6,6 @@
  */
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Alert;
 
 $this->title = Yii::t('app/admin', 'Abount Plugin[{pid}]', ['pid' => $plugin['pid']]);
 $session = Yii::$app->getSession();
@@ -20,26 +17,26 @@ $me = Yii::$app->getUser()->getIdentity();
 <div class="col-md-8 sf-left">
 
 <ul class="list-group sf-box">
-    <li class="list-group-item">
+    <li class="list-group-item sf-box-header sf-navi">
         <?php
 			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Plugins'), ['index']), '&nbsp;/&nbsp;', $this->title;
         ?>
     </li>
     <li class="list-group-item">
-		<dl class="dl-horizontal">
-		  <dt><?php echo Yii::t('app/admin', 'Plugin id'); ?></dt><dd><?php echo $plugin['pid']; ?></dd>
-		  <dt><?php echo Yii::t('app/admin', 'Plugin name'); ?></dt><dd><?php echo $plugin['name']; ?></dd>
-		  <dt><?php echo Yii::t('app', 'Version'); ?></dt><dd><?php echo $plugin['version']; ?></dd>
-		  <dt><?php echo Yii::t('app', 'Author'); ?></dt><dd><?php echo $plugin['author']; ?></dd>
-		  <dt><?php echo Yii::t('app', 'Homepage'); ?></dt><dd><?php echo $plugin['url']; ?></dd>
-		  <dt><?php echo Yii::t('app', 'Description'); ?></dt><dd><?php echo $plugin['description']; ?></dd>
-		  <dt></dt><dd>
+		<dl class="row">
+		  <dt class="col-sm-3 text-right"><?php echo Yii::t('app/admin', 'Plugin id'); ?></dt><dd class="col-sm-9"><?php echo $plugin['pid']; ?></dd>
+		  <dt class="col-sm-3 text-right"><?php echo Yii::t('app/admin', 'Plugin name'); ?></dt><dd class="col-sm-9"><?php echo $plugin['name']; ?></dd>
+		  <dt class="col-sm-3 text-right"><?php echo Yii::t('app', 'Version'); ?></dt><dd class="col-sm-9"><?php echo $plugin['version']; ?></dd>
+		  <dt class="col-sm-3 text-right"><?php echo Yii::t('app', 'Author'); ?></dt><dd class="col-sm-9"><?php echo $plugin['author']; ?></dd>
+		  <dt class="col-sm-3 text-right"><?php echo Yii::t('app', 'Homepage'); ?></dt><dd class="col-sm-9"><?php echo $plugin['url']; ?></dd>
+		  <dt class="col-sm-3 text-right"><?php echo Yii::t('app', 'Description'); ?></dt><dd class="col-sm-9"><?php echo $plugin['description']; ?></dd>
+		  <dt class="col-sm-3 text-right"></dt><dd class="col-sm-9">
 <?php
 	if( $plugin['installed'] == false ) {
-		echo Html::a(Yii::t('app/admin', 'Install'), ['install', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
+		echo Html::a(Yii::t('app/admin', 'Install'), ['install', 'pid'=>$plugin['pid']], ['class'=>'btn sf-btn']);
 	} else {
-		echo Html::a(Yii::t('app/admin', 'Setting'), ['settings', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
-		echo ' ', Html::a(Yii::t('app/admin', 'Uninstall'), ['uninstall', 'pid'=>$plugin['pid']], ['class'=>'btn btn-primary']);
+		echo Html::a(Yii::t('app/admin', 'Setting'), ['settings', 'pid'=>$plugin['pid']], ['class'=>'btn sf-btn']);
+		echo ' ', Html::a(Yii::t('app/admin', 'Uninstall'), ['uninstall', 'pid'=>$plugin['pid']], ['class'=>'btn sf-btn']);
 	}
 ?>
 		  </dd>

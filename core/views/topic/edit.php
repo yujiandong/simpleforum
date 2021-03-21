@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -24,13 +24,13 @@ $this->title = Yii::t('app', 'Edit a topic');
 ?>
 
 <div class="row">
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-	<div class="panel-heading">
+<div class="card sf-box">
+	<div class="card-header sf-box-header sf-navi">
 		<?php echo Html::a(Yii::t('app', 'Home'), $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($model['node']['name']), $nodeUrl), '&nbsp;/&nbsp;', $this->title; ?>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
     <?php echo $this->render('_form', [
         'model' => $model,
         'content' => $content,
@@ -41,7 +41,7 @@ $this->title = Yii::t('app', 'Edit a topic');
 
 </div>
 
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 

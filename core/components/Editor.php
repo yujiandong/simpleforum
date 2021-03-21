@@ -30,7 +30,7 @@ class Editor
             maxFileCount:4,
             maxFileSize:2*1024*1024,
             onSuccess:function(files,data,xhr,pd) {
-                pd.filename.append("  <a id=\""+data+"\" class=\"insert-image\" href=\"javascript:void(0);\">'.Yii::t('app', 'Insert it').'</a>");
+                pd.filename.append("  <a id=\""+data+"\" class=\"insert-image\" href=\"#\" onclick=\"return false;\">'.Yii::t('app', 'Insert it').'</a>");
             }
         });');
     }

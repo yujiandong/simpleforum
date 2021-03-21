@@ -128,12 +128,14 @@ var chooseNode = function(node) {
 }
 
 $(function(){
-    var anchor = $("#"+window.location.hash.substr(1));
-    scrollToAnchor(anchor);
+    var anchor = window.location.hash;
+    if (anchor) {
+        scrollToAnchor($(anchor));
+    }
 });
 
 $(function(){
-    $('.link-external a[href^=http]')
+    $('.link-external a[href^="http"]')
         .not('[href*="'+location.hostname+'"]')
         .attr({target:"_blank"})
         .addClass("external");
@@ -155,7 +157,7 @@ $(function(){
                 size++;
                 elm.css({'fontSize' : size});
             }
-            return false;   
+            return false;
         });
 
         $('.fontsize-minus').click(function() {
@@ -163,7 +165,7 @@ $(function(){
                 size--;
                 elm.css({'fontSize' : size});
             }
-            return false;   
+            return false;
         });
     }
 });
@@ -201,9 +203,8 @@ $(function(){
 
 $(function(){
     var authInfo = {
-        title: {xx:'xx Log in'},
-        clientId: {xx:'App Key'},
-        clientSecret: {xx:'App Secret'},
+        clientId: {qq:'appid', weibo:'App Key'},
+        clientSecret: {qq:'appkey', weibo:'App Secret'},
     };
 
     if($(".auth-items div.auth-item").length == 1) {
@@ -293,11 +294,11 @@ $(function(){
                     count = $(".favorite-num", self).text();
                     if (action == 'favorite') {
                         count = count == ''?1:(parseInt(count) + 1);
-                        $(".fa", self).removeClass('fa-star-o').addClass('fa-star');
+                        $(".far", self).removeClass('far').addClass('fas');
                         $(self).attr({'title':title[action][type], 'params':'unfavorite '+type+' '+id});
                     } else {
                         count = (count == '' || count=='1')?'':(parseInt(count) - 1);
-                        $(".fa", self).removeClass('fa-star').addClass('fa-star-o');
+                        $(".fas", self).removeClass('fas').addClass('far');
                         $(self).attr({'title':title[action][type], 'params':'favorite '+type+' '+id});
                     }
                     $(".favorite-num", self).text(count);

@@ -6,9 +6,8 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Alert;
-use app\components\SfHtml;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Alert;
 
 $session = Yii::$app->getSession();
 $this->title = Yii::t('app', 'Charge Points');
@@ -16,13 +15,13 @@ $this->title = Yii::t('app', 'Charge Points');
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading">
+<div class="card sf-box">
+    <div class="card-header sf-box-header sf-navi">
         <?php echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
-    <div class="panel-body sf-box-form">
+    <div class="card-body sf-box-form">
 <?php
 if ( $session->hasFlash('ChargePointNG') ) {
     echo Alert::widget([
@@ -38,14 +37,20 @@ if ( $session->hasFlash('ChargePointNG') ) {
 ?>
         <?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
-            'id' => 'form-charge'
+            'id' => 'form-charge',
+            'fieldConfig' => [
+                'horizontalCssClasses' => [
+                    'label' => 'col-form-label col-sm-3 text-sm-right',
+                    'wrapper' => 'col-sm-9',
+                ],
+            ],
         ]); ?>
             <?php echo $form->field($model, 'username')->textInput(['maxlength'=>16]); ?>
             <?php echo $form->field($model, 'point')->textInput(['maxlength'=>8]); ?>
             <?php echo $form->field($model, 'msg')->textarea(['rows' => 3, 'maxlength'=>255]); ?>
             <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
-                <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+                <div class="offset-sm-3 col-sm-9">
+                <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
                 </div>
             </div>
         <?php ActiveForm::end(); ?>
@@ -56,7 +61,7 @@ if ( $session->hasFlash('ChargePointNG') ) {
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->

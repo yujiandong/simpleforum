@@ -12,15 +12,15 @@ $this->title = Yii::t('app/admin', 'Add a node');
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-	<div class="panel-heading">
+<div class="card sf-box">
+	<div class="card-header sf-box-header sf-navi">
 		<?php
 			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Nodes'), ['index']), '&nbsp;/&nbsp;', $this->title;
 		?>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 	    <?php echo $this->render('_form', ['model' => $model]); ?>
 	</div>
 </div>
@@ -29,7 +29,7 @@ $this->title = Yii::t('app/admin', 'Add a node');
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->

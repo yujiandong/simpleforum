@@ -7,8 +7,8 @@
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Alert;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Alert;
 use app\components\SfHtml;
 
 $session = Yii::$app->getSession();
@@ -24,22 +24,22 @@ $this->title = Yii::t('app', 'Add Comment');
 ?>
 
 <div class="row">
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-	<div class="panel-body">
-		<?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
-		<h3><?php echo Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]); ?></h3>
-		<small class="gray">
-		<?php echo 'by ', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), 
-			'  •  ', Yii::$app->getFormatter()->asRelativeTime($topic['created_at']); ?>
-		</small>
-	</div>
+<div class="card sf-box">
+    <div class="card-body">
+        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), ['topic/node', 'name'=>$topic['node']['ename']]); ?>
+        <h3><?php echo Html::a(Html::encode($topic['title']), ['topic/view', 'id'=>$topic['id']]); ?></h3>
+        <small class="gray">
+        <?php echo 'by ', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), 
+            '  •  ', Yii::$app->getFormatter()->asRelativeTime($topic['created_at']); ?>
+        </small>
+    </div>
 </div>
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading"><?php echo $this->title; ?></div>
-    <div class="panel-body">
+<div class="card sf-box">
+    <div class="card-header sf-box-header sf-navi"><?php echo $this->title; ?></div>
+    <div class="card-body">
 <?php
 if ( $session->hasFlash('postNG') ) {
 echo Alert::widget([
@@ -63,14 +63,14 @@ echo Alert::widget([
         }
 ?>
     <div class="form-group">
-        <?php echo Html::submitButton('<i class="fa fa-reply"></i>' . Yii::t('app', 'Comment'), ['class' => 'btn btn-primary']); ?>
+        <?php echo Html::submitButton('<i class="fa fa-reply"></i>' . Yii::t('app', 'Comment'), ['class' => 'btn sf-btn']); ?>
     </div>
 <?php ActiveForm::end(); ?> </div>
 </div>
 
 </div>
 
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 

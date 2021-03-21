@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -54,7 +54,7 @@ class Navi extends ActiveRecord
             'name' => Yii::t('app', 'Item Name'),
             'ename' => Yii::t('app', 'Item ID'),
             'type' => Yii::t('app', 'Type'),
-            'sortid' => Yii::t('app', 'Sort ID'),
+            'sortid' => Yii::t('app', 'Sort'),
         ];
     }
 

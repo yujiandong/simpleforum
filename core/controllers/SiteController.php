@@ -9,17 +9,16 @@ namespace app\controllers;
 
 use Yii;
 use yii\base\InvalidParamException;
-use yii\web\BadRequestHttpException;
-use yii\web\ServerErrorHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
+use yii\web\ServerErrorHttpException;
+use yii\web\Cookie;
 use app\models\LoginForm;
 use app\models\ForgotPasswordForm;
 use app\models\ResetPasswordForm;
 use app\models\ChangeEmailForm;
 use app\models\SignupForm;
-use app\models\ContactForm;
 use app\models\Auth;
 use app\models\User;
 use app\models\Token;
@@ -196,18 +195,18 @@ class SiteController extends AppController
 
     public function actionLanguage()
     {
-		$language = Yii::$app->getRequest()->get('language');
-		if($language) {
-			//Yii::$app->language = $language;
-			$languageCookie = new yii\web\Cookie([
-			    'name' => 'language',
-			    'value' => $language,
-			    'expire' => time() + 60 * 60 * 24 * 30, // 30 days
-			]);
-			Yii::$app->getResponse()->getCookies()->add($languageCookie);
-		}
-		//$this->redirect(['topic/index']);
-		return $this->goBack();
+        $language = Yii::$app->getRequest()->get('language');
+        if($language) {
+            //Yii::$app->language = $language;
+            $languageCookie = new Cookie([
+                'name' => 'language',
+                'value' => $language,
+                'expire' => time() + 60 * 60 * 24 * 30, // 30 days
+            ]);
+            Yii::$app->getResponse()->getCookies()->add($languageCookie);
+        }
+        //$this->redirect(['topic/index']);
+        return $this->goBack();
     }
 
     public function actionLogin()

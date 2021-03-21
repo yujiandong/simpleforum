@@ -6,19 +6,18 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 
 $this->title = Yii::t('app/admin', 'Installation completed successfully.');
 ?>
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
-	<div class="panel panel-default sf-box">
-		<div class="panel-heading">
+<div class="col-lg-8 sf-left">
+	<div class="card sf-box">
+		<div class="card-header bg-transparent">
 			<?php echo Html::a(Yii::t('app/admin', 'Install SimpleForum'), ['index']), '&nbsp;/&nbsp;', $this->title; ?>
 		</div>
-		<div class="panel-body">
+		<div class="card-body">
 				<h2><?php echo Yii::t('app/admin', 'Please goto Admin Panel and complete forum\'s settings.'); ?></h2>
 				<?php echo Html::a(Yii::t('app', 'Admin Panel'), ['/admin/setting/all']); ?>
 		</div>
@@ -27,7 +26,7 @@ $this->title = Yii::t('app/admin', 'Installation completed successfully.');
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->

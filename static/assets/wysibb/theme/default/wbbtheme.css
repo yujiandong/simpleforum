@@ -169,6 +169,7 @@ html{height:100% !important;}
   font-weight:bold;
   font-size:1em;
   line-height:28px;
+  width:60px;
   text-align:center;
   display:block;
   text-transform:uppercase;
@@ -741,9 +742,9 @@ html{height:100% !important;}
 	  left:-1px;
 	  border: 1px solid #bbb;
 	  box-shadow: 0px 0px 3px #aaa;
-	  width:190px;
+	  width:188px;
 	  background:#fff;
-	  max-height:220px;
+	  max-height:225px;
 	  overflow:auto;
 	  z-index:1000;
 	}

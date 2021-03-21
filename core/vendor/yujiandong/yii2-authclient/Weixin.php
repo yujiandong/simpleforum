@@ -50,6 +50,7 @@ class Weixin extends OAuth2
      */
     public $apiBaseUrl = 'https://api.weixin.qq.com';
 
+    public $type = '';
     /**
      * {@inheritdoc}
      */

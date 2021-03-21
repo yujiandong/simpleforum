@@ -9,12 +9,14 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Alert;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Alert;
 use app\components\SfHtml;
+use app\components\Util;
 use app\models\User;
 use app\models\Favorite;
 use app\models\Topic;
+use app\models\Comment;
 
 $settings = Yii::$app->params['settings'];
 $request = Yii::$app->getRequest();
@@ -27,21 +29,23 @@ $editor->registerAsset($this);
 
 $whiteWrapClass = $settings['editor']=='SmdEditor'?'white-wrap':'';
 
-$indexPage = intval($request->get('ip', 0));
-$nodePage = intval($request->get('np', 0));
-
 $indexUrl = ['topic/index'];
 $nodeUrl = ['topic/node', 'name'=>$topic['node']['ename']];
 $topicUrl = ['topic/edit', 'id'=>$topic['id']];
-if ($indexPage > 0) {
-    if ($indexPage > 1) {
-        $indexUrl['p'] = $indexPage;
-    }
+
+if ( ($referrer = Util::parseReferrer()) ) {
+    $indexPage = ArrayHelper::getValue($referrer, 'index', 0);
+    $nodePage = ArrayHelper::getValue($referrer, 'node', 0);
+} else {
+    $indexPage = intval($request->get('ip', 0));
+    $nodePage = intval($request->get('np', 0));
+}
+
+if ($indexPage > 1) {
+    $indexUrl['p'] = $indexPage;
     $topicUrl['ip'] = $indexPage;
-} else if ($nodePage > 0) {
-    if ($nodePage > 1) {
-        $nodeUrl['p'] = $nodePage;
-    }
+} else if ($nodePage > 1) {
+    $nodeUrl['p'] = $nodePage;
     $topicUrl['np'] = $nodePage;
 }
 
@@ -54,13 +58,13 @@ if(!$isGuest) {
         $topicOp['reply'] = Html::a('<i class="fa fa-comment fa-lg" aria-hidden="true"></i>', null, ['href' => '#reply', 'title' => Yii::t('app', 'Add Comment')]);
     }
     if ( $me->canEdit($topic) ) {
-        $topicOp['edit'] = Html::a('<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>', $topicUrl, ['title' => Yii::t('app', 'Edit')]);
+        $topicOp['edit'] = Html::a('<i class="fas fa-edit fa-lg" aria-hidden="true"></i>', $topicUrl, ['title' => Yii::t('app', 'Edit')]);
     }
     if ($me->isAdmin()) {
         $topicUrl[0] = 'admin/topic/change-node';
-        $topicOp['changeNode'] = Html::a('<i class="fa fa-folder-open-o fa-lg" aria-hidden="true"></i>', $topicUrl, ['title' => Yii::t('app', 'Move')]);
+        $topicOp['changeNode'] = Html::a('<i class="fas fa-folder-open fa-lg" aria-hidden="true"></i>', $topicUrl, ['title' => Yii::t('app', 'Move')]);
         $topicUrl[0] = 'admin/topic/delete';
-        $topicOp['delete'] = Html::a('<i class="fa fa-trash fa-lg" aria-hidden="true"></i>', $topicUrl, [
+        $topicOp['delete'] = Html::a('<i class="fas fa-trash-alt fa-lg" aria-hidden="true"></i>', $topicUrl, [
             'title' => Yii::t('app', 'Delete'),
             'data' => [
                 'confirm' => Yii::t('app', 'Are you sure you want to delete it? This operation cannot be undone.'),
@@ -73,21 +77,21 @@ if(!$isGuest) {
 $this->title = Html::encode($topic['title']);
 ?>
 <div class="row">
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading">
+<div class="card sf-box sf-box-topic">
+    <div class="card-header bg-transparent sf-topic-title">
         <span class="fr">
             <?php echo SfHtml::uImgLink($topic['author'], 'large', []); ?>
         </span>
         <?php
             echo Html::a(Yii::t('app', 'Home'), $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), $nodeUrl);
         ?>
-        <h2 class="word-wrap"><?php echo $this->title; ?></h2>
+        <h2 class="word-wrap my-3"><?php echo $this->title; ?></h2>
         <small class="gray">
         <?php
             echo '<strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), SfHtml::uGroupRank($topic['author']['score']),'</strong>',
-                ' • <i class="fa fa-clock-o"></i>', $formatter->asRelativeTime($topic['created_at']), ' • ', Yii::t('app', '{0,number} clicks', $topic['views']);
+                ' • <i class="far fa-clock"></i>', $formatter->asRelativeTime($topic['created_at']), ' • ', Yii::t('app', '{0,number} clicks', $topic['views']);
             echo ' • ' .Yii::t('app', 'Font'). ' <i class="fa fa-font fa-2x fontsize-plus" title="'.Yii::t('app', 'Bigger').'"></i> <i class="fa fa-font fa-lg fontsize-minus" title="'.Yii::t('app', 'Smaller').'"></i>';
             if ( !$isGuest && !empty($topicOp) ) {
                 echo '  •  ', implode(' ', $topicOp);
@@ -95,7 +99,7 @@ $this->title = Html::encode($topic['title']);
         ?></small>
     </div>
 <?php if(!empty($topic['content']['content']) || !empty($topic['tags'])) : ?>
-    <div class="panel-body img-zoom content link-external word-wrap <?php echo $whiteWrapClass; ?>">
+    <div class="card-body img-zoom sf-topic-content link-external word-wrap <?php echo $whiteWrapClass; ?>">
         <?php
         if(!empty($topic['content']['content'])) {
             $topicShow = true;
@@ -116,26 +120,26 @@ $this->title = Html::encode($topic['title']);
             echo '<div class="top10">';
             $tags = explode(',', strtolower($topic['tags']));
             foreach($tags as $tag) {
-                echo Html::a('<i class="fa fa-tag" aria-hidden="true"></i>'.Html::encode($tag), ['tag/index', 'name'=>$tag], ['class'=>'btn btn-default btn-sm tag']);
+                echo Html::a('<i class="fa fa-tag" aria-hidden="true"></i>'.Html::encode($tag), ['tag/index', 'name'=>$tag], ['class'=>'btn btn-sm btn-light tag']);
             }
             echo '</div>';
         }
         ?>
     </div>
 <?php endif; ?>
-    <div class="panel-footer">
+    <div class="card-footer bg-transparent">
 <?php
 $userOp = [];
 if(!$isGuest && $me->isActive()) {
     if ($me->id != $topic['user_id']) {
-        $userOp['good'] = Html::a('<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($topic['good']>0?$topic['good']:'') . '</span>', null, ['id'=>'good-topic-'.$topic['id'], 'title'=>Yii::t('app', 'Good'), 'href' => 'javascript:void(0);',  'data-toggle'=>'modal', 'data-target'=>'#exampleModal', 'data-author'=>Html::encode($topic['author']['username'])]);
+        $userOp['good'] = Html::a('<i class="far fa-thumbs-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($topic['good']>0?$topic['good']:'') . '</span>', null, ['id'=>'good-topic-'.$topic['id'], 'title'=>Yii::t('app', 'Good'), 'href' => '#', 'onclick'=> 'return false;',  'data-toggle'=>'modal', 'data-target'=>'#exampleModal', 'data-author'=>Html::encode($topic['author']['username'])]);
     } else {
-        $userOp['good'] = '<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($topic['good']>0?$topic['good']:'') . '</span>';
+        $userOp['good'] = '<i class="far fa-thumbs-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($topic['good']>0?$topic['good']:'') . '</span>';
     }
-    $userOp['follow'] = Favorite::checkFollow($me->id, Favorite::TYPE_TOPIC, $topic['id'])?Html::a('<i class="fa fa-ml10 fa-star fa-lg aria-hidden="true""></i><span class="favorite-num">' . ($topic['favorite_count']>0?$topic['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>Yii::t('app', 'Cancel Favorite'), 'href' => 'javascript:void(0);', 'params'=>'unfavorite topic '. $topic['id']]):Html::a('<i class="fa fa-ml10 fa-star-o fa-lg" aria-hidden="true"></i><span class="favorite-num">' . ($topic['favorite_count']>0?$topic['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>Yii::t('app', 'Favorite'), 'href' => 'javascript:void(0);', 'params'=>'favorite topic '. $topic['id']]);
+    $userOp['follow'] = Favorite::checkFollow($me->id, Favorite::TYPE_TOPIC, $topic['id'])?Html::a('<i class="fas fa-ml10 fa-star fa-lg aria-hidden="true""></i><span class="favorite-num">' . ($topic['favorite_count']>0?$topic['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>Yii::t('app', 'Cancel Favorite'), 'href' => '#', 'onclick'=> 'return false;', 'params'=>'unfavorite topic '. $topic['id']]):Html::a('<i class="far fa-ml10 fa-star fa-lg" aria-hidden="true"></i><span class="favorite-num">' . ($topic['favorite_count']>0?$topic['favorite_count']:'') . '</span>', null, ['class'=>'favorite', 'title'=>Yii::t('app', 'Favorite'), 'href' => '#', 'onclick'=> 'return false;', 'params'=>'favorite topic '. $topic['id']]);
 } else {
-    $userOp['good'] = '<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($topic['good']>0?$topic['good']:'') . '</span>';
-    $userOp['follow'] = '<i class="fa fa-ml10 fa-star-o fa-lg" aria-hidden="true"></i><span class="favorite-num">' . ($topic['favorite_count']>0?$topic['favorite_count']:'') . '</span>';
+    $userOp['good'] = '<i class="far fa-thumbs-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($topic['good']>0?$topic['good']:'') . '</span>';
+    $userOp['follow'] = '<i class="far fa-ml10 fa-star fa-lg" aria-hidden="true"></i><span class="favorite-num">' . ($topic['favorite_count']>0?$topic['favorite_count']:'') . '</span>';
 }
 echo implode('', $userOp) ;
 ?>
@@ -143,8 +147,8 @@ echo implode('', $userOp) ;
 </div>
 
 <?php if( intval($topic['comment_count']) > 0 ) : ?>
-<ul class="list-group sf-box img-zoom">
-    <li class="list-group-item">
+<ul class="list-group sf-box img-zoom sf-box-comments">
+    <li class="list-group-item sf-box-header">
 <?php echo Yii::t('app', '{n, plural, =0{no comments} =1{# comment} other{# comments}}', ['n'=>intval($topic['comment_count'])]), '&nbsp;|&nbsp;' . Yii::t('app', 'until {time}', ['time'=>$formatter->asDateTime($topic['replied_at'], 'y-MM-dd HH:mm:ssZ')]); ?>
     </li>
 <?php
@@ -162,11 +166,11 @@ foreach($comments as $comment){
         }
 */
         if ( $me->canEdit($comment, $topic['comment_closed']) ) {
-            $userOp['edit'] = Html::a('<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>', $commentUrl, ['title'=>'修改']);
+            $userOp['edit'] = Html::a('<i class="fas fa-edit fa-lg" aria-hidden="true"></i>', $commentUrl, ['title'=>Yii::t('app', 'Edit')]);
         }
         if ( $me->isAdmin() ) {
             $commentUrl[0] = 'admin/comment/delete';
-            $userOp['delete'] = Html::a('<i class="fa fa-trash fa-lg" aria-hidden="true"></i>', $commentUrl, [
+            $userOp['delete'] = Html::a('<i class="fas fa-trash-alt fa-lg" aria-hidden="true"></i>', $commentUrl, [
                 'title' => Yii::t('app', 'Delete'),
                 'data' => [
                     'confirm' => Yii::t('app', 'Are you sure you want to delete it? This operation cannot be undone.'),
@@ -174,14 +178,14 @@ foreach($comments as $comment){
                 ]]);
         }
         if ( $me->canReply($topic) ) {
-            $userOp['reply'] = Html::a('<i class="fa fa-reply fa-lg" aria-hidden="true"></i>', null, ['title'=>Yii::t('app', 'Add Comment'), 'href' => 'javascript:void(0);', 'class'=>'reply-to', 'params'=>Html::encode($comment['author']['username'])]);
+            $userOp['reply'] = Html::a('<i class="fa fa-reply fa-lg" aria-hidden="true"></i>', null, ['title'=>Yii::t('app', 'Add Comment'), 'href' => '#', 'onclick'=> 'return false;', 'class'=>'reply-to', 'params'=>Html::encode($comment['author']['username'])]);
         }
-        $userOpGood = ' ' . Html::a('<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($comment['good']>0?$comment['good']:'') . '</span>', null, ['id'=>'good-comment-'.$comment['id'], 'title'=>Yii::t('app', 'Good'), 'href' => 'javascript:void(0);',  'data-toggle'=>'modal', 'data-target'=>'#exampleModal', 'data-author'=>Html::encode($comment['author']['username'])]);
+        $userOpGood = ' ' . Html::a('<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($comment['good']>0?$comment['good']:'') . '</span>', null, ['id'=>'good-comment-'.$comment['id'], 'title'=>Yii::t('app', 'Good'), 'href' => '#', 'onclick'=> 'return false;',  'data-toggle'=>'modal', 'data-target'=>'#exampleModal', 'data-author'=>Html::encode($comment['author']['username'])]);
     }
     $userOp['position'] = Yii::t('app', '#{0,number}', $comment['position']);
 
     echo '<li class="list-group-item media comment-list" id="reply', $comment['position'] ,'">
-            <div class="media-left item-avatar">',
+            <div class="item-avatar">',
                 SfHtml::uImgLink($comment['author'], 'normal', []),
             '</div>
              <div class="media-body link-external">
@@ -189,7 +193,7 @@ foreach($comments as $comment){
                   <small class="fr gray">', implode(' | ', $userOp), '</small>
                   <small class="gray">
                     <i class="fa fa-user" aria-hidden="true"></i><strong>', SfHtml::uLink($comment['author']['username'], $comment['author']['name']), SfHtml::uGroupRank($comment['author']['score']), '</strong> ',$comment['author']['comment'],' •  ',
-                    '<i class="fa fa-clock-o" aria-hidden="true"></i>', $formatter->asRelativeTime($comment['created_at']), $userOpGood,
+                    '<i class="far fa-clock" aria-hidden="true"></i>', $formatter->asRelativeTime($comment['created_at']), $userOpGood,
                   '</small>
                 </div>';
                 $commentShow = true;
@@ -208,11 +212,13 @@ foreach($comments as $comment){
     echo '</li>';
 }
 ?>
-    <li class="list-group-item item-pagination">
+    <li class="list-group-item sf-pagination">
     <?php
     echo LinkPager::widget([
         'pagination' => $pages,
         'maxButtonCount'=>5,
+        'listOptions' => ['class'=>'pagination justify-content-center my-2'],
+        'activeLinkCssClass' => ['sf-btn'],
     ]);
     ?>
     </li>
@@ -221,13 +227,13 @@ foreach($comments as $comment){
 <?php endif; ?>
 
 <?php if( !$isGuest && $me->canReply($topic) ): ?>
-<div class="panel panel-default sf-box" id="reply">
-    <div class="panel-heading">
+<div class="card sf-box" id="reply">
+    <div class="card-header sf-box-header">
         <span class="fr"><a href="#"><i class="fa fa-arrow-up" aria-hidden="true"></i><?php echo Yii::t('app', 'Go to top'); ?></a></span><?php echo Yii::t('app', 'Add Comment'); ?>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
 <?php $form = ActiveForm::begin(['action' => ['comment/reply', 'id'=>$topic['id']]]);
-    $model = new \app\models\Comment();
+    $model = new Comment();
     echo $form->field($model, 'content')->textArea(['id'=>'editor'])->label(false);
     if($me->canUpload($settings)) {
         $editor->registerUploadAsset($this);
@@ -241,7 +247,7 @@ foreach($comments as $comment){
         }
 ?>
     <div class="form-group">
-        <?php echo Html::submitButton('<i class="fa fa-comment" aria-hidden="true"></i>'.Yii::t('app', 'Add Comment'), ['class' => 'btn btn-primary']); ?>
+        <?php echo Html::submitButton('<i class="fa fa-comment" aria-hidden="true"></i>'.Yii::t('app', 'Add Comment'), ['class' => 'btn sf-btn']); ?>
     </div>
 <?php ActiveForm::end(); ?>
     </div>
@@ -250,7 +256,7 @@ foreach($comments as $comment){
 
 </div>
 
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <?php SfHtml::afterAllPosts($this); ?>
@@ -272,7 +278,7 @@ foreach($comments as $comment){
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary good"><?php echo Yii::t('app', 'Submit'); ?></button>
+        <button type="button" class="btn sf-btn good"><?php echo Yii::t('app', 'Submit'); ?></button>
       </div>
     </div>
   </div>

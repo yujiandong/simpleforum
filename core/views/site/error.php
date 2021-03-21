@@ -1,12 +1,11 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\Alert;
 
 $session = Yii::$app->getSession();
 
@@ -15,13 +14,13 @@ $this->title = Yii::t('app', 'Error occurred');
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading">
+<div class="card sf-box">
+    <div class="card-header sf-box-header sf-navi">
         <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <p><strong><?php echo Html::encode($name); ?></strong></p>
         <div class="alert alert-danger">
             <?php echo nl2br(Html::encode($message)); ?>
@@ -35,7 +34,7 @@ $this->title = Yii::t('app', 'Error occurred');
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->

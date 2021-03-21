@@ -23,12 +23,12 @@ $items = [
 
 ?>
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading gray"><?php echo Yii::t('app/admin', 'Forum Manager'); ?></div>
-    <div class="panel-body sf-btn">
+<div class="card sf-box">
+    <div class="card-header sf-box-header"><?php echo Yii::t('app/admin', 'Forum Manager'); ?></div>
+    <div class="card-body sf-links">
 <?php
     foreach($items as $k=>$v) {
-        echo Html::a(Yii::t('app/admin', $k), $v, ['class'=>'btn btn-default']);
+        echo Html::a(Yii::t('app/admin', $k), $v, ['class'=>'btn']);
     }
 ?>
     </div>

@@ -7,9 +7,8 @@
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use yii\bootstrap4\ActiveForm;
 use app\models\Topic;
-use app\components\SfHtml;
 
 $settings = Yii::$app->params['settings'];
 
@@ -22,23 +21,23 @@ $editor->registerTagItAsset($this);
 
 <?php $form = ActiveForm::begin(); ?>
     <?php
-		if( $action === 'edit' && Yii::$app->getUser()->getIdentity()->isAdmin()) {
-			echo '<div class="row">',
-		 		'<div class="col-md-3 col-xs-4">', $form->field($model, 'invisible')->checkbox(), '</div>',
-		 		'<div class="col-md-3 col-xs-4">', $form->field($model, 'comment_closed')->checkbox(), '</div>',
-		 		'<div class="col-md-3 col-xs-4">', $form->field($model, 'alltop')->checkbox(), '</div>',
-		 		'<div class="col-md-3 col-xs-4">', $form->field($model, 'top')->checkbox(), '</div>',
-			'</div>';
-		}
-	?>
-	<p><?php echo Yii::t('app', 'Topic Title'); ?></p>
+        if( $action === 'edit' && Yii::$app->getUser()->getIdentity()->isAdmin()) {
+            echo '<div class="row">',
+                 '<div class="col-4 col-md-3">', $form->field($model, 'invisible')->checkbox(), '</div>',
+                 '<div class="col-4 col-md-3">', $form->field($model, 'comment_closed')->checkbox(), '</div>',
+                 '<div class="col-4 col-md-3">', $form->field($model, 'alltop')->checkbox(), '</div>',
+                 '<div class="col-4 col-md-3">', $form->field($model, 'top')->checkbox(), '</div>',
+            '</div>';
+        }
+    ?>
+    <p><?php echo Yii::t('app', 'Topic Title'); ?></p>
     <?php echo $form->field($model, 'title')->textArea(['rows' => '4', 'maxlength'=>120])->label(false); ?>
-	<p><?php echo Yii::t('app', 'Topic Content'); ?> <span class="gray">( <?php echo Yii::t('app', 'Topic content can be empty.'); ?> )</span></p>
-	<?php echo $form->field($content, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false); ?>
-	<p><?php echo Yii::t('app', 'Visible Option'); ?></p>
+    <p><?php echo Yii::t('app', 'Topic Content'); ?> <span class="gray">( <?php echo Yii::t('app', 'Topic content can be empty.'); ?> )</span></p>
+    <?php echo $form->field($content, 'content')->textArea(['id'=>'editor', 'maxlength'=>30000])->label(false); ?>
+    <p><?php echo Yii::t('app', 'Visible Option'); ?></p>
     <?php echo $form->field($model, 'access_auth')->dropDownList(Topic::accessList())->label(false); ?>
-	<p><?php echo Yii::t('app', 'Tags'); ?> <span class="gray">( <?php echo Yii::t('app', 'max: 4 tags, delimiter: blank'); ?> )</span></p>
-	<?php echo $form->field($model, 'tags')->textInput(['id'=>'tags', 'maxlength'=>60])->label(false); ?>
+    <p><?php echo Yii::t('app', 'Tags'); ?> <span class="gray">( <?php echo Yii::t('app', 'max: 4 tags, delimiter: blank'); ?> )</span></p>
+    <?php echo $form->field($model, 'tags')->textInput(['id'=>'tags', 'maxlength'=>60])->label(false); ?>
 <?php
         $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
         if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
@@ -46,7 +45,7 @@ $editor->registerTagItAsset($this);
         }
 ?>
 
-	<div class="form-group">
-		<?php echo Html::submitButton($model->isNewRecord ? '<i class="fa fa-pencil"></i>'.Yii::t('app', 'Post') : '<i class="fa fa-pencil-square-o"></i>'.Yii::t('app', 'Edit'), ['class' => 'btn btn-primary']); ?>
-	</div>
+    <div class="form-group">
+        <?php echo Html::submitButton($model->isNewRecord ? '<i class="fas fa-pencil-alt"></i>'.Yii::t('app', 'Post') : '<i class="fas fa-edit"></i>'.Yii::t('app', 'Edit'), ['class' => 'btn sf-btn']); ?>
+    </div>
 <?php ActiveForm::end(); ?>

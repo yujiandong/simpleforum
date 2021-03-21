@@ -7,7 +7,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\bootstrap\ActiveForm;
+use yii\bootstrap4\ActiveForm;
 
 \app\assets\Select2Asset::register($this);
 $this->registerJs("$('select').select2();");
@@ -55,10 +55,10 @@ function showSettingForm($settings, $form, $languages)
 ?>
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
 <ul class="list-group sf-box">
-    <li class="list-group-item">
+    <li class="list-group-item sf-box-header sf-navi">
         <?php
             echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
         ?>
@@ -67,13 +67,9 @@ function showSettingForm($settings, $form, $languages)
     'layout' => 'horizontal',
     'id' => 'form-setting',
     'fieldConfig' => [
-//      'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
         'horizontalCssClasses' => [
-            'label' => 'col-sm-3',
-//          'offset' => 'col-sm-offset-4',
+            'label' => 'col-form-label col-sm-3 text-sm-right',
             'wrapper' => 'col-sm-9',
-            'error' => '',
-            'hint' => 'col-sm-offset-3 col-sm-9',
         ],
     ],
 ]); ?>
@@ -82,8 +78,8 @@ foreach ($blocks as $key=>$block):
 ?>
     <li class="list-group-item list-group-item-info" id="<?php echo $key; ?>">
         <div class="row">
-            <div class="text-right col-sm-3 col-xs-6"><strong>» <?php echo $block['title']; ?></strong></div>
-            <div class="col-sm-9 col-xs-12"><?php echo $block['msg']; ?></div>
+            <div class="col-5 col-sm-4"><strong>» <?php echo $block['title']; ?></strong></div>
+            <div class="col-7 col-sm-8"><?php echo $block['msg']; ?></div>
         </div>
     </li>
     <li class="list-group-item sf-box-form">
@@ -99,8 +95,8 @@ if ( $block['parts'] ) {
 }
 ?>
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+            <div class="offset-sm-3 col-sm-9">
+            <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
             </div>
         </div>
     </li>
@@ -115,7 +111,7 @@ ActiveForm::end();
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->

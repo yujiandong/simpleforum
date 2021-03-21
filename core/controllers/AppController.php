@@ -1,7 +1,7 @@
 <?php
 /**
  * @link http://simpleforum.org/
- * @copyright Copyright (c) 2016 Simple Forum
+ * @copyright Copyright (c) 2015 SimpleForum
  * @author Jiandong Yu admin@simpleforum.org
  */
 
@@ -51,7 +51,7 @@ class AppController extends Controller
             'site/verify-email',
             'site/activate',
             'site/auth-bind-account',
-	    'site/language',
+            'site/language',
             'admin/user/activate',
             'admin/user/reset-password',
             'service/favorite',

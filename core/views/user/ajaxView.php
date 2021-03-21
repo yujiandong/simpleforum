@@ -21,16 +21,16 @@ if (!$isGuest) {
 $userOp = [];
 if (!$isGuest && $me->isActive() && $me->id != $user['id']) {
     if (Favorite::checkFollow($me->id, Favorite::TYPE_USER, $user['id'])) {
-        $favorIcon = 'fa-star';
+        $favorIcon = 'fas';
         $favorName = Yii::t('app', 'Unfollow');
         $favorParams = 'unfavorite';
     } else {
-        $favorIcon = 'fa-star-o';
+        $favorIcon = 'far';
         $favorName = Yii::t('app', 'Follow');
         $favorParams = 'favorite';
     }
-    $userOp['follow'] = Html::a('<i class="fa '.$favorIcon.' fa-lg aria-hidden="true""></i><span class="favorite-name">'.$favorName.'</span>', null, ['class'=>'btn btn-xs btn-default favorite', 'title'=>$favorName, 'href' => 'javascript:void(0);', 'params'=> $favorParams.' user '. $user['id']]);
-    $userOp['sms'] = Html::a('<i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i><span class="favorite-name">' . Yii::t('app', 'SMS') . '</span>', ['service/sms', 'to'=>$user['username']], ['class'=>'btn btn-xs btn-default']);
+    $userOp['follow'] = Html::a('<i class="'.$favorIcon.' fa-star fa-lg aria-hidden="true""></i><span class="favorite-name">'.$favorName.'</span>', null, ['class'=>'btn btn-sm btn-default favorite', 'title'=>$favorName, 'href' => '#', 'onclick'=> 'return false;', 'params'=> $favorParams.' user '. $user['id']]);
+    $userOp['sms'] = Html::a('<i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i><span class="favorite-name">' . Yii::t('app', 'SMS') . '</span>', ['service/sms', 'to'=>$user['username']], ['class'=>'btn btn-sm btn-default']);
 }
 
 ?>

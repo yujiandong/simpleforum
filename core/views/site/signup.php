@@ -7,9 +7,8 @@
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use yii\bootstrap4\ActiveForm;
 use app\models\SignupForm;
-use app\components\SfHtml;
 
 
 if ($model->action === SignupForm::ACTION_AUTH_SIGNUP) {
@@ -23,33 +22,39 @@ if ($model->action === SignupForm::ACTION_AUTH_SIGNUP) {
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
-<div class="panel panel-default sf-box">
-    <div class="panel-heading">
+<div class="card sf-box">
+    <div class="card-header sf-box-header sf-navi">
         <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </div>
-    <div class="panel-body sf-box-form">
-        <?php $form = ActiveForm::begin([
+    <div class="card-body sf-box-form">
+<?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
-            'id' => 'form-signup'
+            'id' => 'form-signup',
+            'fieldConfig' => [
+              'horizontalCssClasses' => [
+                  'label' => 'col-form-label col-sm-3 text-sm-right',
+                  'wrapper' => 'col-sm-9',
+              ],
+            ],
         ]); ?>
 <?php if ($model->action === SignupForm::ACTION_AUTH_SIGNUP) : ?>
-        <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-6">
-                <p class="form-control-static"><?php echo Yii::t('app', 'You have signed in with your {name} account.', ['name'=>$authInfo['sourceName']]); ?></p>
+        <div class="form-group row">
+            <div class="offset-sm-3 col-sm-9">
+                <?php echo Yii::t('app', 'You have signed in with your {name} account.', ['name'=>$authInfo['sourceName']]); ?>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-sm-3"><?php echo Yii::t('app', 'Username'); ?></label>
-            <div class="col-sm-6">
-                <p class="form-control-static"><strong><?php echo $authInfo['username']; ?></strong></p>
+        <div class="form-group row">
+            <label class="control-label col-sm-3 text-sm-right"><?php echo Yii::t('app', 'Username'); ?></label>
+            <div class="col-sm-9">
+                <strong><?php echo $authInfo['username']; ?></strong>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-sm-3"><?php echo Yii::t('app', 'Have an account?'); ?></label>
-            <div class="col-sm-6">
-                <p class="form-control-static"><?php echo Html::a(Yii::t('app', 'Bind your account'), ['auth-bind-account'], ['class'=>'btn btn-primary']); ?></p>
+        <div class="form-group row">
+            <label class="control-label col-sm-3 text-sm-right"><?php echo Yii::t('app', 'Have an account?'); ?></label>
+            <div class="col-sm-9">
+                <?php echo Html::a(Yii::t('app', 'Bind your account'), ['auth-bind-account'], ['class'=>'btn sf-btn']); ?>
             </div>
         </div>
         <br /><strong><?php echo Yii::t('app', 'Create an account'); ?></strong><hr>
@@ -69,8 +74,8 @@ if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
         }
 ?>
             <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
-                <?php echo Html::submitButton($btnLabel, ['class' => 'btn btn-primary', 'name' => 'signup-button']); ?>
+                <div class="offset-sm-3 col-sm-9">
+                <?php echo Html::submitButton($btnLabel, ['class' => 'btn sf-btn', 'name' => 'signup-button']); ?>
                 </div>
             </div>
         <?php ActiveForm::end(); ?>
@@ -81,7 +86,7 @@ if ( intval(Yii::$app->params['settings']['close_register']) === 2 ) {
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 <!-- sf-right end -->

@@ -18,10 +18,10 @@ $me = Yii::$app->getUser()->getIdentity();
 ?>
 
 <div class="row">
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
 <ul class="list-group sf-box">
-    <li class="list-group-item">
+    <li class="list-group-item sf-box-header sf-navi">
     <span class="fr"><?php echo Html::a(Yii::t('app', 'Buy Invite Codes'), ['service/buy-invite-code']); ?></span>
     <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
     </li>
@@ -51,10 +51,13 @@ foreach($records as $record) {
       </tbody>
     </table>
     </li>
-    <li class="list-group-item item-pagination">
+    <li class="list-group-item sf-pagination">
     <?php
     echo LinkPager::widget([
         'pagination' => $pages,
+        'maxButtonCount'=>5,
+        'listOptions' => ['class'=>'pagination justify-content-center my-2'],
+        'activeLinkCssClass' => ['sf-btn'],
     ]);
     ?>
     </li>
@@ -62,7 +65,7 @@ foreach($records as $record) {
 </ul>
 </div>
 
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_right'); ?>
 </div>
 

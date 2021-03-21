@@ -34,15 +34,6 @@ private static $installed = array (
   ),
   'versions' => 
   array (
-    'bower-asset/bootstrap' => 
-    array (
-      'pretty_version' => 'v3.4.1',
-      'version' => '3.4.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '68b0d231a13201eb14acd3dc84e51543d16e5f7e',
-    ),
     'bower-asset/inputmask' => 
     array (
       'pretty_version' => '3.3.11',
@@ -142,59 +133,68 @@ private static $installed = array (
       ),
       'reference' => 'd2e18be6e930ca169e4f921ef73ebfc061bf55d8',
     ),
-    'swiftmailer/swiftmailer' => 
+    'npm-asset/bootstrap' => 
     array (
-      'pretty_version' => 'v6.2.4',
-      'version' => '6.2.4.0',
+      'pretty_version' => '4.5.3',
+      'version' => '4.5.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '56f0ab23f54c4ccbb0d5dcc67ff8552e0c98d59e',
+      'reference' => NULL,
+    ),
+    'swiftmailer/swiftmailer' => 
+    array (
+      'pretty_version' => 'v6.2.5',
+      'version' => '6.2.5.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '698a6a9f54d7eb321274de3ad19863802c879fb7',
     ),
     'symfony/polyfill-iconv' => 
     array (
-      'pretty_version' => 'v1.20.0',
-      'version' => '1.20.0.0',
+      'pretty_version' => 'v1.22.0',
+      'version' => '1.22.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c536646fdb4f29104dd26effc2fdcb9a5b085024',
+      'reference' => 'b34bfb8c4c22650ac080d2662ae3502e5f2f4ae6',
     ),
     'symfony/polyfill-intl-idn' => 
     array (
-      'pretty_version' => 'v1.20.0',
-      'version' => '1.20.0.0',
+      'pretty_version' => 'v1.22.0',
+      'version' => '1.22.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3b75acd829741c768bc8b1f84eb33265e7cc5117',
+      'reference' => '0eb8293dbbcd6ef6bf81404c9ce7d95bcdf34f44',
     ),
     'symfony/polyfill-intl-normalizer' => 
     array (
-      'pretty_version' => 'v1.20.0',
-      'version' => '1.20.0.0',
+      'pretty_version' => 'v1.22.0',
+      'version' => '1.22.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '727d1096295d807c309fb01a851577302394c897',
+      'reference' => '6e971c891537eb617a00bb07a43d182a6915faba',
     ),
     'symfony/polyfill-mbstring' => 
     array (
-      'pretty_version' => 'v1.20.0',
-      'version' => '1.20.0.0',
+      'pretty_version' => 'v1.22.0',
+      'version' => '1.22.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '39d483bdf39be819deabf04ec872eb0b2410b531',
+      'reference' => 'f377a3dd1fde44d37b9831d68dc8dea3ffd28e13',
     ),
     'symfony/polyfill-php72' => 
     array (
-      'pretty_version' => 'v1.20.0',
-      'version' => '1.20.0.0',
+      'pretty_version' => 'v1.22.0',
+      'version' => '1.22.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'cede45fcdfabdd6043b3592e83678e42ec69e930',
+      'reference' => 'cc6e6f9b39fe8075b3dabfbaf5b5f645ae1340c9',
     ),
     'yiisoft/yii2' => 
     array (
@@ -223,14 +223,14 @@ private static $installed = array (
       ),
       'reference' => 'f38a0c931c1ae6459a8e221fc693ee31a4c1bab6',
     ),
-    'yiisoft/yii2-bootstrap' => 
+    'yiisoft/yii2-bootstrap4' => 
     array (
-      'pretty_version' => '2.0.10',
-      'version' => '2.0.10.0',
+      'pretty_version' => '2.0.9',
+      'version' => '2.0.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => '073c9ab0a4eb71f2485d84c96a1967130300d8fc',
+      'reference' => 'a75555e4a888508416fadfd0a2b94881342cdd45',
     ),
     'yiisoft/yii2-composer' => 
     array (

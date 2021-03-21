@@ -6,11 +6,7 @@
  */
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\bootstrap\ActiveForm;
-
-//\app\assets\Select2Asset::register($this);
-//$this->registerJs("$('select').select2();");
+use yii\bootstrap4\ActiveForm;
 
 $this->title = Yii::t('app', 'Third-party login');
 
@@ -39,10 +35,10 @@ function showSettingForm($settings, $form, $parentKey='')
 ?>
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
 <ul class="list-group sf-box">
-    <li class="list-group-item">
+    <li class="list-group-item sf-box-header sf-navi">
         <?php
             echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', $this->title;
         ?>
@@ -51,13 +47,9 @@ function showSettingForm($settings, $form, $parentKey='')
     'layout' => 'horizontal',
     'id' => 'form-setting',
     'fieldConfig' => [
-//      'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
         'horizontalCssClasses' => [
-            'label' => 'col-sm-3',
-//          'offset' => 'col-sm-offset-4',
+            'label' => 'col-form-label col-sm-3 text-sm-right',
             'wrapper' => 'col-sm-9',
-            'error' => '',
-            'hint' => 'col-sm-offset-3 col-sm-9',
         ],
     ],
 ]); ?>
@@ -76,8 +68,8 @@ foreach($settings as $type=>$part) {
 ?>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-3 col-sm-9">
-            <?php echo Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary']); ?> <?php echo Html::button(Yii::t('app', 'Add'), ['class' => 'btn btn-primary auth-item-add']); ?>
+            <div class="offset-sm-3 col-sm-9">
+            <?php echo Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn sf-btn']); ?> <?php echo Html::button(Yii::t('app', 'Add'), ['class' => 'btn sf-btn auth-item-add']); ?>
             </div>
         </div>
     </li>
@@ -91,7 +83,7 @@ ActiveForm::end();
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->

@@ -216,6 +216,7 @@ return [
     'Time' => '時間',
     'Title' => 'タイトル',
     'Top' => '固定',
+    'Topic' => 'トピック',
     'Topic Commented' => 'コメント投稿された',
     'Topic Content' => '内容',
     'Topic Thanked' => 'トピックいいね貰った',

@@ -14,7 +14,7 @@ class AppAsset extends AssetBundle
 //    public $basePath = '@webroot';
     public $baseUrl = '@web/static';
     public $css = [
-        'assets/font-awesome-4.7.0/css/font-awesome.min.css',
+        'assets/fontawesome-5.15.1/css/all.min.css',
         'css/default.css',
     ];
     public $js = [
@@ -24,7 +24,7 @@ class AppAsset extends AssetBundle
     ];
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
-        'yii\bootstrap\BootstrapPluginAsset',
+        'yii\bootstrap4\BootstrapAsset',
+        'yii\bootstrap4\BootstrapPluginAsset',
     ];
 }

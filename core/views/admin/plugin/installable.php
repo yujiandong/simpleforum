@@ -13,15 +13,14 @@ $this->title = Yii::t('app/admin', 'Installable plugins');
 
 <div class="row">
 <!-- sf-left start -->
-<div class="col-md-8 sf-left">
+<div class="col-lg-8 sf-left">
 
 <ul class="list-group sf-box">
-    <li class="list-group-item">
+    <li class="list-group-item sf-box-header sf-navi">
         <?php
-			echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Plugins'), ['index']), '&nbsp;/&nbsp;', $this->title;
+            echo Html::a(Yii::t('app/admin', 'Forum Manager'), ['admin/setting/all']), '&nbsp;/&nbsp;', Html::a(Yii::t('app/admin', 'Plugins'), ['index']), '&nbsp;/&nbsp;', $this->title;
         ?>
     </li>
-    <li class="list-group-item list-group-item-info"><strong>插件</strong></li>
     <li class="list-group-item">
     <table class="table table-bordered table-hover">
       <thead>
@@ -37,10 +36,10 @@ $this->title = Yii::t('app/admin', 'Installable plugins');
     if( !empty($plugins) ) {
         foreach($plugins as $plugin) {
             echo '<tr><td>', $plugin['pid'], '</td>
-				<td>', Html::a(Html::encode($plugin['name']), ['view', 'pid'=>$plugin['pid']]), '</td>
-				<td>', Html::encode($plugin['version']) ,'</td>
-				<td>', Html::a(Yii::t('app/admin', 'Install'), ['install', 'pid'=>$plugin['pid']]), '</td>
-			</tr>';
+                <td>', Html::a(Html::encode($plugin['name']), ['view', 'pid'=>$plugin['pid']]), '</td>
+                <td>', Html::encode($plugin['version']) ,'</td>
+                <td>', Html::a(Yii::t('app/admin', 'Install'), ['install', 'pid'=>$plugin['pid']]), '</td>
+            </tr>';
         }
     }
 ?>
@@ -54,7 +53,7 @@ $this->title = Yii::t('app/admin', 'Installable plugins');
 <!-- sf-left end -->
 
 <!-- sf-right start -->
-<div class="col-md-4 sf-right">
+<div class="col-lg-4 sf-right">
 <?php echo $this->render('@app/views/common/_admin-right'); ?>
 </div>
 <!-- sf-right end -->

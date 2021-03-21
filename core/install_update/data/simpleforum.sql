@@ -83,7 +83,7 @@ CREATE TABLE simple_node (
   KEY invisible(`invisible`, `id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO simple_node VALUES(1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 0, 0, 0, 0, '默认分类', 'default', '');
+INSERT INTO simple_node VALUES(1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 0, 0, 0, 0, 'Default', 'default', '');
 
 DROP TABLE IF EXISTS simple_navi;
 CREATE TABLE simple_navi (
@@ -266,7 +266,7 @@ INSERT INTO simple_setting(`sortid`, `block`, `label`, `type`, `key`, `value_typ
 (2,'extend', 'Bottom settings<br />analytics codes, etc', 'textarea','analytics_code', 'text', '','settings_desc_analytics_code', ''),
 (3,'extend', 'Bottom links', 'textarea','footer_links','text', '', 'settings_desc_footer_links', ''),
 (4,'extend', 'Editor', 'select','editor','text', 'WysibbEditor', 'settings_desc_editor', '{"WysibbEditor":"Wysibb(BBCode)"}'),
-(5,'extend', 'Avatar style', 'select','avatar_style','text', 'img-rounded', '', '{"img-circle":"Circle","img-rounded":"Rounded"}'),
+(5,'extend', 'Avatar style', 'select','avatar_style','text', 'rounded', '', '{"rounded-circle":"Circle","rounded":"Rounded"}'),
 (1,'cache', 'Enable cache', 'select','cache_enabled','integer', '0', 'settings_desc_cache_enabled', '["0(Off)","1(On)"]'),
 (2,'cache', 'Cache time(mins)', 'text','cache_time','integer', '10', 'default:10 mins', ''),
 (3,'cache', 'Cache type', 'select','cache_type', 'text', 'file', 'defalut:file', '{"file":"file","apc":"apc","memcache":"memcache","memcached":"memcached"}'),

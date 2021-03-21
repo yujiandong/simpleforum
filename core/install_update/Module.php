@@ -7,12 +7,10 @@
 
 namespace app\install_update;
 
-use yii\base\BootstrapInterface;
-
-class Module extends \yii\base\Module implements BootstrapInterface
+class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {
-	public $layout = 'main';
-	public $defaultRoute = 'install';
+    public $layout = 'main';
+    public $defaultRoute = 'install';
     /**
      * @inheritdoc
      */
