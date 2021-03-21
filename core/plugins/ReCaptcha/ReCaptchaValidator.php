@@ -31,31 +31,34 @@ class ReCaptchaValidator extends Validator
     }
 
 
-	protected function getResponse($value)
-	{
-		$client = new Client();
+    protected function getResponse($value)
+    {
+        $client = new Client();
 
-		$response = $client->createRequest()
-		    ->setMethod('POST')
-		    ->setUrl($this->apiSiteVerify)
+        $response = $client->createRequest()
+            ->setMethod('POST')
+            ->setUrl($this->apiSiteVerify)
             ->setData(['secret' => $this->secret, 'response' => $value, 'remoteip' => Yii::$app->request->userIP])
-		    ->send();
+            ->send();
         if (!$response->isOk) {
             throw new Exception('Unable connection to the captcha server. Status code ' . $response->statusCode);
         }
         return $response->data;
-	}
+    }
 
     public function validateAttribute($model, $attribute)
     {
-    	$response = $this->getResponse($model->$attribute);
-    	if ( !ArrayHelper::getValue($response, 'success', false) ||
-    	     ArrayHelper::getValue($response, 'action', '') !== $this->action ||
-    	     ArrayHelper::getValue($response, 'hostname', '') !== Yii::$app->request->hostName ||
-    	     ArrayHelper::getValue($response, 'score', 0) < $this->threshold
-    	) {
-    		$this->addError($model, $attribute, Yii::t('yii', 'The verification code is incorrect.'));
-    	}
+        $response = $this->getResponse($model->$attribute);
+        if ( !ArrayHelper::getValue($response, 'success', false) ||
+             ArrayHelper::getValue($response, 'action', '') !== $this->action ||
+             ArrayHelper::getValue($response, 'hostname', '') !== Yii::$app->request->hostName ||
+             ArrayHelper::getValue($response, 'score', 0) < $this->threshold
+        ) {
+            $errors = ArrayHelper::getValue($response, 'error-codes', []);
+            if( count($errors) !== 1 || $errors[0] !== 'timeout-or-duplicate' ) {
+                $this->addError($model, $attribute, Yii::t('yii', 'The verification code is incorrect.'));
+            }
+        }
     }
 
 }
