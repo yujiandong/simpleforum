@@ -180,7 +180,7 @@ foreach($comments as $comment){
         if ( $me->canReply($topic) ) {
             $userOp['reply'] = Html::a('<i class="fa fa-reply fa-lg" aria-hidden="true"></i>', null, ['title'=>Yii::t('app', 'Add Comment'), 'href' => '#', 'onclick'=> 'return false;', 'class'=>'reply-to', 'params'=>Html::encode($comment['author']['username'])]);
         }
-        $userOpGood = ' ' . Html::a('<i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($comment['good']>0?$comment['good']:'') . '</span>', null, ['id'=>'good-comment-'.$comment['id'], 'title'=>Yii::t('app', 'Good'), 'href' => '#', 'onclick'=> 'return false;',  'data-toggle'=>'modal', 'data-target'=>'#exampleModal', 'data-author'=>Html::encode($comment['author']['username'])]);
+        $userOpGood = ' ' . Html::a('<i class="far fa-thumbs-up fa-lg" aria-hidden="true"></i><span class="good-num">' . ($comment['good']>0?$comment['good']:'') . '</span>', null, ['id'=>'good-comment-'.$comment['id'], 'title'=>Yii::t('app', 'Good'), 'href' => '#', 'onclick'=> 'return false;',  'data-toggle'=>'modal', 'data-target'=>'#exampleModal', 'data-author'=>Html::encode($comment['author']['username'])]);
     }
     $userOp['position'] = Yii::t('app', '#{0,number}', $comment['position']);
 
