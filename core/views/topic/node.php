@@ -25,7 +25,8 @@ if (!$isGuest && $me->isActive()) {
     $follow = '';
 }
 
-$this->title = Html::encode($node['name']);
+$this->title = $node['name'];
+$nodeName = Html::encode($node['name']);
 ?>
 
 <div class="row">
@@ -36,7 +37,7 @@ $this->title = Html::encode($node['name']);
 <ul class="list-group sf-box">
     <li class="list-group-item sf-box-header sf-navi">
         <span class="fr small"><?php echo Yii::t('app', '{n, plural, =0{no topics} =1{# topic} other{# topics}}', ['n'=>intval($node['topic_count'])]), $follow; ?></span>
-        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $nodeName; ?>
     <?php
         if (!empty($node['about'])) {
     ?>

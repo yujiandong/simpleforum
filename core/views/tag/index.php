@@ -16,7 +16,8 @@ $settings = Yii::$app->params['settings'];
 $formatter = Yii::$app->getFormatter();
 $currentPage = $pages->page+1;
 
-$this->title = Html::encode($tag['name']);
+$this->title = $tag['name'];
+$tagName = Html::encode($tag['name']);
 ?>
 
 <div class="row">
@@ -28,7 +29,7 @@ $this->title = Html::encode($tag['name']);
 <ul class="list-group sf-box">
     <li class="list-group-item sf-box-header sf-navi">
         <span class="fr small"><?php echo Yii::t('app', '{n, plural, =0{no topics} =1{# topic} other{# topics}}', ['n'=>intval($tag['topic_count'])]); ?></span>
-        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $this->title; ?>
+        <?php echo Html::a(Yii::t('app', 'Home'), ['topic/index']), '&nbsp;/&nbsp;', $tagName; ?>
     </li>
     <?php
     foreach($topics as $topic){

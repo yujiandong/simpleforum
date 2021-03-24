@@ -11,7 +11,7 @@ use app\components\SfHtml;
 use app\models\Favorite;
 use app\models\User;
 
-$this->title = $user['username'];
+$this->title = $user['name'].'(@'.$user['username'].')';
 $settings = Yii::$app->params['settings'];
 $editorClass = Yii::$app->params['plugins'][$settings['editor']]['class'];
 $editor = new $editorClass();

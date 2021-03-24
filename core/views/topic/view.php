@@ -74,7 +74,8 @@ if(!$isGuest) {
     }
 }
 
-$this->title = Html::encode($topic['title']);
+$this->title = $topic['title'];
+$topicTitle = Html::encode($topic['title']);
 ?>
 <div class="row">
 <div class="col-lg-8 sf-left">
@@ -87,7 +88,7 @@ $this->title = Html::encode($topic['title']);
         <?php
             echo Html::a(Yii::t('app', 'Home'), $indexUrl), '&nbsp;/&nbsp;', Html::a(Html::encode($topic['node']['name']), $nodeUrl);
         ?>
-        <h2 class="word-wrap my-3"><?php echo $this->title; ?></h2>
+        <h2 class="word-wrap my-3"><?php echo $topicTitle; ?></h2>
         <small class="gray">
         <?php
             echo '<strong><i class="fa fa-user"></i>', SfHtml::uLink($topic['author']['username'], $topic['author']['name']), SfHtml::uGroupRank($topic['author']['score']),'</strong>',

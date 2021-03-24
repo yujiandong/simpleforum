@@ -33,16 +33,18 @@
 **帮助文档：**
 
 1. Nginx配置 https://simpleforum.org/t/23
-2. SMTP服务器设置 https://simpleforum.org/t/24
-3. 开启验证码 https://simpleforum.org/t/25
-4. 编辑器选择 https://simpleforum.org/t/26
-5. 开启缓存 https://simpleforum.org/t/27
-6. 开启第三方帐号登录 https://simpleforum.org/t/28
-7. 用户名过滤 https://simpleforum.org/t/29
-8. 网站验证 https://simpleforum.org/t/30
-9. 上传设置 https://simpleforum.org/t/31
-10. 用户组设定 https://simpleforum.org/t/32
-10. 模板设计 https://simpleforum.org/t/33
-11. 图片上传设定的修改 https://simpleforum.org/t/34
-12. 积分设置 https://simpleforum.org/t/35
-13. 启用https的方法 https://simpleforum.org/t/20
+1. SMTP服务器设置 https://simpleforum.org/t/24
+1. 开启验证码 https://simpleforum.org/t/25
+1. 编辑器选择 https://simpleforum.org/t/26
+1. 开启缓存 https://simpleforum.org/t/27
+1. 开启第三方帐号登录 https://simpleforum.org/t/28
+1. 用户名过滤 https://simpleforum.org/t/29
+1. 网站验证 https://simpleforum.org/t/30
+1. 上传设置 https://simpleforum.org/t/31
+1. 用户组设定 https://simpleforum.org/t/32
+1. 模板设计 https://simpleforum.org/t/33
+1. 图片上传设定的修改 https://simpleforum.org/t/34
+1. 积分设置 https://simpleforum.org/t/35
+1. 启用https的方法 https://simpleforum.org/t/20
+1. 网址后缀加上.html的方法 https://simpleforum.org/t/56
+1. 自定义主题式样（配色）https://simpleforum.org/t/85
