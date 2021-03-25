@@ -209,7 +209,7 @@ return [
     'The token has expired. Please apply again.' => 'トークンが期限過ぎました。再申請してください。',
     'The token was used.' => 'トークンがすでに利用されました。',
     'The username or password you entered is incorrect.' => 'ユーザー名またはパスワードが無効です。',
-    'The {n, plural, =1{#st} =2{#nd} =3{#rd} other{#th}} member, joined at {time}.' => '第 {n} 号会員、{time}から利用しています。',
+    'The {n, plural, =1{#st} =2{#nd} =3{#rd} other{#th}} member, joined on {date}.' => '第 {n} 号会員、{date}から利用しています。',
     'Third-Party Accounts' => 'サードパーティーアカウント',
     'Third-party login' => 'サードパーティーログイン',
     'This {target} is blocked.' => '{target}がブロックされました。',

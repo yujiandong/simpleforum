@@ -47,7 +47,7 @@ if (!$isGuest && $me->isActive() && $me->id != $user['id']) {
         <div class="media-body">
             <span class="fr"><?php echo implode(' ', $userOp); ?></span>
             <h2 class="media-heading"><?php echo $user['name'], '<br /><small class="gray">@', $user['username'], '</small><small>', SfHtml::uGroup($user['score']), '</small>'; ?></h2>
-            <p class="gray"><i class="fas fa-calendar-alt" aria-hidden="true"></i> <?php echo Yii::t('app', 'The {n, plural, =1{#st} =2{#nd} =3{#rd} other{#th}} member, joined at {time}.', ['n'=>$user['id'], 'time'=>$fomatter->asDate($user['created_at'], 'y-MM-dd')]); ?>
+            <p class="gray"><i class="fas fa-calendar-alt" aria-hidden="true"></i> <?php echo Yii::t('app', 'The {n, plural, =1{#st} =2{#nd} =3{#rd} other{#th}} member, joined on {date}.', ['n'=>$user['id'], 'date'=>$fomatter->asDate($user['created_at'], 'y-MM-dd')]); ?>
             </p>
         </div>
     </div>

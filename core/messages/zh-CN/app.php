@@ -210,7 +210,7 @@ return [
     'The token has expired. Please apply again.' => '该网址已超过有效期，请重新申请',
     'The token was used.' => '该网址被使用过，已失效。',
     'The username or password you entered is incorrect.' => '您输入的用户名或密码不正确。',
-    'The {n, plural, =1{#st} =2{#nd} =3{#rd} other{#th}} member, joined at {time}.' => '第 {n} 号会员，加入于 {time} 。',
+    'The {n, plural, =1{#st} =2{#nd} =3{#rd} other{#th}} member, joined on {date}.' => '第 {n} 号会员，加入于 {date} 。',
     'Third-Party Accounts' => '第三方账号',
     'Third-party login' => '第三方账号登录',
     'This {target} is blocked.' => '此{target}已被屏蔽',
