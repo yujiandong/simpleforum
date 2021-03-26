@@ -147,9 +147,9 @@ $(function(){
 
 $(function(){
 
-    if ($('.content').length>0) {
+    if ($('.sf-topic-content').length>0) {
         var min=12, max=18;
-        var elm = $('.content');
+        var elm = $('.sf-topic-content');
         var size = elm.css('fontSize').replace('px', '');
 
         $('.fontsize-plus').click(function() {
