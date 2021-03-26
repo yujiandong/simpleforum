@@ -189,7 +189,7 @@ $(function(){
         var id = parseInt(last.attr('id').replace('node_', ''))+1;
         var newNode = last.clone(true).attr('id', 'node_'+id);
         newNode.find('.node-id').val('').attr('id', 'navinode-'+id+'-node_id').attr('name', 'NaviNode['+id+'][node_id]');
-        newNode.find('.visible').prop('checked', false).attr('id', 'navinode-'+id+'-visible').siblings('input').andSelf().attr('name', 'NaviNode['+id+'][visible]');
+        newNode.find('.visible').prop('checked', false).attr('id', 'navinode-'+id+'-visible').siblings('input').addBack().attr('name', 'NaviNode['+id+'][visible]');
         newNode.find('.sortid').val('').attr('id', 'navinode-'+id+'-sortid').attr('name', 'NaviNode['+id+'][sortid]');
         $('.navi-nodes').append(newNode);
     });
