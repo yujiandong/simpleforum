@@ -53,8 +53,8 @@ $settings = Yii::$app->params['settings'];
             </a>
             <ul id="menu1" class="dropdown-menu" aria-labelledby="drop4">
               <li class="dropdown-item"><?php echo Html::a('English', ['/site/language', 'language'=>'en-US']); ?></li>
-              <li class="dropdown-item"><?php echo Html::a('日本語', ['/site/language', 'language'=>'ja']); ?></li>
               <li class="dropdown-item"><?php echo Html::a('简体中文', ['/site/language', 'language'=>'zh-CN']); ?></li>
+              <li class="dropdown-item"><?php echo Html::a('日本語', ['/site/language', 'language'=>'ja']); ?></li>
             </ul>
     </li>
     <!-- language selector end -->

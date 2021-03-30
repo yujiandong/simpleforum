@@ -247,6 +247,27 @@ class InstallController extends AppController
                 'condition' => extension_loaded('ctype'),
                 'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
             ),
+            array(
+                'name' => Yii::t('app/admin', '{extension} extension', ['extension' => 'Intl']),
+                'mandatory' => false,
+                'condition' => $requirementsChecker->checkPhpExtensionVersion('intl', '1.0.2', '>='),
+                'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+                'memo' => Yii::t('app/admin', 'Intl extension 1.0.2 or higher is required.'),
+            ),
+            array(
+                'name' => Yii::t('app/admin', 'ICU version'),
+                'mandatory' => false,
+                'condition' => defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '49', '>='),
+                'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+                'memo' => Yii::t('app/admin', 'ICU 49.0 or higher is required.'),
+            ),
+            array(
+                'name' => Yii::t('app/admin', 'ICU Data version'),
+                'mandatory' => false,
+                'condition' => defined('INTL_ICU_DATA_VERSION') && version_compare(INTL_ICU_DATA_VERSION, '49.1', '>='),
+                'by' => '<a href="http://www.yiiframework.com">Yii Framework</a>',
+                'memo' => Yii::t('app/admin', 'ICU Data 49.1 or higher is required.'),
+            ),
         );
         $requirementsChecker->check($requirements);
         return $this->render('index', ['check'=>$requirementsChecker]);
@@ -319,7 +340,7 @@ class InstallController extends AppController
             exit;
         }
         $config = file_get_contents(Yii::getAlias('@app/config/web.php.default'));
-        $config = str_replace('{cookieValidationKey}', Util::shorturl(microtime(true)).'-'.Util::shorturl(microtime(true)+1000), $config);
+        $config = str_replace('{cookieValidationKey}', Util::shorturl(Yii::$app->request->hostInfo).'-'.Util::shorturl(Yii::$app->request->hostName), $config);
         return file_put_contents(Yii::getAlias('@app/config/web.php'), $config);
     }
 

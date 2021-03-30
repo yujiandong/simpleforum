@@ -21,7 +21,7 @@ $this->title = Yii::t('app/admin', 'Upgrade SimpleForum');
     <li class="list-group-item">
         <p><?php echo Yii::t('app/admin', 'Befor upgrading your SimpleForum, make sure that you back up your database.'); ?></p>
         <?php
-            echo Html::a(Yii::t('app/admin', 'Backup completed, Start upgrade'), ['v115to120'], ['class'=>'btn btn-primary']);
+            echo Html::a(Yii::t('app/admin', 'Backup completed, Start upgrade'), ['v130to131'], ['class'=>'btn sf-btn']);
         ?>
     </li>
 </ul>

@@ -30,13 +30,13 @@ if( $sms ) {
     </div>
     <div class="card-body sf-box-form">
 <?php if( $sms ): ?>
-<dl class="well">
-  <dt><?php echo Yii::t('app', 'Message'); ?></dt>
-  <dd><p><?php echo $sms->msg; ?></p></dd>
-  <dt><?php echo Yii::t('app', 'From'); ?></dt>
-  <dd><p><?php echo SfHtml::uLink($sms['source']['username']); ?></p></dd>
-  <dt><?php echo Yii::t('app', 'Time'); ?></dt>
-  <dd><?php echo $formatter->asRelativeTime($sms['created_at']); ?></dd>
+<dl class="row">
+  <dt class="col-sm-3 text-right"><?php echo Yii::t('app', 'Message'); ?></dt>
+  <dd class="col-sm-9"><p><?php echo $sms->msg; ?></p></dd>
+  <dt class="col-sm-3 text-right"><?php echo Yii::t('app', 'From'); ?></dt>
+  <dd class="col-sm-9"><p><?php echo SfHtml::uLink($sms['source']['username'], $sms['source']['name']); ?></p></dd>
+  <dt class="col-sm-3 text-right"><?php echo Yii::t('app', 'Time'); ?></dt>
+  <dd class="col-sm-9"><?php echo $formatter->asRelativeTime($sms['created_at']); ?></dd>
 </dl>
 <?php endif; ?>
 <?php

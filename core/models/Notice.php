@@ -54,7 +54,7 @@ class Notice extends ActiveRecord
     public function getSource()
     {
         return $this->hasOne(User::className(), ['id' => 'source_id'])
-                ->select(['id', 'username', 'avatar']);
+                ->select(['id', 'username', 'name', 'avatar']);
     }
 
     public function getTopic()

@@ -36,7 +36,7 @@ $this->title = Yii::t('app/admin', 'Create administrator\'s account');
                 <?php echo $form->field($model, 'password_repeat')->passwordInput(); ?>
                 <div class="form-group">
                     <div class="offset-sm-3 col-sm-9">
-                    <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary']); ?>
+                    <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn']); ?>
                     </div>
                 </div>
             <?php ActiveForm::end(); ?>

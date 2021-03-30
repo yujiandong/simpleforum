@@ -79,7 +79,7 @@ class UpgradeController extends AppController
             exit;
         }
         $config = file_get_contents(Yii::getAlias('@app/config/web.php.default'));
-        $config = str_replace('{cookieValidationKey}', Util::shorturl(microtime(true)).'-'.Util::shorturl(microtime(true)+1000), $config);
+        $config = str_replace('{cookieValidationKey}', Util::shorturl(Yii::$app->request->hostInfo).'-'.Util::shorturl(Yii::$app->request->hostName), $config);
         return file_put_contents(Yii::getAlias('@app/config/web.php'), $config);
     }
 

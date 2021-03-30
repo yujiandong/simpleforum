@@ -41,7 +41,7 @@ $this->title = Yii::t('app/admin', 'Check server\'s environment');
 	        <?php
 				if ($summary['errors'] == 0) {
 					Yii::$app->getSession()->set('install-step', 1);
-					echo Html::a(Yii::t('app/admin', 'Next step: Database setting'), ['db-setting'], ['class'=>'btn btn-primary']);
+					echo Html::a(Yii::t('app/admin', 'Next step: Database setting'), ['db-setting'], ['class'=>'btn sf-btn']);
 				}
 	        ?>
 		</li>

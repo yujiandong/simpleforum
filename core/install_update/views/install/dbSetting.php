@@ -47,7 +47,7 @@ if ( !empty($error) ) {
                 <?php echo $form->field($model, 'tablePrefix'); ?>
                 <div class="form-group">
                     <div class="offset-sm-3 col-sm-9">
-                    <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary', 'name' => 'dbsetting-button']); ?>
+                    <?php echo Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn sf-btn', 'name' => 'dbsetting-button']); ?>
                     </div>
                 </div>
             <?php ActiveForm::end(); ?>
