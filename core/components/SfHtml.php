@@ -41,7 +41,7 @@ class SfHtml
         }
         return '';
     }
-
+/*
     public static function uScore($score) {
         $result = '';
         $levels = [];
@@ -59,6 +59,11 @@ class SfHtml
         foreach($levels as $key=>$amount) {
             $result .= $amount . '<i class="fa fa-trophy ' . $key . '" aria-hidden="true"></i>';
         }
+        return $result;
+    }
+*/
+    public static function uScore($score) {
+        $result = '<i class="fas fa-coins aria-hidden="true"></i>' . $score;
         return $result;
     }
 
