@@ -42,26 +42,18 @@ class SettingController extends CommonController
     public function actionAuth()
     {
         $configs = [
-            'type'=>['label'=>Yii::t('app/admin', 'Type'), 'key'=>'type', 'type'=>'select', 'value_type'=>'text', 'value'=>'', 'description'=>'', 'option'=>'{"":"", "github":"Github", "google":"Google", "facebook":"Facebook", "qq":"QQ", "weibo":"微博", "weixin":"微信"}'],
+            'type'=>['label'=>Yii::t('app/admin', 'Type'), 'key'=>'type', 'type'=>'select', 'value_type'=>'text', 'value'=>'', 'description'=>'', 'option'=>'{"":"", "github":"Github", "google":"Google", "facebook":"Facebook", "gitee":"Gitee", "qq":"QQ", "weibo":"微博(Weibo)", "weixin":"微信(Weixin)"}'],
             'sortid'=>['label'=>Yii::t('app/admin', 'Sort ID'), 'key'=>'sortid', 'type'=>'text', 'value_type'=>'integer', 'value'=>'1', 'description'=>''],
             'show'=>['label'=>Yii::t('app/admin', 'Show'), 'key'=>'show', 'type'=>'select', 'value_type'=>'integer', 'value'=>'0', 'description'=>'', 'option'=>'["0('.Yii::t('app', 'Login page').')", "1('.Yii::t('app', 'Login page and right of all pages').')"]'],
             'clientId'=>['label'=>'clientId', 'key'=>'clientId', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>''],
             'clientSecret'=>['label'=>'clientSecret', 'key'=>'clientSecret', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>''],
             'title'=>['label'=>Yii::t('app/admin', 'Title'), 'key'=>'title', 'type'=>'text', 'value_type'=>'text', 'value'=>'', 'description'=>'']
         ];
-        $titles = [
-            'qq'=>'qq登录',
-            'weibo'=>'微博登陆',
-            'weixin'=>'微信登陆',
-            'weixinmp'=>'微信公众号',
-        ];
-        $clientIds = [
-            'qq'=>'appid',
-            'weibo'=>'App Key',
-        ];
-        $clientSecrets = [
-            'qq'=>'appkey',
-            'weibo'=>'App Secret',
+        $oauthSettings = [
+            'qq'=> ['title' => 'qq登录', 'clientId' => 'appid', 'clientSecret' => 'appkey'],
+            'weibo'=> ['title' => '微博登陆', 'clientId' => 'App Key', 'clientSecret' => 'App Secret'],
+            'weixin'=> ['title' => '微信登陆'],
+            'weixinmp'=> ['title' => '微信公众号'],
         ];
 
         $settings = Setting::find()->where(['block'=>'auth'])->indexBy('key')->all();
@@ -98,14 +90,16 @@ class SettingController extends CommonController
         if (!empty($auths)) {
             foreach($auths as $type=>$auth) {
                 foreach($configs as $key=>$config) {
-                    if( $config['key'] === 'clientId' && isset($clientIds[$type]) ) {
-                        $config['label'] = $clientIds[$type];
-                    }
-                    if( $config['key'] === 'clientSecret' && isset($clientSecrets[$type]) ) {
-                        $config['label'] = $clientSecrets[$type];
-                    }
-                    if( $config['key'] === 'title' && isset($titles[$type]) ) {
-                        $config['value'] = $titles[$type];
+                    if ( isset($oauthSettings[$type]) ) {
+                        if( $config['key'] === 'clientId' && isset($oauthSettings[$type]['clientId']) ) {
+                            $config['label'] = $oauthSettings[$type]['clientId'];
+                        }
+                        if( $config['key'] === 'clientSecret' && isset($oauthSettings[$type]['clientSecret']) ) {
+                            $config['label'] = $oauthSettings[$type]['clientSecret'];
+                        }
+                        if( $config['key'] === 'title' && isset($oauthSettings[$type]['title']) ) {
+                            $config['value'] = $oauthSettings[$type]['title'];
+                        }
                     }
                     if( isset($auth[$config['key']]) ) {
                         $config['value'] = $auth[$config['key']];
@@ -239,7 +233,7 @@ class SettingController extends CommonController
         $rtnCd = 0;
         $msg = '';
         if ( $model->load(Yii::$app->getRequest()->post()) && $model->validate() ) {
-		  try {
+          try {
             $model->sendEmail();
             $rtnCd = 1;
           } catch(\Exception $e) {

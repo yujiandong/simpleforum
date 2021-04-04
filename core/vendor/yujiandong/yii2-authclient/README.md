@@ -1,4 +1,4 @@
-Yii Authclient for Weibo,QQ,Wechat
+Yii Authclient for Weibo,QQ,Wechat,Gitee
 
 **Config Setting**
 
@@ -21,6 +21,11 @@ Yii Authclient for Weibo,QQ,Wechat
                 'class' => 'yujiandong\authclient\Weixin',
                 'clientId' => 'weixin_appid',
                 'clientSecret' => 'weixin_appkey',
+            ],
+            'weixin' => [
+                'class' => 'yujiandong\authclient\Gitee',
+                'clientId' => 'gitee_clientId',
+                'clientSecret' => 'gitee_clientSecret',
             ],
         ],
     ]

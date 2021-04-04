@@ -127,6 +127,10 @@ var chooseNode = function(node) {
     $(".nodes-select2").val(node).trigger("change");
 }
 
+var capitalize = function(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
 $(function(){
     var anchor = window.location.hash;
     if (anchor) {
@@ -241,7 +245,7 @@ $(function(){
         authItem = $(this).closest('.auth-item');
 
         $('.auth-item-id', authItem).text(type);
-        $('.auth-title', authItem).val( authInfo['title'][type]===undefined?'Login with '+type:authInfo['title'][type] );
+        $('.auth-title', authItem).val( (authInfo['title']===undefined || authInfo['title'][type]===undefined)?'Login with '+capitalize(type):authInfo['title'][type] );
         $('.auth-clientId', authItem).closest('div').siblings('label').text( authInfo['clientId'][type]===undefined?'clientId':authInfo['clientId'][type] );
         $('.auth-clientSecret', authItem).closest('div').siblings('label').text( authInfo['clientSecret'][type]===undefined?'clientSecret':authInfo['clientSecret'][type] );
     });

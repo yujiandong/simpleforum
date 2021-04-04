@@ -369,6 +369,25 @@ form .form-hidden { margin-bottom: 0; }
 .third-party-login .weixin a:hover {
     background:#359D2E;
 }
+
+.fa-gitee:before {
+	content:"";
+	display:inline-block;
+	margin-top:4px;
+	width:20px;
+	height:20px;
+	background:url(/static/css/img/logo-gitee.svg) no-repeat;
+	background-size:contain;
+	filter: invert(0%) sepia(0%) saturate(0%) hue-rotate(244deg) brightness(94%) contrast(105%);
+}
+
+.third-party-login .fa-gitee:before {
+	margin-top:-2px;
+	width:28px;
+	height:28px;
+	filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(208deg) brightness(107%) contrast(103%);
+}
+
 /* auth login end */
 
 @media (min-width: 576px) {
