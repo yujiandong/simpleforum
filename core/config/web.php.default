@@ -147,6 +147,7 @@ if ( intval($setting['auth_enabled']) !== 0 && !empty($setting['auth_setting']) 
         'github' => 'yujiandong\authclient\GitHub',
         'google' => 'yujiandong\authclient\Google',
         'facebook' => 'yujiandong\authclient\Facebook',
+        'gitee' => 'yujiandong\authclient\Gitee',
     ];
 
     foreach($setting['auth_setting'] as $type=>$auth) {
