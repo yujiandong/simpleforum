@@ -47,6 +47,7 @@ pre {
 }
 .list-group, .card {margin-bottom:10px;}
 .list-group > .media {display:flex;}
+.list-group > .media > .media-body {max-width: calc(100% - 30px);}
 
 /* navbar start */
 
@@ -408,6 +409,7 @@ form .form-hidden { margin-bottom: 0; }
     .item-avatar img{width:48px;height:48px;}
     .video-link {width:480px;height:400px;}
     .user-auth-label {text-align:right;}
+    .list-group > .media > .media-body {max-width: calc(100% - 60px);}
 }
 
 @media (max-width: 991.98px) {
