@@ -531,6 +531,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'user_id' => $this->id,
                 'action' => $actions[$type],
                 'target' => $id,
+		'ext' => '',
         ];
         if ($thanks) {
             $cost = static::getCost('thanks');
