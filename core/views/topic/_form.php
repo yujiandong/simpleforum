@@ -39,10 +39,14 @@ $editor->registerTagItAsset($this);
     <p><?php echo Yii::t('app', 'Tags'); ?> <span class="gray">( <?php echo Yii::t('app', 'max: 4 tags, delimiter: blank'); ?> )</span></p>
     <?php echo $form->field($model, 'tags')->textInput(['id'=>'tags', 'maxlength'=>60])->label(false); ?>
 <?php
-        $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
-        if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
-          $plugin['class']::captchaWidget('newtopic', $form, $model, null, $plugin);
-        }
+    if( Yii::$app->getUser()->getIdentity()->canUpload($settings) ) {
+        $editor->registerUploadAsset($this);
+        echo '<div class="form-group"><div id="fileuploader">'.Yii::t('app', 'Upload Images').'</div></div>';
+    }
+    $captcha = ArrayHelper::getValue(Yii::$app->params, 'settings.captcha', '');
+    if(!empty($captcha) && ($plugin=ArrayHelper::getValue(Yii::$app->params, 'plugins.' . $captcha, []))) {
+        $plugin['class']::captchaWidget('newtopic', $form, $model, null, $plugin);
+    }
 ?>
 
     <div class="form-group">
