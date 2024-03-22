@@ -561,10 +561,10 @@ class User extends ActiveRecord implements IdentityInterface
                 } else {
                     $ext = $ext+['topic_id'=>$target->topic_id, 'title'=>$target->topic->title];
                 }
-                $history = $history+[
+                $history = array_merge($history, [
                     'type' => History::TYPE_POINT,
                     'ext' => json_encode($ext),
-                ];
+                ]);
             }
         }
 
