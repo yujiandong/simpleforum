@@ -95,6 +95,9 @@ function getCostName($cost) {
       <tbody>
 <?php
 foreach($records as $record) {
+    if(empty($record['ext'])) {
+        continue;
+    }
     $ext = json_decode($record['ext'], true);
     echo '<tr>',
             '<td>', $types[$record['action']], '<br />', $formatter->asDateTime($record['action_time'], 'y-MM-dd HH:mmZ'), '</td>',
